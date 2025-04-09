@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|solutionrelative:main.c||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|C:\\USERS\\BCA-PC2\\DESKTOP\\CPROCESSING-MAIN\\PROCESSING_EMPTY\\CPROCESSING\\INC\\CPROCESSING_COMMON.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|solutionrelative:CPROCESSING\\INC\\CPROCESSING_COMMON.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|C:\\USERS\\BCA-PC2\\DESKTOP\\CPROCESSING-MAIN\\PROCESSING_EMPTY\\CPROCESSING\\INC\\CPROCESSING.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{14B654ED-D716-460A-8335-22E3EDB70027}|Guardian_princess.vcxproj|solutionrelative:CPROCESSING\\INC\\CPROCESSING.H||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "cprocessing_common.h",
+              "DocumentMoniker": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\CProcessing\\inc\\cprocessing_common.h",
+              "RelativeDocumentMoniker": "CProcessing\\inc\\cprocessing_common.h",
+              "ToolTip": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\CProcessing\\inc\\cprocessing_common.h",
+              "RelativeToolTip": "CProcessing\\inc\\cprocessing_common.h",
+              "ViewState": "AgIAAG8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-09T09:06:43.58Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "cprocessing.h",
+              "DocumentMoniker": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\CProcessing\\inc\\cprocessing.h",
+              "RelativeDocumentMoniker": "CProcessing\\inc\\cprocessing.h",
+              "ToolTip": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\CProcessing\\inc\\cprocessing.h",
+              "RelativeToolTip": "CProcessing\\inc\\cprocessing.h",
+              "ViewState": "AgIAAHIAAAAAAAAAAAAAAIUAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2025-04-09T08:52:07.239Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "main.c",
+              "DocumentMoniker": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\main.c",
+              "RelativeDocumentMoniker": "main.c",
+              "ToolTip": "C:\\Users\\BCA-PC2\\Desktop\\CProcessing-main\\Processing_Empty\\main.c",
+              "RelativeToolTip": "main.c",
+              "ViewState": "AgIAABYAAAAAAAAAAAAAACAAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000423|",
+              "WhenOpened": "2025-04-09T08:51:26.003Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

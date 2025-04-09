@@ -1,65 +1,27 @@
+# CProcessing
+ 
+## What is it?
+* It's a framework that provides simple implementations for many of the common things used in 2D games all within the C programming language.
+* Graphics, Audio, Input, Fonts, Colors, Math (Vectors and Matrices), Random
+* It is a DLL that can be incorporated into projects across many platforms and accessed from many different programming languages.
+* It was patterned after Processing (Java) and P5.js (JavaScript)
+ 
+## What can you do with it?
+* It's currently used in GAM100 in Redmond, Malaysia and Singapore as a way for students to very quickly build prototype games and even do their first team game.
+* R&D uses it for a whole curriculum series aimed at High School students.
+* It could be used in other classes such as AI, Math, and Physics where course projects have students demonstrating cool enemy behaviors or dynamic body collisions and resolutions, but they wouldn't need to write a complete engine or know how to do graphics etc.
 
-# Project 'Guardian Princess' 
-## Directed by FrostByte Games
+## What's next?
+* Grab a copy of the [Latest Release](https://github.com/DigiPen-Faculty/CProcessing/releases).
+* Read through the [Documentation](https://github.com/DigiPen-Faculty/CProcessing/wiki).
+* Have fun building awesome stuff!
 
-=========================
+## License
+The library is offered under the [MIT License](https://github.com/DigiPen-Faculty/CProcessing/blob/main/LICENSE).
 
+Default font used in the library:
+* Roboto - licensed under [Apache license](http://www.apache.org/licenses/LICENSE-2.0)
 
-## Development Plan
-
-| 마일스톤 | 주차 | 기간 | 목표 | 주요 작업 | 비고 |
-|----------|------|-------|-------|------------|------|
-| 미정 | 1주차 | 00-00 ~ 00-00 | 미정 | - 미정 |  |
-| 미정 | 2주차 | 00-00 ~ 00-00 | 미정 | - 미정 |  |
-| 미정 | 3주차 | 00-00 ~ 00-00 | 미정 | - 미정 |  |
-| 미정 | 4주차 | 00-00 ~ 00-00 | 미정 | - 미정 |  |
-| 미정 | 5주차 | 00-00 ~ 00-00 | 미정 | - 미정 |  |
-
----
-
-## Daily Report 링크
-
->
-
----
-
-## 게임 한 줄 소개
-
-**guardian princess**은 어여쁜 일본 애니메이션 풍의 미소녀가 등장하는 게임으로, 유닛을 뽑고, 영웅을 조정하여, 적의 기지를 파괴하는 **횡스크롤 디펜스 게임입니다**
-
----
-
-## 게임 목표 / 승리 조건
-
-- 자신의 기지가 적에 의해 파괴되면 **패배**
-- 영웅, 스킬, 유닛을 이용해서 적의 기지를 파과하면 **승리**
-
----
-
-## 주요 게임 오브젝트
-
-- 소환 유닛들 
-- 다양하고 **귀여운 미소녀**영웅
-- 다양한 스킬
-- **수백만**개의 테크트리
-- 자원관리
-
----
-
-## 게임 UI/UX 구성
-
-- 영웅 정보: **체력, 공격력, 방어력, 공격속도, 이동속도, 특수능력**
-- 상호 작용: **유닛 생산, 영웅 이동, 스킬 사용, 상점**
-- 상태 표시: **미니맵, 아이템 상태, 스킬 상태, 유닛 정보, 기지 정보, 보너스 도전과제 목표, 유닛 소환**
-- 상점 영역: **미정**
-
----
-
-## 게임 흐름
-
-> 
-
----
-
-## 플레이어 행동 / 선택 / 영향
-
+## Acknowledgment
+* [NanoVG](https://github.com/memononen/nanovg) by Mikko Mononen
+* FMOD Studio by Firelight Technologies Pty Ltd.
