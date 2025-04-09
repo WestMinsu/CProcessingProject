@@ -1,27 +1,42 @@
-# CProcessing
- 
-## What is it?
-* It's a framework that provides simple implementations for many of the common things used in 2D games all within the C programming language.
-* Graphics, Audio, Input, Fonts, Colors, Math (Vectors and Matrices), Random
-* It is a DLL that can be incorporated into projects across many platforms and accessed from many different programming languages.
-* It was patterned after Processing (Java) and P5.js (JavaScript)
- 
-## What can you do with it?
-* It's currently used in GAM100 in Redmond, Malaysia and Singapore as a way for students to very quickly build prototype games and even do their first team game.
-* R&D uses it for a whole curriculum series aimed at High School students.
-* It could be used in other classes such as AI, Math, and Physics where course projects have students demonstrating cool enemy behaviors or dynamic body collisions and resolutions, but they wouldn't need to write a complete engine or know how to do graphics etc.
+# Project 'Guardian Princess' 
+## Directed by FrostByte Games
 
-## What's next?
-* Grab a copy of the [Latest Release](https://github.com/DigiPen-Faculty/CProcessing/releases).
-* Read through the [Documentation](https://github.com/DigiPen-Faculty/CProcessing/wiki).
-* Have fun building awesome stuff!
+## Development Plan
+| 마일스톤 | 주차 | 기간 | 목표 | 주요 작업 | 비고 |
+|----------|------|-------|-------|------------|------|
+| 개발 | 1주차 | 04-10 ~ 04-18 | 핵심 루프 구현 | - 횡스크롤 맵 구현<br>- 영웅 및 유닛 설계<br>- 유닛간 자동 전투 및 영웅 컨트롤 구현 |  |
+| 개발 | 2주차 | 04-19 ~ 04-25 |  | - 상점 유닛 무작위 생성<br>- 유닛 구매/판매/배치<br>- 간단한 시너지 적용 |  |
+| 폴리싱 | 3주차 | 04-26 ~ 05-02 |  | - 전투 이펙트 / 피격 연출<br>- 유닛 3성 강화 처리<br>- HUD 표시 (HP, 골드 등) |  |
+| 폴리싱 | 4주차 | 05-03 ~ 05-09 | | - 간단 튜토리얼<br>- 행동 제한 UI 안내<br>- 흐름 정리 |  |
+| 빌드 안정화 | 5주차 | 05-10 ~ 05-15 | 최종 디버깅 & 밸런스 조정 | - 리그레션 테스트<br>- 유닛/영웅 능력치 및 적 유닛 수 조정<br>- 최종 배포용 빌드 |  |
 
-## License
-The library is offered under the [MIT License](https://github.com/DigiPen-Faculty/CProcessing/blob/main/LICENSE).
+## Daily Report 링크
+>
 
-Default font used in the library:
-* Roboto - licensed under [Apache license](http://www.apache.org/licenses/LICENSE-2.0)
+## 게임 한 줄 소개
+**Guardian Princess**은 다양한 유닛을 조합하고 영웅을 조작하여 전투를 벌이는 횡스크롤 디펜스 게임입니다.
 
-## Acknowledgment
-* [NanoVG](https://github.com/memononen/nanovg) by Mikko Mononen
-* FMOD Studio by Firelight Technologies Pty Ltd.
+## 게임 목표 / 승리 조건
+- 아군 건물 체력이 0이 되면 **패배**
+- 적의 건물 체력을 0으로 만들면 **승리**
+
+## 주요 게임 오브젝트
+- 영웅 및 유닛 (공격력, 이동속도 등 각종 능력치)
+- 다양한 스킬
+- 유닛 생산을 위한 자원
+
+## 게임 UI/UX 구성
+- 영웅 정보: **체력, 공격력, 방어력, 공격속도, 이동속도, 특수능력**
+- 상호 작용: **버튼 클릭(유닛 생산, 영웅 이동, 스킬 사용, 상점 등)**
+- 상태 표시: **아이템 상태, 스킬 상태, 유닛 정보, 기지 정보, 보너스 도전과제 목표, 유닛 소환, 미니맵**
+
+## 게임 흐름
+> 유닛 생성 및 영웅 컨트롤 → 전투 → 반복
+
+1. **아군 유닛과 적군 유닛끼리 자동으로 전투 진행**
+2. 영웅이 전투에 개입가능
+
+## 플레이어 행동 / 선택 / 영향
+- 유닛 구매 및 업그레이드
+- 영웅 컨트롤
+
