@@ -2,21 +2,26 @@
 #include "cprocessing.h"
 #include "utils.h"
 #include "game.h"
+#include "asset_loading.h"
 
 //------------------------내장 함수 불러오기-------------------------
 
-CP_Image Main_Title_Image; //메인 이미지 재생
-CP_Image Cursor_image; // 커서 이미지
-CP_Image button_start;// 테스트 버튼
-CP_Image button_exit;
+extern CP_Image Main_Title_Image; //메인 이미지 재생
+extern CP_Image Cursor_image; // 커서 이미지
+extern CP_Image button_start;// 테스트 버튼
+extern CP_Image button_exit;
+extern CP_Image Intro_digipen; //디지펜 로고
+extern CP_Image Intro_teamlogo;//팀 로고 출력
+extern CP_Image Intro_bic;//bic 로고 출력
 
-CP_Sound Main_Title_Music;// 메인 음악 재생
-CP_Sound Mouse_Click_Sound;// 마우스 클릭 음악 재생
-CP_Sound button_sound;//
 
-CP_Font Main_Title_font;// 메인 폰트 변경
+extern CP_Sound Main_Title_Music;// 메인 음악 재생
+extern CP_Sound Mouse_Click_Sound;// 마우스 클릭 음악 재생
+extern CP_Sound button_sound;//
 
-CP_BOOL cursor = FALSE; // 커서 보이기 유무 설정
+
+extern CP_Font Main_Title_font;// 메인 폰트 변경
+extern CP_BOOL cursor = FALSE; // 커서 보이기 유무 설정
 
 
 
@@ -29,14 +34,9 @@ void Main_Menu_Init(void)
 
 	//--------------------------에셋 정의 및 로딩---------------------------
 
-	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/download.png");
-	Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3");
-	Main_Title_font = CP_Font_Load("Assets/fonts/DungGeunMo.ttf");
-	button_start = CP_Image_Load("Assets/main_title_assets/start.png");
-	button_exit = CP_Image_Load("Assets/main_title_assets/exit.png");
-	Cursor_image = CP_Image_Load("Assets/mouse_settings/test_cursor.png");
-	Mouse_Click_Sound = CP_Sound_Load("Assets/mouse_settings/test_mouseclick.mp3");
-	button_sound = CP_Sound_Load("Assets/main_title_assets/test_button_sound.mp3");
+	sound_load();
+	image_load();
+	font_load();
 
 	//-----------------------------음악 설정------------------------------
 

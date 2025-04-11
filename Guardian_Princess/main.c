@@ -1,5 +1,6 @@
 #include "cprocessing.h"
 #include "mainmenu.h"
+#include "asset_loading.h"
 #include "utils.h"
 int main(void)
 {

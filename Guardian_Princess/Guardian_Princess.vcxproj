@@ -194,6 +194,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="asset_loading.c" />
     <ClCompile Include="game.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="mainmenu.c" />
@@ -201,6 +202,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Practice_CProcessing\game.h" />
+    <ClInclude Include="asset_loading.h" />
     <ClInclude Include="mainmenu.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
