@@ -1,112 +1,103 @@
-
+ï»¿
 #include "cprocessing.h"
+#include "unit_info.h" //ìœ ë‹› ì •ë³´
+#include "testroom.h" // ì‹¤í—˜ í˜ì´ì§€
+#include "asset_loading.h" //ì—ì…‹ ë¶ˆëŸ¬ì˜¤ê¸°ëŠ” ì—¬ê¸°ì„œ
+#include "intro_scene.h"
+#include "title_scene.h"
+#include "timer.h"
 
-//------------------------³»Àå ÇÔ¼ö ºÒ·¯¿À±â-------------------------
+//------------------------ë‚´ì¥ í•¨ìˆ˜ ë¶ˆëŸ¬ì˜¤ê¸°-------------------------
 
-CP_Image Main_Title_Image; //¸ŞÀÎ ÀÌ¹ÌÁö Àç»ı
-CP_Image Cursor_image; // Ä¿¼­ ÀÌ¹ÌÁö
-CP_Image button_test;// Å×½ºÆ® ¹öÆ°
+CP_BOOL cursor = FALSE; // ì»¤ì„œ ë³´ì´ê¸° ìœ ë¬´ ì„¤ì •
 
-CP_Sound Main_Title_Music;// ¸ŞÀÎ À½¾Ç Àç»ı
-CP_Sound Mouse_Click_Sound;// ¸¶¿ì½º Å¬¸¯ À½¾Ç Àç»ı
-CP_Sound button_sound;//
+//-------------------í•¨ìˆ˜ ì¶”ê°€ ì„ ì–¸ -----------------------------
 
-CP_Font Main_Title_font;// ¸ŞÀÎ ÆùÆ® º¯°æ
+////ë§ˆìš°ìŠ¤ ì»¤ì„œ ì‘ë™
 
-CP_BOOL cursor = FALSE; // Ä¿¼­ º¸ÀÌ±â À¯¹« ¼³Á¤
+	void cursor_sound(float input_x1, float input_y1, float input_w1, float input_h1)
+	{	
 
-
-//-------------------ÇÔ¼ö Ãß°¡ ¼±¾ğ -----------------------------
-
-		//¸¶¿ì½º Ä¿¼­ ÀÛµ¿
-void cursor_sound(float input_x1, float input_y1, float input_w1, float input_h1)
-{	
-
-	if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
-	{
-		if ((((CP_Input_GetMouseX() <= (input_x1 + (input_w1 * 0.5))) && (CP_Input_GetMouseX() >= (input_x1 - (input_w1 * 0.5)))) && ((CP_Input_GetMouseY() <= (input_y1 + (input_h1 * 0.5))) && (CP_Input_GetMouseY() >= (input_y1 - (input_h1 * 0.5))))))
+		if (CP_Input_MouseTriggered(MOUSE_BUTTON_LEFT))
 		{
+			if ((((CP_Input_GetMouseX() <= (input_x1 + (input_w1 * 0.5))) && (CP_Input_GetMouseX() >= (input_x1 - (input_w1 * 0.5)))) && ((CP_Input_GetMouseY() <= (input_y1 + (input_h1 * 0.5))) && (CP_Input_GetMouseY() >= (input_y1 - (input_h1 * 0.5))))))
+			{
 
-			CP_Sound_Play(button_sound);
-		}
-		else
-		{
-			CP_Sound_Play(Mouse_Click_Sound);
+				CP_Sound_Play(button_sound);
+				CP_Engine_SetNextGameState(testroom_init, testroom_update, testroom_exit);
+			}
+			else
+			{
+				CP_Sound_Play(Mouse_Click_Sound);
 
+			}
 		}
-	}
 	
-}
+	}
 
-
-
-
-				
-
-//--------------------ÀÛµ¿ ¿©ºÎ È®ÀÎ Æ®¸®°Å-----------------------------
-
-
-
+	
 
 
 
 
 void game_init(void)
 {
-	CP_System_SetWindowTitle("Guardian Princess\n"); //ÇÁ·Î±×·¥ Ã¢ ÀÌ¸§
-	CP_System_ShowCursor(cursor);//Ä¿¼­ º¸ÀÌ°Ô ÇÏ±â
+	// --------------------------------ì—ì…‹ ë¶ˆëŸ¬ì˜¤ê¸° --------------
+	sound_load();
+	image_load();
+	font_load();
 
-	//--------------------------¿¡¼Â Á¤ÀÇ ¹× ·Îµù---------------------------
+	// --------------ì¸íŠ¸ë¡œ ë¶ˆëŸ¬ì˜¤ê¸° -------------
 
-	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/download.png");
-	Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3");
-	Main_Title_font = CP_Font_Load("Assets/fonts/DungGeunMo.ttf");
-	button_test = CP_Image_Load("Assets/main_title_assets/start.png");
-	Cursor_image = CP_Image_Load("Assets/mouse_settings/test_cursor.png");
-	Mouse_Click_Sound = CP_Sound_Load("Assets/mouse_settings/test_mouseclick.mp3");
-	button_sound = CP_Sound_Load("Assets/main_title_assets/test_button_sound.mp3");
+	//CP_Engine_SetNextGameState(intro_init, intro_update, intro_exit);
 
-	//-----------------------------À½¾Ç ¼³Á¤------------------------------
+
+
+	CP_System_SetWindowTitle("Guardian Princess\n"); //í”„ë¡œê·¸ë¨ ì°½ ì´ë¦„
+	CP_System_ShowCursor(cursor);//ì»¤ì„œ ë³´ì´ê²Œ í•˜ê¸°
+	
+	//-----------------------------ìŒì•… ì„¤ì •------------------------------
 
 	CP_Sound_Play(Main_Title_Music);
 
 	
 }
 
+float elapsed_time = 0;
 
 void game_update(void)
 {
+	elapsed_time += CP_System_GetDt();
+	if (elapsed_time >= 15)
+	{
+		printf("done!\n");
+	}
 
-	//------------------------------ÀÌ¹ÌÁö Àç»ı-----------------------------
+	printf("t: %f\n", elapsed_time);
 
-
-		// ¸ŞÀÎ ¹è°æ ÀÌ¹ÌÁö
+	//------------------------------ì´ë¯¸ì§€ ì¬ìƒ-----------------------------
+		// ë©”ì¸ ë°°ê²½ ì´ë¯¸ì§€
 	float x = (float)CP_System_GetWindowWidth() / 2;
 	float y = (float)CP_System_GetWindowHeight() / 2;
 	float w = (float)CP_System_GetWindowWidth();
 	float h = (float)CP_System_GetWindowHeight();
 	CP_Image_Draw(Main_Title_Image, x, y, w, h, 255);
 
-	// ¹öÆ° ÀÌ¹ÌÁö
+	// ë²„íŠ¼ ì´ë¯¸ì§€
 
 	CP_Image_Draw(button_test, 50, 50, 50, 50, 255);
 	cursor_sound(50, 50, 50, 50);
 
-	// Ä¿¼­ ÀÌ¹ÌÁö
+	// ì»¤ì„œ ì´ë¯¸ì§€
 
 	CP_Image_Draw(Cursor_image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), 30, 30, 255);
 
-
-
-	//--------------------------¸¶¿ì½º Å¬¸¯ °ü·Ã ¼³Á¤-----------------------------
-
-
-
 }
+
+
 void game_exit(void)
 {
-
-	//------------------------------ÀÌ¹ÌÁö, À½¾Ç Á¾·á---------------------------
+	//------------------------------ì´ë¯¸ì§€, ìŒì•… ì¢…ë£Œ---------------------------
 	CP_Image_Free(&Main_Title_Image);
 	CP_Sound_Free(&Main_Title_Music);
 }
@@ -114,7 +105,7 @@ void game_exit(void)
 
 int main(void)
 {
-	//----------------------------À©µµ¿ì »çÀÌÁî Å©±â Á¶Àı---------------------------
+	//----------------------------ìœˆë„ìš° ì‚¬ì´ì¦ˆ í¬ê¸° ì¡°ì ˆ---------------------------
 	CP_System_SetWindowSize(1600, 800);
 
 
