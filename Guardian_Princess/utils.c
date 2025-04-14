@@ -1,5 +1,10 @@
 #include <math.h>
 #include "cprocessing.h"
+#include "utils.h"
+
+//디버깅용(삭제 예정)
+#include <stdio.h>
+
 
 int IsAreaClicked(float area_center_x, float area_center_y, float area_width, float area_height, float click_x, float click_y)
 {	
@@ -17,3 +22,26 @@ int IsCircleClicked(float circle_center_x, float circle_center_y, float diameter
 	return 0;
 }
 
+CP_BOOL timeElapsed(float seconds)
+{
+	float currentElapsedTime = 0;
+
+	currentElapsedTime = CP_System_GetDt();
+	static float totalElapsedTime = 0;
+	totalElapsedTime += currentElapsedTime;
+	if (totalElapsedTime >= seconds)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+
+CP_BOOL circleToCircle(struct Circle a, struct Circle b)
+{
+	CP_Vector n = CP_Vector_Set(b.position.x - a.position.x, b.position.y - a.position.y);
+	double r = a.radius + b.radius;
+	double d = n.x * n.x + n.y * n.y; 
+	printf("r = %f, d = %f\n", r, d);
+	if (r > 0 && d <= r * r) return TRUE;
+	return FALSE;
+}

@@ -7,7 +7,7 @@
 //------------------------내장 함수 불러오기-------------------------
 
 extern CP_Image Main_Title_Image; //메인 이미지 재생
-extern CP_Image Cursor_image; // 커서 이미지
+extern CP_Image cursorImage; // 커서 이미지
 extern CP_Image button_start;// 테스트 버튼
 extern CP_Image button_exit;
 extern CP_Image Intro_digipen; //디지펜 로고
@@ -20,17 +20,15 @@ extern CP_Sound Mouse_Click_Sound;// 마우스 클릭 음악 재생
 extern CP_Sound button_sound;//
 
 
-extern CP_Font Main_Title_font;// 메인 폰트 변경
-extern CP_BOOL cursor = FALSE; // 커서 보이기 유무 설정
-
+extern CP_Font mainTitleFont;// 메인 폰트 변경
 
 
 //--------------------작동 여부 확인 트리거-----------------------------
 
 void Main_Menu_Init(void)
 {
-	CP_System_SetWindowTitle("Guardian Princess\n"); //프로그램 창 이름
-	CP_System_ShowCursor(cursor);//커서 보이게 하기
+	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름
+	CP_System_ShowCursor(FALSE);//커서 보이게 하기
 
 	//--------------------------에셋 정의 및 로딩---------------------------
 
@@ -73,7 +71,7 @@ void Main_Menu_Update(void)
 		if (IsAreaClicked(startButton_x, startButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
 			CP_Sound_Play(button_sound);
-			CP_Engine_SetNextGameState(Game_Init, Game_Update, Game_Exit);
+			CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
 		}
 
 		else if (IsAreaClicked(exitButton_x, exitButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
@@ -91,7 +89,7 @@ void Main_Menu_Update(void)
 	// 커서 이미지
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(Cursor_image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
 
 	//--------------------------마우스 클릭 관련 설정-----------------------------

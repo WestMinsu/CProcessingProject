@@ -1,11 +1,15 @@
 #pragma once
 
-void Summon_Unit(void);
+void SummonAllyUnit(void);
 
-void Draw_Unit(void);
+void SummonEnemyUnit(void);
 
-void Game_Init(void);
+void DrawAllyUnits(void);
 
-void Game_Update(void);
+void DrawEnemyUnits(void);
 
-void Game_Exit(void);
+void GameInit(void);
+
+void GameUpdate(void);
+
+void GameExit(void);
