@@ -24,6 +24,9 @@
     <ClCompile Include="asset_loading.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="unit_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainmenu.h">
@@ -32,10 +35,13 @@
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Practice_CProcessing\game.h">
+    <ClInclude Include="asset_loading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="asset_loading.h">
+    <ClInclude Include="unit_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
