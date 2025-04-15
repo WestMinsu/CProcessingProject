@@ -1,6 +1,6 @@
-#include <math.h>
 #include "cprocessing.h"
 #include "utils.h"
+#include "game.h"
 
 //디버깅용(삭제 예정)
 #include <stdio.h>
@@ -22,21 +22,22 @@ int IsCircleClicked(float circle_center_x, float circle_center_y, float diameter
 	return 0;
 }
 
-CP_BOOL timeElapsed(float seconds)
+CP_BOOL timeElapsed(EnemySpawner* enemySpawner, float time, EnemyType type)
 {
-	float currentElapsedTime = 0;
+	float dt = 0;
+	dt = CP_System_GetDt();
 
-	currentElapsedTime = CP_System_GetDt();
-	static float totalElapsedTime = 0;
-	totalElapsedTime += currentElapsedTime;
-	if (totalElapsedTime >= seconds)
+	enemySpawner[type].timer += dt;
+	if (enemySpawner[type].timer >= time)
+	{
+		enemySpawner[type].timer = 0;
 		return TRUE;
+	}
 	else
 		return FALSE;
 }
 
-
-CP_BOOL circleToCircle(struct Circle a, struct Circle b)
+CP_BOOL circleToCircle(Circle a, Circle b)
 {
 	CP_Vector n = CP_Vector_Set(b.position.x - a.position.x, b.position.y - a.position.y);
 	double r = a.radius + b.radius;

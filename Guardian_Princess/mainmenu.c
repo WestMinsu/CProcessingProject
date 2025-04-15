@@ -25,7 +25,7 @@ extern CP_Font mainTitleFont;// 메인 폰트 변경
 
 //--------------------작동 여부 확인 트리거-----------------------------
 
-void Main_Menu_Init(void)
+void MainMenuInit(void)
 {
 	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름
 	CP_System_ShowCursor(FALSE);//커서 보이게 하기
@@ -41,7 +41,7 @@ void Main_Menu_Init(void)
 	CP_Sound_Play(Main_Title_Music);
 }
 
-void Main_Menu_Update(void)
+void MainMenuUpdate(void)
 {
 	//------------------------------이미지 재생-----------------------------
 
@@ -96,7 +96,7 @@ void Main_Menu_Update(void)
 
 }
 
-void Main_Menu_Exit(void)
+void MainMenuExit(void)
 {
 	//------------------------------이미지, 음악 종료---------------------------
 	CP_Image_Free(&Main_Title_Image);

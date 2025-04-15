@@ -6,16 +6,14 @@
 
 #define PLAYER_SPEED 400
 #define MAX_UNIT 10
+#define NUM_ENEMY_TYPES 2
 
 //TODO: unit 구조체 만들기 
 
 extern CP_Image cursorImage;
 CP_BOOL cursor;
 CP_Vector heroPosition;
-CP_Vector allyUnitPosition[MAX_UNIT];
-CP_BOOL allyUnitAlived[MAX_UNIT];
-CP_Vector enemyUnitPosition[MAX_UNIT];
-CP_BOOL enemyUnitAlived[MAX_UNIT];
+
 CP_BOOL buttonClicked;
 CP_Color red;
 CP_Color green;
@@ -23,21 +21,29 @@ CP_Color blue;
 CP_Color white;
 static float dt;
 
-struct Circle allyCollider[MAX_UNIT];
-struct Circle enemyCollider[MAX_UNIT];
-int allyUnitSpeed[MAX_UNIT];
-int enemyUnitSpeed[MAX_UNIT];
+Ally ally[MAX_UNIT];
+AllySpawner allySpawner[MAX_UNIT];
+Enemy enemy[MAX_UNIT];
+EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 
 void initUnit(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		allyCollider[i].position = CP_Vector_Set(0, 0);
-		allyCollider[i].radius = 0;
-		enemyCollider[i].position = CP_Vector_Set(0, 0);
-		enemyCollider[i].radius = 0;
-		allyUnitSpeed[i] = 400;
-		enemyUnitSpeed[i] = 400;
+		ally[i].position = CP_Vector_Set(0, 0);
+		ally[i].collider.radius = 0;
+		ally[i].speed = 400;
+
+		enemy[i].position = CP_Vector_Set(0, 0);
+		enemy[i].collider.radius = 0;
+		enemy[i].speed = 400;
+		enemy[i].type = MELEE;
+	}
+
+	for (int i = 0; i < NUM_ENEMY_TYPES; i++)
+	{
+		allySpawner[i].timer = 0;
+		enemySpawner[i].timer = 0;
 	}
 }
 
@@ -54,58 +60,67 @@ void SummonAllyUnit(void)
 		return;
 	}
 
-	allyUnitAlived[idx] = TRUE;
+	ally[idx].alived = TRUE;
 	idx++;
 }
 
-void SummonEnemyUnit(void)
+void SummonEnemyUnit(EnemyType type)
 {
 	static int idx = 0;
 
-	//printf("index: %d\n", idx);
+	printf("index: %d\n", idx);
 
 	if (idx >= MAX_UNIT)
 	{
 		//printf("Can't summon enemy unit!!!\n");
 		return;
 	}
+	
+	enemy[idx].alived = TRUE;
+	enemy[idx].type = type;
 
-	enemyUnitAlived[idx] = TRUE;
-	idx++;
-
+	idx++; 
 }
+
+//TODO: 죽으면 spawnTime = 0으로
 
 void DrawAllyUnits(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (allyUnitAlived[i])
+		if (ally[i].alived)
 		{
 			CP_Settings_Fill(blue);
-			CP_Graphics_DrawCircle(allyUnitPosition[i].x, allyUnitPosition[i].y, 30);
+			CP_Graphics_DrawCircle(ally[i].position.x, ally[i].position.y, 30);
 
-			allyCollider[i].position = CP_Vector_Set(allyUnitPosition[i].x, allyUnitPosition[i].y);
-			allyCollider[i].radius = 30;
-			allyUnitPosition[i].x += allyUnitSpeed[i] * dt;
+			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
+			ally[i].collider.radius = 30;
+			ally[i].position.x += ally[i].speed * dt;
 
 		}
 	}
-
 }
 
 void DrawEnemyUnits(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (enemyUnitAlived[i])
+		if (enemy[i].alived)
 		{
-			CP_Settings_Fill(red);
-			CP_Graphics_DrawCircle(enemyUnitPosition[i].x, enemyUnitPosition[i].y, 30);
+			if (enemy[i].type == MELEE)
+			{
+				CP_Settings_Fill(red);
+			}
+			else if (enemy[i].type == RANGED)
+			{
+				CP_Settings_Fill(white);
+			}
 
-			enemyCollider[i].position = CP_Vector_Set(enemyUnitPosition[i].x, enemyUnitPosition[i].y);
-			enemyCollider[i].radius = 30;
-			enemyUnitPosition[i].x -= allyUnitSpeed[i] * dt;
+			CP_Graphics_DrawCircle(enemy[i].position.x, enemy[i].position.y, 30);
 
+			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
+			enemy[i].collider.radius = 30;
+			enemy[i].position.x -= enemy[i].speed * dt;
 		}
 	}
 }
@@ -119,8 +134,8 @@ void GameInit(void)
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		allyUnitPosition[i] = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
-		enemyUnitPosition[i] = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 	}
 
 	CP_Settings_TextSize(40.0f);
@@ -130,7 +145,7 @@ void GameUpdate(void)
 {
 	if (CP_Input_KeyDown(KEY_Q))
 	{
-		CP_Engine_SetNextGameState(Main_Menu_Init, Main_Menu_Update, Main_Menu_Exit);
+		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
@@ -170,11 +185,11 @@ void GameUpdate(void)
 		buttonClicked = FALSE;
 	}
 
-	if (timeElapsed(1.0f))
-	{
-		SummonEnemyUnit();
+	if(timeElapsed(&enemySpawner[0], 1.0f, MELEE))
+		SummonEnemyUnit(MELEE);
 
-	}
+	if (timeElapsed(&enemySpawner[1], 3.0f, RANGED))
+		SummonEnemyUnit(RANGED);
 
 	if (CP_Input_KeyDown(KEY_A))
 	{
@@ -189,12 +204,16 @@ void GameUpdate(void)
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 
 
-	if (circleToCircle(allyCollider[0], enemyCollider[0]))
+	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		allyUnitSpeed[0] = 0;
-		enemyUnitSpeed[0] = 0;
+		if (circleToCircle(ally[0].collider, enemy[i].collider))
+		{
+			ally[0].speed = 0;
+			enemy[i].speed = 0;
+		}
 	}
-
+	
+	
 	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawAllyUnits();
 	DrawEnemyUnits();
