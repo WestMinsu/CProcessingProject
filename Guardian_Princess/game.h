@@ -1,11 +1,53 @@
 #pragma once
 
-void Summon_Unit(void);
+typedef struct
+{
+	CP_Vector position;
+	double radius;
+}Circle;
 
-void Draw_Unit(void);
+typedef struct
+{
+	CP_Vector position;
+	CP_BOOL alived;
+	int speed;
+	Circle collider;
+}Ally;
 
-void Game_Init(void);
+typedef struct
+{
+	float timer;
+} AllySpawner;
 
-void Game_Update(void);
+typedef enum{
+	MELEE,
+	RANGED,
+}EnemyType;
 
-void Game_Exit(void);
+typedef struct
+{
+	CP_Vector position;
+	CP_BOOL alived;
+	int speed;
+	Circle collider;
+	EnemyType type;
+}Enemy;
+
+typedef struct
+{
+	float timer;
+} EnemySpawner;
+
+void SummonAllyUnit(void);
+
+void SummonEnemyUnit(EnemyType type);
+
+void DrawAllyUnits(void);
+
+void DrawEnemyUnits(void);
+
+void GameInit(void);
+
+void GameUpdate(void);
+
+void GameExit(void);

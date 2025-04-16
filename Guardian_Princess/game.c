@@ -1,94 +1,156 @@
-#define _USE_MATH_DEFINES
-#include <math.h>
 #include "cprocessing.h"
 #include "mainmenu.h"
 #include "utils.h"
 #include <stdio.h>
 #include "game.h"
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
 #define PLAYER_SPEED 400
 #define MAX_UNIT 10
+#define NUM_ENEMY_TYPES 2
 
-CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
-CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
-float textSize;
+//TODO: unit 구조체 만들기 
 
-extern CP_Image Cursor_image;
-extern CP_BOOL cursor;
-CP_Vector hero_position;
-CP_Vector unit_position[MAX_UNIT];
-CP_BOOL unit_alived[MAX_UNIT];
-CP_BOOL button_clicked;
+extern CP_Image cursorImage;
+CP_BOOL cursor;
+CP_Vector heroPosition;
+
+CP_BOOL buttonClicked;
 CP_Color red;
 CP_Color green;
 CP_Color blue;
 CP_Color white;
-float dt;
+static float dt;
 
-void Summon_Unit(void)
-{
+Ally ally[MAX_UNIT];
+AllySpawner allySpawner[MAX_UNIT];
+Enemy enemy[MAX_UNIT];
+EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 
-	static int idx = 0;
-	if (button_clicked)
-	{
-		printf("index: %d\n", idx);
-
-		if (idx >= MAX_UNIT)
-		{
-			printf("Can't summon unit!!!\n");
-			button_clicked = FALSE;
-			return;
-		}
-
-		unit_alived[idx] = TRUE;
-		idx++;
-		button_clicked = FALSE;
-	}
-
-}
-
-void Draw_Unit(void)
+void initUnit(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (unit_alived[i])
+		ally[i].position = CP_Vector_Set(0, 0);
+		ally[i].collider.radius = 0;
+		ally[i].speed = 400;
+
+		enemy[i].position = CP_Vector_Set(0, 0);
+		enemy[i].collider.radius = 0;
+		enemy[i].speed = 400;
+		enemy[i].type = MELEE;
+	}
+
+	for (int i = 0; i < NUM_ENEMY_TYPES; i++)
+	{
+		allySpawner[i].timer = 0;
+		enemySpawner[i].timer = 0;
+	}
+}
+
+void SummonAllyUnit(void)
+{
+	static int idx = 0;
+
+	printf("index: %d\n", idx);
+
+	if (idx >= MAX_UNIT)
+	{
+		printf("Can't summon ally unit!!!\n");
+		buttonClicked = FALSE;
+		return;
+	}
+
+	ally[idx].alived = TRUE;
+	idx++;
+}
+
+void SummonEnemyUnit(EnemyType type)
+{
+	static int idx = 0;
+
+	printf("index: %d\n", idx);
+
+	if (idx >= MAX_UNIT)
+	{
+		//printf("Can't summon enemy unit!!!\n");
+		return;
+	}
+	
+	enemy[idx].alived = TRUE;
+	enemy[idx].type = type;
+
+	idx++; 
+}
+
+//TODO: 죽으면 spawnTime = 0으로
+
+void DrawAllyUnits(void)
+{
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (ally[i].alived)
 		{
 			CP_Settings_Fill(blue);
-			CP_Graphics_DrawCircle(unit_position[i].x, unit_position[i].y, 30);
-			unit_position[i].x += PLAYER_SPEED * dt;
+			CP_Graphics_DrawCircle(ally[i].position.x, ally[i].position.y, 30);
+
+			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
+			ally[i].collider.radius = 30;
+			ally[i].position.x += ally[i].speed * dt;
+
 		}
 	}
-
 }
 
-void Game_Init(void)
+void DrawEnemyUnits(void)
+{
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (enemy[i].alived)
+		{
+			if (enemy[i].type == MELEE)
+			{
+				CP_Settings_Fill(red);
+			}
+			else if (enemy[i].type == RANGED)
+			{
+				CP_Settings_Fill(white);
+			}
+
+			CP_Graphics_DrawCircle(enemy[i].position.x, enemy[i].position.y, 30);
+
+			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
+			enemy[i].collider.radius = 30;
+			enemy[i].position.x -= enemy[i].speed * dt;
+		}
+	}
+}
+
+void GameInit(void)
 {
 	CP_System_ShowCursor(cursor);
-	hero_position = CP_Vector_Set(100, 100);
+	heroPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+
+	initUnit();
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		unit_position[i] = CP_Vector_Set(100, 100);
+		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 	}
 
-	textSize = 40.0f;
-	CP_Settings_TextSize(textSize);
-
+	CP_Settings_TextSize(40.0f);
 }
 
-void Game_Update(void)
+void GameUpdate(void)
 {
 	if (CP_Input_KeyDown(KEY_Q))
 	{
-		CP_Engine_SetNextGameState(Main_Menu_Init, Main_Menu_Update, Main_Menu_Exit);
+		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 
 	dt = CP_System_GetDt();
-
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
@@ -102,38 +164,63 @@ void Game_Update(void)
 	CP_Settings_Fill(white);
 	CP_Graphics_DrawRect(summonButton_x, summonButton_y, buttonWidth, buttonHeight);
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+
+	CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
+	CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
 	CP_Settings_TextAlignment(horizontal, vertical);
+
 	CP_Font_DrawText("Summon", summonButton_x, summonButton_y);
 
-
-	CP_Settings_Fill(red);
-	CP_Graphics_DrawCircle(hero_position.x, hero_position.y, 30);
+	CP_Settings_Fill(green);
+	CP_Graphics_DrawCircle(heroPosition.x, heroPosition.y, 30);
 
 	if (IsAreaClicked(summonButton_x, summonButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 	{
-		button_clicked = TRUE;
+		buttonClicked = TRUE;
 	}
 
-	Summon_Unit();
-	Draw_Unit();
+	if (buttonClicked)
+	{
+		SummonAllyUnit();
+		buttonClicked = FALSE;
+	}
+
+	if(timeElapsed(&enemySpawner[0], 1.0f, MELEE))
+		SummonEnemyUnit(MELEE);
+
+	if (timeElapsed(&enemySpawner[1], 3.0f, RANGED))
+		SummonEnemyUnit(RANGED);
 
 	if (CP_Input_KeyDown(KEY_A))
 	{
-		hero_position.x -= PLAYER_SPEED * dt;
+		heroPosition.x -= PLAYER_SPEED * dt;
 	}
 	else if (CP_Input_KeyDown(KEY_D))
 	{
-		hero_position.x += PLAYER_SPEED * dt;
+		heroPosition.x += PLAYER_SPEED * dt;
 	}
-
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(Cursor_image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
+
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		for(int j=0; j< MAX_UNIT; j++)
+		if (circleToCircle(ally[i].collider, enemy[j].collider))
+		{
+			ally[i].speed = 0;
+			enemy[j].speed = 0;
+		}
+	}
+	
+	
+	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	DrawAllyUnits();
+	DrawEnemyUnits();
 }
 
-void Game_Exit(void)
+void GameExit(void)
 {
 
 }
