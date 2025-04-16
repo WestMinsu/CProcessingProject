@@ -206,10 +206,11 @@ void GameUpdate(void)
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (circleToCircle(ally[0].collider, enemy[i].collider))
+		for(int j=0; j< MAX_UNIT; j++)
+		if (circleToCircle(ally[i].collider, enemy[j].collider))
 		{
-			ally[0].speed = 0;
-			enemy[i].speed = 0;
+			ally[i].speed = 0;
+			enemy[j].speed = 0;
 		}
 	}
 	
