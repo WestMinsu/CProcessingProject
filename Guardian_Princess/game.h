@@ -10,8 +10,13 @@ typedef struct
 {
 	CP_Vector position;
 	CP_BOOL alived;
-	int speed;
+	int moveSpeed;
 	Circle collider;
+	Circle attackRange;
+
+	int hp;
+	int attackDamage;
+	float attackSpeed;
 }Ally;
 
 typedef struct
@@ -28,9 +33,19 @@ typedef struct
 {
 	CP_Vector position;
 	CP_BOOL alived;
-	int speed;
+	int moveSpeed;
 	Circle collider;
+	Circle attackRange;
 	EnemyType type;
+
+	int hp; 
+	int attackDamage; 
+
+	float attackSpeed; 
+	//float ATKSTART_SPD; 
+
+	//int cost;
+	//float prd_time;
 }Enemy;
 
 typedef struct

@@ -7,8 +7,7 @@
 #define PLAYER_SPEED 400
 #define MAX_UNIT 10
 #define NUM_ENEMY_TYPES 2
-
-//TODO: unit 구조체 만들기 
+#define UNIT_SPEED 200
 
 extern CP_Image cursorImage;
 CP_BOOL cursor;
@@ -32,12 +31,24 @@ void initUnit(void)
 	{
 		ally[i].position = CP_Vector_Set(0, 0);
 		ally[i].collider.radius = 0;
-		ally[i].speed = 400;
+		ally[i].moveSpeed = UNIT_SPEED;
+
+		ally[i].hp = 100;
+		ally[i].attackDamage = 1; 
+		ally[i].attackSpeed = 1;
+		ally[i].attackRange.position = ally[i].position;
+		ally[i].attackRange.radius = 0;
 
 		enemy[i].position = CP_Vector_Set(0, 0);
 		enemy[i].collider.radius = 0;
-		enemy[i].speed = 400;
+		enemy[i].moveSpeed = UNIT_SPEED;
 		enemy[i].type = MELEE;
+
+		enemy[i].hp = 100;
+		enemy[i].attackDamage = 1;
+		enemy[i].attackSpeed = 1;
+		enemy[i].attackRange.position = enemy[i].position;
+		enemy[i].attackRange.radius = 0;
 	}
 
 	for (int i = 0; i < NUM_ENEMY_TYPES; i++)
@@ -60,6 +71,8 @@ void SummonAllyUnit(void)
 		return;
 	}
 
+	ally[idx].collider.radius = 30;
+	ally[idx].attackRange.radius = 50;
 	ally[idx].alived = TRUE;
 	idx++;
 }
@@ -68,18 +81,29 @@ void SummonEnemyUnit(EnemyType type)
 {
 	static int idx = 0;
 
-	printf("index: %d\n", idx);
+	//printf("index: %d\n", idx);
 
 	if (idx >= MAX_UNIT)
 	{
-		//printf("Can't summon enemy unit!!!\n");
+		printf("Can't summon enemy unit!!!\n");
 		return;
 	}
-	
-	enemy[idx].alived = TRUE;
+
+	enemy[idx].collider.radius = 30;
+	enemy[idx].attackRange.radius = 50;
 	enemy[idx].type = type;
 
+	if (enemy[idx].type == RANGED)
+	{
+		printf("asdfasfasd");
+		enemy[idx].attackRange.radius = 200;
+	}
+
+	enemy[idx].alived = TRUE;
+
+
 	idx++; 
+
 }
 
 //TODO: 죽으면 spawnTime = 0으로
@@ -94,8 +118,8 @@ void DrawAllyUnits(void)
 			CP_Graphics_DrawCircle(ally[i].position.x, ally[i].position.y, 30);
 
 			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
-			ally[i].collider.radius = 30;
-			ally[i].position.x += ally[i].speed * dt;
+			ally[i].attackRange.position = ally[i].collider.position;
+			ally[i].position.x += ally[i].moveSpeed * dt;
 
 		}
 	}
@@ -119,8 +143,8 @@ void DrawEnemyUnits(void)
 			CP_Graphics_DrawCircle(enemy[i].position.x, enemy[i].position.y, 30);
 
 			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
-			enemy[i].collider.radius = 30;
-			enemy[i].position.x -= enemy[i].speed * dt;
+			enemy[i].attackRange.position = enemy[i].collider.position;
+			enemy[i].position.x -= enemy[i].moveSpeed * dt;
 		}
 	}
 }
@@ -185,11 +209,15 @@ void GameUpdate(void)
 		buttonClicked = FALSE;
 	}
 
-	if(timeElapsed(&enemySpawner[0], 1.0f, MELEE))
+	if (timeElapsed(enemySpawner, 1.0f, MELEE))
+	{
 		SummonEnemyUnit(MELEE);
+	}
 
-	if (timeElapsed(&enemySpawner[1], 3.0f, RANGED))
+	if (timeElapsed(enemySpawner, 3.0f, RANGED))
+	{
 		SummonEnemyUnit(RANGED);
+	}
 
 	if (CP_Input_KeyDown(KEY_A))
 	{
@@ -203,17 +231,51 @@ void GameUpdate(void)
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 
-
-	for (int i = 0; i < MAX_UNIT; i++)
+	CP_BOOL isFightWithEnemy = FALSE;
+	CP_BOOL isFightWithAlly = FALSE;
+	for (int i=0; i < MAX_UNIT; i++)
 	{
-		for(int j=0; j< MAX_UNIT; j++)
-		if (circleToCircle(ally[i].collider, enemy[j].collider))
+		for (int j = 0; j < MAX_UNIT; j++)
 		{
-			ally[i].speed = 0;
-			enemy[j].speed = 0;
+			if (circleToCircle(ally[i].attackRange, enemy[j].collider))
+			{
+				isFightWithEnemy = TRUE;
+				ally[i].moveSpeed = 0;
+
+				enemy[j].hp -= ally[i].attackDamage;
+				if (enemy[j].hp <= 0)
+				{
+					enemy[j].alived = FALSE;
+					enemy[j].collider.radius = 0;
+					enemy[j].attackRange.radius = 0;
+				}	
+			}
+			if (circleToCircle(enemy[j].attackRange, ally[i].collider))
+			{
+				isFightWithAlly = TRUE;
+				enemy[j].moveSpeed = 0;
+
+				ally[i].hp -= enemy[j].attackDamage;
+				if (ally[i].hp <= 0)
+				{
+					ally[i].alived = FALSE;
+					ally[i].collider.radius = 0;
+					ally[i].attackRange.radius = 0;
+				}
+			}
+			if (!isFightWithEnemy)
+			{
+				ally[i].moveSpeed = UNIT_SPEED;
+				//isFightWithEnemy = FALSE;
+			}
+			if (!isFightWithAlly)
+			{
+				enemy[j].moveSpeed = UNIT_SPEED;
+				//isFightWithAlly = FALSE;
+			}
 		}
+
 	}
-	
 	
 	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawAllyUnits();

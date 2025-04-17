@@ -39,10 +39,12 @@ CP_BOOL timeElapsed(EnemySpawner* enemySpawner, float time, EnemyType type)
 
 CP_BOOL circleToCircle(Circle a, Circle b)
 {
+	if (a.radius <= 0 || b.radius <= 0)
+		return FALSE;
 	CP_Vector n = CP_Vector_Set(b.position.x - a.position.x, b.position.y - a.position.y);
 	double r = a.radius + b.radius;
 	double d = n.x * n.x + n.y * n.y; 
-	printf("r = %f, d = %f\n", r, d);
+	//printf("r = %f, d = %f\n", r, d);
 	if (r > 0 && d <= r * r) return TRUE;
 	return FALSE;
 }
