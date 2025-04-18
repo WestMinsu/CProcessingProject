@@ -17,4 +17,5 @@ typedef struct
 }Ally;
 
 void SummonAllyUnit(UnitType type);
+void UpdateAllyUnits(float dt);
 void DrawAllyUnits(void);

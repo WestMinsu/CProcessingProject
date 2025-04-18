@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 extern Enemy enemy[MAX_UNIT];
-extern float dt;
 
 void SummonEnemyUnit(UnitType type)
 {
@@ -30,6 +29,19 @@ void SummonEnemyUnit(UnitType type)
 	idx++;
 }
 
+void UpdateEnemyUnits(float dt)
+{
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (enemy[i].alived)
+		{
+			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
+			enemy[i].attackRange.position = enemy[i].collider.position;
+			enemy[i].position.x -= enemy[i].moveSpeed * dt;
+		}
+	}
+}
+
 void DrawEnemyUnits(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
@@ -46,10 +58,6 @@ void DrawEnemyUnits(void)
 			}
 
 			CP_Graphics_DrawCircle(enemy[i].position.x, enemy[i].position.y, 30);
-
-			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
-			enemy[i].attackRange.position = enemy[i].collider.position;
-			enemy[i].position.x -= enemy[i].moveSpeed * dt;
 		}
 	}
 }

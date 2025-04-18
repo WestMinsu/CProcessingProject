@@ -8,10 +8,7 @@
 #include "enemy.h"
 #include "constants.h"
 #include "colors.h"
-#include "globals.h"
 #include <stdio.h>
-
-CP_BOOL cursor;
 
 Hero hero;
 Ally ally[MAX_UNIT];
@@ -53,22 +50,20 @@ void initUnit(void)
 	}
 }
 
-
-
 //TODO: 죽으면 spawnTime = 0으로
-
 
 void GameInit(void)
 {
-	CP_System_ShowCursor(cursor);
+	CP_System_ShowCursor(FALSE);
 
-	initHero();
+	InitHero();
 	initUnit();
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
 	blue = CP_Color_CreateHex(0x0000FFFF);
 	white = CP_Color_CreateHex(0xFFFFFFFF);
+	pink = CP_Color_CreateHex(0xF08080FF);
 
 	CP_Settings_TextSize(40.0f);
 }
@@ -82,10 +77,10 @@ void GameUpdate(void)
 
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 
-	dt = CP_System_GetDt();
+	float dt = CP_System_GetDt();
 
 	// 버튼 위치
-	float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f;
+	float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f - 250;
 	float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
 	float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
 	float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
@@ -99,11 +94,28 @@ void GameUpdate(void)
 	CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
 	CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
 	CP_Settings_TextAlignment(horizontal, vertical);
-	CP_Font_DrawText("Summon", summonMeleeButton_x, summonMeleeButton_y);
+	CP_Font_DrawText("Melee", summonMeleeButton_x, summonMeleeButton_y);
+
+	float summonRangedButton_x = CP_System_GetWindowWidth() / 2.0f + 250;
+	float summonRangedButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
+
+	// 버튼(직사각형 모양) 그리기
+	CP_Settings_Fill(white);
+	CP_Graphics_DrawRect(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight);
+
+	// 글씨 쓰기
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Settings_TextAlignment(horizontal, vertical);
+	CP_Font_DrawText("Ranged", summonRangedButton_x, summonRangedButton_y);
 
 	if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 	{
 		SummonAllyUnit(MELEE);
+	}
+
+	if (IsAreaClicked(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+	{
+		SummonAllyUnit(RANGED);
 	}
 
 	if (timeElapsed(enemySpawner, 1.0f, MELEE))
@@ -125,7 +137,6 @@ void GameUpdate(void)
 	{
 		if (circleToCircle(hero.attackRange, enemy[i].collider))
 		{
-			printf("aa");
 			enemy[i].hp -= hero.attackDamage;
 			if (enemy[i].hp <= 0)
 			{
@@ -168,7 +179,21 @@ void GameUpdate(void)
 					enemy[j].collider.radius = 0;
 					enemy[j].attackRange.radius = 0;
 				}	
+				break;
 			}
+
+			if (!isFightWithEnemy)
+			{
+				ally[i].moveSpeed = UNIT_SPEED;
+			}
+
+		}
+	}
+	
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		for (int j = 0; j < MAX_UNIT; j++)
+		{
 			if (circleToCircle(enemy[j].attackRange, ally[i].collider))
 			{
 				isFightWithAlly = TRUE;
@@ -181,22 +206,20 @@ void GameUpdate(void)
 					ally[i].collider.radius = 0;
 					ally[i].attackRange.radius = 0;
 				}
+				break;
 			}
-			if (!isFightWithEnemy)
-			{
-				ally[i].moveSpeed = UNIT_SPEED;
-				//isFightWithEnemy = FALSE;
-			}
+
 			if (!isFightWithAlly)
 			{
 				enemy[j].moveSpeed = UNIT_SPEED;
-				//isFightWithAlly = FALSE;
 			}
 		}
-
 	}
-	
+
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	UpdateHero(dt);
+	UpdateAllyUnits(dt);
+	UpdateEnemyUnits(dt);
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();
@@ -204,5 +227,11 @@ void GameUpdate(void)
 
 void GameExit(void)
 {
-
+	// TODO: free
+	// 
+	// 
+	// 
+	// 
+	// 
+	// 
 }

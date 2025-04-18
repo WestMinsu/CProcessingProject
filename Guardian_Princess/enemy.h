@@ -22,4 +22,5 @@ typedef struct
 }Enemy;
 
 void SummonEnemyUnit(UnitType type);
+void UpdateEnemyUnits(float dt);
 void DrawEnemyUnits(void);

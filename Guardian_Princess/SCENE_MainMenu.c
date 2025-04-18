@@ -10,32 +10,18 @@
 #include "FUNC_Animation_Motion.h"
 #include "asset_loading.h"
 
-//------------------------내장 함수 불러오기-------------------------
+struct MainMenuGameState
+{
+	CP_Sound Main_Title_Music;
+};
 
-CP_BOOL cursor = FALSE; // 커서 보이기 유무 설정
-
-//------------------------에셋 불러오기-------------------------
-
-//# 애니메이션 및 모션 에셋
-
-CP_Image* test11;
-CP_Image* test12;
-
-//## 사운드
-
-CP_Sound Main_Title_Music;  // 메인 타이틀 음악
-
-
-
-//--------------------------------------------------------------------------------------------------------------------------------
-
-
+static struct MainMenuGameState mainmenu_gamestate;
 
 void MainMenuInit(void)
 {
 	//에셋 로딩 ----------------------------------------------------------------
 
-	Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3"); //메인 타이틀 음악
+	mainmenu_gamestate.Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3"); //메인 타이틀 음악
 	image_load();
 	sound_load();
 	font_load();
@@ -43,10 +29,10 @@ void MainMenuInit(void)
 
 	//TODO : 인트로로 뺴기 
 	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름 
-	CP_System_ShowCursor(cursor);//커서 보이게 하기
+	CP_System_ShowCursor(FALSE);//커서 보이게 하기
 
 	// TODO : 음악 루프 재생
-	CP_Sound_Play(Main_Title_Music);
+	CP_Sound_Play(mainmenu_gamestate.Main_Title_Music);
 
 	//test11 = Animation_ImageLoader("test3", 50); //test1 이미지 로딩 
 	//test12 = Animation_ImageLoader("test4", 50);
@@ -69,8 +55,8 @@ void MainMenuUpdate(void)
 	float h = (float)CP_System_GetWindowHeight();
 	CP_Image_Draw(Main_Title_Image, x, y, w, h, 255);
 
-	Animation_play(test11, 50, TRUE, 500, 500, 500, 500, 255);
-	Animation_play(test12, 50, TRUE, 1000, 500, 1000, 1000, 255);
+	//Animation_play(test11, 50, TRUE, 500, 500, 500, 500, 255);
+	//Animation_play(test12, 50, TRUE, 1000, 500, 1000, 1000, 255);
 
 	// 버튼
 	float startButton_x = CP_System_GetWindowWidth() / 2.0f;
@@ -88,9 +74,6 @@ void MainMenuUpdate(void)
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
-
-
-
 
 
 

@@ -3,7 +3,6 @@
 #include "colors.h"
 #include <stdio.h>
 extern Ally ally[MAX_UNIT];
-extern float dt;
 
 void SummonAllyUnit(UnitType type)
 {
@@ -29,19 +28,34 @@ void SummonAllyUnit(UnitType type)
 	idx++;
 }
 
+void UpdateAllyUnits(float dt)
+{
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (ally[i].alived)
+		{
+			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
+			ally[i].attackRange.position = ally[i].collider.position;
+			ally[i].position.x += ally[i].moveSpeed * dt;
+		}
+	}
+}
+
 void DrawAllyUnits(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (ally[i].alived)
 		{
-			CP_Settings_Fill(blue);
+			if (ally[i].type == MELEE)
+			{
+				CP_Settings_Fill(blue);
+			}
+			else if (ally[i].type == RANGED)
+			{
+				CP_Settings_Fill(pink);
+			}
 			CP_Graphics_DrawCircle(ally[i].position.x, ally[i].position.y, 30);
-
-			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
-			ally[i].attackRange.position = ally[i].collider.position;
-			ally[i].position.x += ally[i].moveSpeed * dt;
-
 		}
 	}
 }
