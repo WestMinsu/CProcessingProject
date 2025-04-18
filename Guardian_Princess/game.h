@@ -19,6 +19,12 @@ typedef struct
 	float attackSpeed;
 }Hero;
 
+typedef enum 
+{
+	MELEE,
+	RANGED,
+}UnitType;
+
 typedef struct
 {
 	CP_Vector position;
@@ -26,6 +32,7 @@ typedef struct
 	int moveSpeed;
 	Circle collider;
 	Circle attackRange;
+	UnitType type;
 
 	int hp;
 	int attackDamage;
@@ -37,10 +44,6 @@ typedef struct
 	float timer;
 } AllySpawner;
 
-typedef enum{
-	MELEE,
-	RANGED,
-}EnemyType;
 
 typedef struct
 {
@@ -49,7 +52,7 @@ typedef struct
 	int moveSpeed;
 	Circle collider;
 	Circle attackRange;
-	EnemyType type;
+	UnitType type;
 
 	int hp; 
 	int attackDamage; 
@@ -70,9 +73,9 @@ void initHero(void);
 
 void initUnit(void);
 
-void SummonAllyUnit(void);
+void SummonAllyUnit(UnitType type);
 
-void SummonEnemyUnit(EnemyType type);
+void SummonEnemyUnit(UnitType type);
 
 void DrawAllyUnits(void);
 

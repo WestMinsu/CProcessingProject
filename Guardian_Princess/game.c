@@ -27,10 +27,10 @@ void initHero(void)
 {
 	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
 	hero.collider.radius = 30;
-	hero.moveSpeed = UNIT_SPEED;
+	hero.moveSpeed = HERO_SPEED;
 
 	hero.hp = 1000;
-	hero.attackDamage = 0;
+	hero.attackDamage = 1;
 	hero.attackSpeed = 1;
 	hero.attackRange.position = hero.position;
 	hero.attackRange.radius = 30;
@@ -43,6 +43,7 @@ void initUnit(void)
 		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
 		ally[i].collider.radius = 0;
 		ally[i].moveSpeed = UNIT_SPEED;
+		ally[i].type = MELEE;
 
 		ally[i].hp = 100;
 		ally[i].attackDamage = 1; 
@@ -69,11 +70,9 @@ void initUnit(void)
 	}
 }
 
-void SummonAllyUnit(void)
+void SummonAllyUnit(UnitType type)
 {
 	static int idx = 0;
-
-	printf("index: %d\n", idx);
 
 	if (idx >= MAX_UNIT)
 	{
@@ -84,15 +83,20 @@ void SummonAllyUnit(void)
 
 	ally[idx].collider.radius = 30;
 	ally[idx].attackRange.radius = 50;
+	ally[idx].type = type;
+
+	if (ally[idx].type == RANGED)
+	{
+		ally[idx].attackRange.radius = 200;
+	}
+
 	ally[idx].alived = TRUE;
 	idx++;
 }
 
-void SummonEnemyUnit(EnemyType type)
+void SummonEnemyUnit(UnitType type)
 {
 	static int idx = 0;
-
-	//printf("index: %d\n", idx);
 
 	if (idx >= MAX_UNIT)
 	{
@@ -111,9 +115,7 @@ void SummonEnemyUnit(EnemyType type)
 
 	enemy[idx].alived = TRUE;
 
-
 	idx++; 
-
 }
 
 void DrawHero(void)
@@ -125,11 +127,11 @@ void DrawHero(void)
 	hero.attackRange.position = hero.collider.position;
 	if (CP_Input_KeyDown(KEY_A))
 	{
-		hero.position.x -= HERO_SPEED * dt;
+		hero.position.x -= hero.moveSpeed * dt;
 	}
 	else if (CP_Input_KeyDown(KEY_D))
 	{
-		hero.position.x += HERO_SPEED * dt;
+		hero.position.x += hero.moveSpeed * dt;
 	}
 }
 
@@ -219,7 +221,7 @@ void GameUpdate(void)
 
 	if (IsAreaClicked(summonButton_x, summonButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 	{
-		SummonAllyUnit();
+		SummonAllyUnit(MELEE);
 	}
 
 	if (timeElapsed(enemySpawner, 1.0f, MELEE))
@@ -237,36 +239,41 @@ void GameUpdate(void)
 
 	CP_BOOL isFightWithEnemy = FALSE;
 	CP_BOOL isFightWithAlly = FALSE;
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (circleToCircle(hero.attackRange, enemy[i].collider))
+		{
+			printf("aa");
+			enemy[i].hp -= hero.attackDamage;
+			if (enemy[i].hp <= 0)
+			{
+				enemy[i].alived = FALSE;
+				enemy[i].collider.radius = 0;
+				enemy[i].attackRange.radius = 0;
+			}
+		}
+
+		if (circleToCircle(enemy[i].attackRange, hero.collider))
+		{
+			isFightWithAlly = TRUE;
+			enemy[i].moveSpeed = 0;
+
+			hero.hp -= enemy[i].attackDamage;
+			if (hero.hp <= 0)
+			{
+				printf("hero dead\n");
+				hero.moveSpeed = 0;
+				printf("hero movespeed: %d", hero.moveSpeed);
+				hero.collider.radius = 0;
+				hero.attackRange.radius = 0;
+			}
+		}
+	}
+
 	for (int i=0; i < MAX_UNIT; i++)
 	{
 		for (int j = 0; j < MAX_UNIT; j++)
 		{
-			if (circleToCircle(hero.attackRange, enemy[j].collider))
-			{
-				//printf("as");
-				enemy[j].hp -= hero.attackDamage;
-				if (enemy[j].hp <= 0)
-				{
-					enemy[j].alived = FALSE;
-					enemy[j].collider.radius = 0;
-					enemy[j].attackRange.radius = 0;
-				}
-			}
-
-			if (circleToCircle(enemy[j].attackRange, hero.collider))
-			{
-				printf("zz");
-				enemy[j].moveSpeed = 0;
-
-				hero.hp -= enemy[j].attackDamage;
-				if (hero.hp <= 0)
-				{
-					hero.moveSpeed = 0;
-					hero.collider.radius = 0;
-					hero.attackRange.radius = 0;
-				}
-			}
-
 			if (circleToCircle(ally[i].attackRange, enemy[j].collider))
 			{
 				isFightWithEnemy = TRUE;
