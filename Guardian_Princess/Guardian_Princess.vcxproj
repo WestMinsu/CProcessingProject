@@ -194,9 +194,13 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ally.c" />
+    <ClCompile Include="enemy.c" />
     <ClCompile Include="FUNC_Animation_Motion.c" />
     <ClCompile Include="asset_loading.c" />
     <ClCompile Include="game.c" />
+    <ClCompile Include="globals.h" />
+    <ClCompile Include="hero.c" />
     <ClCompile Include="SCENE_Intro.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="SCENE_MainMenu.c" />
@@ -204,9 +208,14 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ally.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="constants.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="FUNC_Animation_Motion.h" />
     <ClInclude Include="asset_loading.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="hero.h" />
     <ClInclude Include="SCENE_Intro.h" />
     <ClInclude Include="SCENE_MainMenu.h" />
     <ClInclude Include="unit_info.h" />
