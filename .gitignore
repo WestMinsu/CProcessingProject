@@ -77,3 +77,6 @@ CProcessingOutput/
 /Guardian_Princess/Assets/animation/test1
 /Guardian_Princess/Assets/animation/test3
 /Guardian_Princess/Assets/animation/test4
+/Guardian_Princess/.vs
+.vs/VSWorkspaceState.json
+.vs/slnx.sqlite
