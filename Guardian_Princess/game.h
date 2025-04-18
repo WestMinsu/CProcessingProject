@@ -17,6 +17,19 @@ typedef struct
 	int hp;
 	int attackDamage;
 	float attackSpeed;
+}Hero;
+
+typedef struct
+{
+	CP_Vector position;
+	CP_BOOL alived;
+	int moveSpeed;
+	Circle collider;
+	Circle attackRange;
+
+	int hp;
+	int attackDamage;
+	float attackSpeed;
 }Ally;
 
 typedef struct
@@ -52,6 +65,10 @@ typedef struct
 {
 	float timer;
 } EnemySpawner;
+
+void initHero(void);
+
+void initUnit(void);
 
 void SummonAllyUnit(void);
 
