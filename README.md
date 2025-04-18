@@ -63,3 +63,6 @@
 A - 왼쪽으로 이동
 D - 오른쪽으로 이동
 마우스 클릭으로 유닛 생산
+
+### 플레이 영상
+1주차 - https://drive.google.com/file/d/1AAtsDeci8MFzCPbUIcQ4WyWYta2DTFIo/view?usp=sharing
