@@ -1,8 +1,9 @@
 ﻿#include <stdio.h>
+#include <stdlib.h>
 #include "cprocessing.h"
 #include "asset_loading.h"
 
-CP_Sound Main_Title_Music;// 메인 타이틀 음악
+
 CP_Sound Mouse_Click_Sound;// 마우스 클릭 소리
 CP_Sound button_sound;// 버튼 소리
 
@@ -17,13 +18,15 @@ CP_Image Intro_bic;//bic 로고 출력
 
 CP_Font Main_Title_font;// 폰트
 
+
+ CP_Image button_start;// 테스트 버튼
+ CP_Image button_exit;
 //------------------------------------------------
 
 void sound_load()
 {
 	Mouse_Click_Sound = CP_Sound_Load("Assets/mouse_settings/test_mouseclick.mp3");
 	button_sound = CP_Sound_Load("Assets/main_title_assets/test_button_sound.mp3");
-	Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3");
 }
 
 //------------------------------------------------

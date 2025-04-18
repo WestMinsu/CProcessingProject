@@ -1,13 +1,11 @@
-#define _USE_MATH_DEFINES
+
 #include <math.h>
 #include "cprocessing.h"
-#include "mainmenu.h"
+#include "SCENE_MainMenu.h"
 #include "utils.h"
 #include <stdio.h>
 #include "game.h"
 
-#define WINDOW_WIDTH 1600
-#define WINDOW_HEIGHT 900
 #define PLAYER_SPEED 400
 #define MAX_UNIT 10
 
@@ -31,6 +29,7 @@ void Summon_Unit(void)
 {
 
 	static int idx = 0;
+	// TODO : 조건문 함수 밖으로 빼기 - 범용적으로 쓸 수 있게 수정 + 함수가 의미하는 바 명확하게 하기.
 	if (button_clicked)
 	{
 		printf("index: %d\n", idx);
@@ -49,7 +48,7 @@ void Summon_Unit(void)
 
 }
 
-void Draw_Unit(void)
+void Draw_Units(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -72,7 +71,7 @@ void Game_Init(void)
 	{
 		unit_position[i] = CP_Vector_Set(100, 100);
 	}
-
+	// TODO : 텍스트 사이즈 - 왜 전역변수?
 	textSize = 40.0f;
 	CP_Settings_TextSize(textSize);
 
@@ -87,6 +86,7 @@ void Game_Update(void)
 
 	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 
+	// TODO : 전역 왜 하셨나요..?
 	dt = CP_System_GetDt();
 
 
@@ -113,9 +113,9 @@ void Game_Update(void)
 	{
 		button_clicked = TRUE;
 	}
-
+	// TODO : 드로우를 항상 마지막에
 	Summon_Unit();
-	Draw_Unit();
+	Draw_Units();
 
 	if (CP_Input_KeyDown(KEY_A))
 	{
