@@ -34,6 +34,12 @@ void Animation_play(CP_Image* loaded_files, int totalframe, CP_BOOL looping, flo
 	static int frame_count = 0;
 	static int frame_slow = 0;
 
+	// Todo: 왜 리턴하는지 설명
+	if (loaded_files == 0)
+	{
+		return;
+	}
+
 	if (frame_slow == 2)
 	{
 		if (totalframe != frame_count + 1)

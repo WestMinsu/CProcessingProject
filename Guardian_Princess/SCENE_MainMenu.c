@@ -31,7 +31,7 @@ CP_Sound Main_Title_Music;  // 메인 타이틀 음악
 
 
 
-void Main_Menu_Init(void)
+void MainMenuInit(void)
 {
 	//에셋 로딩 ----------------------------------------------------------------
 
@@ -48,14 +48,14 @@ void Main_Menu_Init(void)
 	// TODO : 음악 루프 재생
 	CP_Sound_Play(Main_Title_Music);
 
-	test11 = Animation_ImageLoader("test3", 50); //test1 이미지 로딩 
-	test12 = Animation_ImageLoader("test4", 50);
+	//test11 = Animation_ImageLoader("test3", 50); //test1 이미지 로딩 
+	//test12 = Animation_ImageLoader("test4", 50);
 }
 
 
 
 
-void Main_Menu_Update(void)
+void MainMenuUpdate(void)
 {
 
 
@@ -87,7 +87,7 @@ void Main_Menu_Update(void)
 	// 커서 이미지
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(Cursor_image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
 
 
@@ -100,7 +100,7 @@ void Main_Menu_Update(void)
 		if (IsAreaClicked(startButton_x, startButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
 			CP_Sound_Play(button_sound);
-			CP_Engine_SetNextGameState(Game_Init, Game_Update, Game_Exit);
+			CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
 		}
 
 		else if (IsAreaClicked(exitButton_x, exitButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
@@ -122,7 +122,7 @@ void Main_Menu_Update(void)
 
 }
 
-void Main_Menu_Exit(void)
+void MainMenuExit(void)
 {
 	
 }

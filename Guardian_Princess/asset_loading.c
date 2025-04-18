@@ -8,7 +8,7 @@ CP_Sound Mouse_Click_Sound;// 마우스 클릭 소리
 CP_Sound button_sound;// 버튼 소리
 
 CP_Image Main_Title_Image; //메인 타이틀 이미지
-CP_Image cursorImage; // 커서 이미지
+CP_Image Cursor_Image; // 커서 이미지
 CP_Image button_start;// 버튼 이미지
 CP_Image button_exit;
 
@@ -36,7 +36,7 @@ void image_load()
 	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/download.png");
 	button_start = CP_Image_Load("Assets/main_title_assets/start.png");
 	button_exit = CP_Image_Load("Assets/main_title_assets/exit.png");
-	cursorImage = CP_Image_Load("Assets/mouse_settings/test_cursor.png");
+	Cursor_Image = CP_Image_Load("Assets/mouse_settings/test_cursor.png");
 
 	Intro_bic = CP_Image_Load("Assets/intro_assets/bic_logo.png");
 	Intro_digipen = CP_Image_Load("Assets/intro_assets/digipen_logo.png");
