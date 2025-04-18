@@ -1,15 +1,15 @@
 #include "cprocessing.h"
-#include "mainmenu.h"
+#include "SCENE_MainMenu.h"
 #include "utils.h"
 #include <stdio.h>
 #include "game.h"
+#include "asset_loading.h"
 
 #define HERO_SPEED 400
 #define MAX_UNIT 10
 #define NUM_ENEMY_TYPES 2
 #define UNIT_SPEED 200
 
-extern CP_Image cursorImage;
 CP_BOOL cursor;
 CP_Color red;
 CP_Color green;
@@ -314,7 +314,7 @@ void GameUpdate(void)
 
 	}
 	
-	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();

@@ -1,58 +1,76 @@
 #include <stdlib.h>
+#include <stdio.h>
 #include "cprocessing.h"
+
+//------------------------------------------------------------------------------------------------
+
+#include "SCENE_MainMenu.h"
 #include "utils.h"
 #include "game.h"
+#include "FUNC_Animation_Motion.h"
 #include "asset_loading.h"
 
 //------------------------내장 함수 불러오기-------------------------
 
-extern CP_Image Main_Title_Image; //메인 이미지 재생
-extern CP_Image cursorImage; // 커서 이미지
-extern CP_Image button_start;// 테스트 버튼
-extern CP_Image button_exit;
-extern CP_Image Intro_digipen; //디지펜 로고
-extern CP_Image Intro_teamlogo;//팀 로고 출력
-extern CP_Image Intro_bic;//bic 로고 출력
+CP_BOOL cursor = FALSE; // 커서 보이기 유무 설정
+
+//------------------------에셋 불러오기-------------------------
+
+//# 애니메이션 및 모션 에셋
+
+CP_Image* test11;
+CP_Image* test12;
+
+//## 사운드
+
+CP_Sound Main_Title_Music;  // 메인 타이틀 음악
 
 
-extern CP_Sound Main_Title_Music;// 메인 음악 재생
-extern CP_Sound Mouse_Click_Sound;// 마우스 클릭 음악 재생
-extern CP_Sound button_sound;//
+
+//--------------------------------------------------------------------------------------------------------------------------------
 
 
-extern CP_Font mainTitleFont;// 메인 폰트 변경
-
-
-//--------------------작동 여부 확인 트리거-----------------------------
 
 void MainMenuInit(void)
 {
-	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름
-	CP_System_ShowCursor(FALSE);//커서 보이게 하기
+	//에셋 로딩 ----------------------------------------------------------------
 
-	//--------------------------에셋 정의 및 로딩---------------------------
-
-	sound_load();
+	Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3"); //메인 타이틀 음악
 	image_load();
+	sound_load();
 	font_load();
 
-	//-----------------------------음악 설정------------------------------
 
+	//TODO : 인트로로 뺴기 
+	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름 
+	CP_System_ShowCursor(cursor);//커서 보이게 하기
+
+	// TODO : 음악 루프 재생
 	CP_Sound_Play(Main_Title_Music);
+
+	//test11 = Animation_ImageLoader("test3", 50); //test1 이미지 로딩 
+	//test12 = Animation_ImageLoader("test4", 50);
 }
+
+
+
 
 void MainMenuUpdate(void)
 {
-	//------------------------------이미지 재생-----------------------------
 
 
-	// 메인 배경 이미지
+
+ //TODO : layer 구현
+
+	
 	float x = (float)CP_System_GetWindowWidth() / 2;
 	float y = (float)CP_System_GetWindowHeight() / 2;
 	float w = (float)CP_System_GetWindowWidth();
 	float h = (float)CP_System_GetWindowHeight();
 	CP_Image_Draw(Main_Title_Image, x, y, w, h, 255);
 
+	Animation_play(test11, 50, TRUE, 500, 500, 500, 500, 255);
+	Animation_play(test12, 50, TRUE, 1000, 500, 1000, 1000, 255);
 
 	// 버튼
 	float startButton_x = CP_System_GetWindowWidth() / 2.0f;
@@ -66,6 +84,17 @@ void MainMenuUpdate(void)
 	CP_Image_Draw(button_exit, exitButton_x, exitButton_y, buttonWidth, buttonHeight, 255);
 
 
+	// 커서 이미지
+	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
+	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+
+
+
+
+
+
+
 	if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
 	{
 		if (IsAreaClicked(startButton_x, startButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
@@ -77,6 +106,7 @@ void MainMenuUpdate(void)
 		else if (IsAreaClicked(exitButton_x, exitButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
 		{
 			CP_Sound_Play(button_sound);
+			// TODO : terminate 함수 참조 -> 올바르게 프로그램 종료
 			exit(0);
 		}
 
@@ -86,19 +116,13 @@ void MainMenuUpdate(void)
 		}
 	}
 
-	// 커서 이미지
-	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
-	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
 
-	//--------------------------마우스 클릭 관련 설정-----------------------------
+
 
 }
 
 void MainMenuExit(void)
 {
-	//------------------------------이미지, 음악 종료---------------------------
-	CP_Image_Free(&Main_Title_Image);
-	CP_Sound_Free(&Main_Title_Music);
+	
 }
