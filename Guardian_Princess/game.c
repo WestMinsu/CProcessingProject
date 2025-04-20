@@ -8,6 +8,7 @@
 #include "enemy.h"
 #include "constants.h"
 #include "colors.h"
+#include "resource.h"
 #include <stdio.h>
 
 Hero hero;
@@ -15,6 +16,7 @@ Ally ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
 Enemy enemy[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
+AllyResource allyResource;
 
 void initUnit(void)
 {
@@ -30,6 +32,7 @@ void initUnit(void)
 		ally[i].attackSpeed = 1;
 		ally[i].attackRange.position = ally[i].position;
 		ally[i].attackRange.radius = 0;
+		ally[i].price = 30;
 
 		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 		enemy[i].collider.radius = 0;
@@ -58,6 +61,8 @@ void GameInit(void)
 
 	InitHero();
 	initUnit();
+
+	allyResource.money = 300;
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
@@ -179,7 +184,6 @@ void GameUpdate(void)
 					enemy[j].collider.radius = 0;
 					enemy[j].attackRange.radius = 0;
 				}	
-				break;
 			}
 
 			if (!isFightWithEnemy)
@@ -206,7 +210,6 @@ void GameUpdate(void)
 					ally[i].collider.radius = 0;
 					ally[i].attackRange.radius = 0;
 				}
-				break;
 			}
 
 			if (!isFightWithAlly)

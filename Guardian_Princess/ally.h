@@ -14,6 +14,8 @@ typedef struct
 	int hp;
 	int attackDamage;
 	float attackSpeed;
+
+	int price;
 }Ally;
 
 void SummonAllyUnit(UnitType type);

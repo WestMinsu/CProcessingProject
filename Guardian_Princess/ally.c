@@ -1,8 +1,10 @@
 #include "ally.h"
 #include "constants.h"
 #include "colors.h"
+#include "resource.h"
 #include <stdio.h>
 extern Ally ally[MAX_UNIT];
+extern AllyResource allyResource;
 
 void SummonAllyUnit(UnitType type)
 {
@@ -15,6 +17,12 @@ void SummonAllyUnit(UnitType type)
 		return;
 	}
 
+	if (allyResource.money - ally[idx].price <= 0)
+	{
+		printf("No money!!!\n");
+		return;
+	}
+
 	ally[idx].collider.radius = 30;
 	ally[idx].attackRange.radius = 50;
 	ally[idx].type = type;
@@ -22,8 +30,10 @@ void SummonAllyUnit(UnitType type)
 	if (ally[idx].type == RANGED)
 	{
 		ally[idx].attackRange.radius = 200;
+		ally[idx].price = 50;
 	}
 
+	allyResource.money -= ally[idx].price;
 	ally[idx].alived = TRUE;
 	idx++;
 }
