@@ -1,6 +1,6 @@
 #pragma once
 #include "utils.h"
-#include "unit_info.h"
+#include "Enemy_unit_info.h"
 
 typedef struct 
 {
