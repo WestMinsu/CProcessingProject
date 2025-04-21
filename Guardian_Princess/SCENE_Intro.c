@@ -2,11 +2,6 @@
 #include "asset_loading.h"
 #include "SCENE_Intro.h"
 
-//------------------------------------------------------------------------------------------------
-
-
-
-
 void Intro_init()
 {
 	//CP_Engine_SetPreUpdateFunction(GAME_SET);

@@ -11,7 +11,7 @@ typedef struct
 	Circle attackRange;
 	UnitType type;
 
-	int hp;
+	int currentHP;
 	int attackDamage;
 	float attackSpeed;
 
