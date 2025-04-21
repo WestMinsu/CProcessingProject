@@ -1,8 +1,14 @@
 #include "hero.h"
 #include "colors.h"
 #include "globals.h"
+#include "FUNC_Animation_Motion.h"
+
+
+
 
 extern Hero hero;
+
+
 
 void initHero(void)
 {
@@ -18,9 +24,9 @@ void initHero(void)
 }
 
 void DrawHero(void)
-{
-	CP_Settings_Fill(green);
-	CP_Graphics_DrawCircle(hero.position.x, hero.position.y, 30);
+{	//TODO
+
+	
 
 	hero.collider.position = CP_Vector_Set(hero.position.x, hero.position.y);
 	hero.attackRange.position = hero.collider.position;

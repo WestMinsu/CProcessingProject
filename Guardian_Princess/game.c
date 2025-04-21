@@ -1,6 +1,7 @@
 #include "cprocessing.h"
 #include "SCENE_MainMenu.h"
 #include "utils.h"
+#include "FUNC_Animation_Motion.h"
 #include "game.h"
 #include "asset_loading.h"
 #include "hero.h"
@@ -10,9 +11,12 @@
 #include "colors.h"
 #include "globals.h"
 #include <stdio.h>
+#include "FUNC_Button.h"
 
-CP_BOOL cursor;
-
+//에셋 목록-----------------------------------------------------------------------------
+CP_Image melee_button_image;
+CP_Image ranged_button_image;
+//-----------------------------------------------------------------------------
 Hero hero;
 Ally ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
@@ -21,6 +25,11 @@ EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 
 void initUnit(void)
 {
+	Sound_load();
+	Image_load();
+	Font_load();
+
+
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
@@ -53,14 +62,15 @@ void initUnit(void)
 	}
 }
 
-
-
-//TODO: 죽으면 spawnTime = 0으로
-
-
 void GameInit(void)
 {
-	CP_System_ShowCursor(cursor);
+
+	//에셋 로딩 ----------------------------------------------------------
+	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
+	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
+
+	//----------------------------------------------------------------
+
 
 	initHero();
 	initUnit();
@@ -75,36 +85,32 @@ void GameInit(void)
 
 void GameUpdate(void)
 {
-	if (CP_Input_KeyDown(KEY_Q))
+
+	dt = CP_System_GetDt(); //프레임 받기
+
+	if (CP_Input_KeyDown(KEY_Q)) // 매인메뉴 나가는 버튼
 	{
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 
-	dt = CP_System_GetDt();
+	// 버튼 함수 ------------------------------------------
 
-	// 버튼 위치
-	float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f;
-	float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-	float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
-	float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
+	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth()/2.0f, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth()/4.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth()/2.0f + 100, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth() / 4.0f, CP_System_GetWindowHeight() / 4.0f,255);
 
-	// 버튼(직사각형 모양) 그리기
-	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight);
-	
-	// 글씨 쓰기
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
-	CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
-	CP_Settings_TextAlignment(horizontal, vertical);
-	CP_Font_DrawText("Summon", summonMeleeButton_x, summonMeleeButton_y);
-
-	if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+	//아군 유닛 소환 ----------------------------
+	if (melee_input == 0)
 	{
 		SummonAllyUnit(MELEE);
 	}
+	
+	if (range_input == 0)
+	{
+		SummonAllyUnit(RANGED);
+	}
+
+	//적 유닛 소환 --------------------------
 
 	if (timeElapsed(enemySpawner, 1.0f, MELEE))
 	{
@@ -116,16 +122,18 @@ void GameUpdate(void)
 		SummonEnemyUnit(RANGED);
 	}
 
-	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
-	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
+	//------------------------------
 
 	CP_BOOL isFightWithEnemy = FALSE;
 	CP_BOOL isFightWithAlly = FALSE;
+
+	// 영웅 전투 -------------------------
+
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (circleToCircle(hero.attackRange, enemy[i].collider))
 		{
-			printf("aa");
+			printf("hit hero!!\n");
 			enemy[i].hp -= hero.attackDamage;
 			if (enemy[i].hp <= 0)
 			{
@@ -135,12 +143,16 @@ void GameUpdate(void)
 			}
 		}
 
+
+		// 원거리 전투 ------------------
+
 		if (circleToCircle(enemy[i].attackRange, hero.collider))
 		{
 			isFightWithAlly = TRUE;
 			enemy[i].moveSpeed = 0;
-
+			printf("damaged hero!\n");
 			hero.hp -= enemy[i].attackDamage;
+
 			if (hero.hp <= 0)
 			{
 				printf("hero dead\n");
@@ -152,6 +164,7 @@ void GameUpdate(void)
 		}
 	}
 
+	// 유닛 전투
 	for (int i=0; i < MAX_UNIT; i++)
 	{
 		for (int j = 0; j < MAX_UNIT; j++)
@@ -196,11 +209,17 @@ void GameUpdate(void)
 
 	}
 	
-	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+
+
+
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+
+
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();
 }
+
 
 void GameExit(void)
 {

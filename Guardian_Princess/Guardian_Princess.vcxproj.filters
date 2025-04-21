@@ -9,7 +9,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.c">
+    <ClCompile Include="Main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="game.c">
@@ -21,9 +21,6 @@
     <ClCompile Include="asset_loading.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unit_info.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FUNC_Animation_Motion.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -33,12 +30,16 @@
     <ClCompile Include="SCENE_MainMenu.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ally.c" />
+    <ClCompile Include="enemy.c" />
+    <ClCompile Include="globals.h" />
+    <ClCompile Include="hero.c" />
+    <ClCompile Include="FUNC_Button.c" />
+    <ClCompile Include="Enemy_Unit_Info.c" />
+    <ClCompile Include="Ally_Unit_Info.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="unit_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="game.h">
@@ -56,5 +57,13 @@
     <ClInclude Include="SCENE_MainMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ally.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="constants.h" />
+    <ClInclude Include="enemy.h" />
+    <ClInclude Include="hero.h" />
+    <ClInclude Include="FUNC_Button.h" />
+    <ClInclude Include="Enemy_Unit_Info.h" />
+    <ClInclude Include="Ally_Unit_Info.h" />
   </ItemGroup>
 </Project>
