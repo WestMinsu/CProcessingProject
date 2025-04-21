@@ -1,9 +1,15 @@
-#include "hero.h"
+#include "Hero.h"
 #include "colors.h"
 
-
-
 extern Hero hero;
+
+
+
+
+
+
+
+
 void InitHero(void)
 {
 	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);

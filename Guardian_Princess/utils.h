@@ -1,5 +1,5 @@
 #pragma once
-#include "Enemy_unit_info.h"
+#include "UNIT_Enemy.h"
 
 typedef struct EnemySpawner EnemySpawner;
 

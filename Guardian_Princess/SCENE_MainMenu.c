@@ -9,13 +9,13 @@
 #include "FUNC_Button.h"
 #include "FUNC_Animation_Motion.h"
 //------------------------에셋 불러오기-------------------------
-//# 애니메이션 및 모션 에셋
-//## 사운드
 CP_Sound Main_Title_Music;  // 메인 타이틀 음악
-//### 이미지 에셋
+
 CP_Image button_start;
 CP_Image button_exit;
 CP_Image Main_Title_Image;
+
+//----------------------------------------------------------------
 
 void MainMenuInit(void)
 {
@@ -26,7 +26,7 @@ void MainMenuInit(void)
 	button_exit = CP_Image_Load("Assets/main_title_assets/exit.png");
 	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/title_image.png");
 
-	CP_Sound_PlayMusic(Main_Title_Music); //메인 음악 루프 재생
+	CP_Sound_PlayAdvanced(Main_Title_Music, 0.8f, 1.0f, 1, BGM); //메인 음악 루프 재생
 }
 
 void MainMenuUpdate(void)
@@ -40,17 +40,17 @@ void MainMenuUpdate(void)
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		if (start_input == 0)
 		{
-			CP_Sound_Play(button_sound);
+			CP_Sound_PlayAdvanced(button_sound, 1.0f, 1.0f, 0, UI);
 			CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
 		}
-		else if (exit_input == 1)
+		else if (exit_input == 0)
 		{
-			CP_Sound_Play(button_sound);
+			CP_Sound_PlayAdvanced(button_sound, 1.0f, 1.0f, 0, UI);
 			CP_Engine_Terminate();
 		}
 		else if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
 		{
-			CP_Sound_Play(Mouse_Click_Sound);
+			CP_Sound_PlayAdvanced(Mouse_Click_Sound, 1.0f, 1.0f, 0, UI);
 		}
 		
 }

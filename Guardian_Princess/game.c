@@ -6,7 +6,7 @@
 #include "utils.h"
 #include "game.h"
 #include "asset_loading.h"
-#include "hero.h"
+#include "Hero.h"
 #include "ally.h"
 #include "enemy.h"
 #include "constants.h"
@@ -20,7 +20,6 @@ CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image battle_background;
 //-----------------------------------------------------------------------------
-#define HERO_SPEED 400
 #define MAX_UNIT 10
 #define NUM_ENEMY_TYPES 2
 #define UNIT_SPEED 200
@@ -29,7 +28,6 @@ CP_Color red;
 CP_Color green;
 CP_Color blue;
 CP_Color white;
-
 
 Hero hero;
 Ally ally[MAX_UNIT];
@@ -96,9 +94,7 @@ void GameInit(void)
 	//에셋 로딩 ----------------------------------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
-	battle_background = CP_Image_Load("Assets/In_game/battle_backgraound.png");
-
-	CP_System_ShowCursor(FALSE);
+	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
 	InitEnemyBase();
 	InitHero();
@@ -111,27 +107,24 @@ void GameInit(void)
 	blue = CP_Color_CreateHex(0x0000FFFF);
 	white = CP_Color_CreateHex(0xFFFFFFFF);
 	pink = CP_Color_CreateHex(0xF08080FF);
-
-	CP_Settings_TextSize(40.0f);
 }
 
 void GameUpdate(void)
 {
-	float dt = CP_System_GetDt(); //프레임 받기
 
-	if (CP_Input_KeyDown(KEY_Q)) // 매인메뉴 나가는 버튼
-	{
-		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
-	}
-	// 버튼 함수 ------------------------------------------
+	// 이미지 드로우--------------------------------------------------------------------------------------
 
+	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth()/4.0f*1, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth()/8.0f, CP_System_GetWindowHeight() /4.0f, 255);
 	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth()/4.0f*3, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth() /8.0f, CP_System_GetWindowHeight() /4.0f,255);
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+	DrawHero();
+	DrawAllyUnits();
+	DrawEnemyUnits();
 
-	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f , CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+	
+	//아군 유닛 소환 ----------------------------------------------------------------------------------------------------------------
 
-
-	//아군 유닛 소환 ----------------------------
 	if (melee_input == 0)
 	{
 		SummonAllyUnit(MELEE);
@@ -147,7 +140,7 @@ void GameUpdate(void)
 		SummonEnemyUnit(MELEE);
 	}
 
-	//-----------------------------------
+	//---------------------------------------------------------------------------------------------------------------------------------------------------
 
 	if (range_input == 0)
 	{
@@ -164,7 +157,15 @@ void GameUpdate(void)
 		SummonEnemyUnit(RANGED);
 	}
 
-	//------------------------------
+	//--------------------------------------------------------------------------------------
+
+	float dt = CP_System_GetDt(); //프레임 받기
+
+	if (CP_Input_KeyDown(KEY_Q)) // 매인메뉴 나가는 버튼
+	{
+		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
+	}
+
 
 	CP_BOOL isFightWithEnemy = FALSE;
 	CP_BOOL isFightWithAlly = FALSE;
@@ -279,16 +280,13 @@ void GameUpdate(void)
 		}
 	}
 
-	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
 
 	UpdateHero(dt);
 	SummonEnemyBase();
 	DrawEnemyBase();
 	UpdateAllyUnits(dt);
 	UpdateEnemyUnits(dt);
-	DrawHero();
-	DrawAllyUnits();
-	DrawEnemyUnits();
+
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);

@@ -195,15 +195,15 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ally.c" />
-    <ClCompile Include="Ally_Unit_Info.c" />
+    <ClCompile Include="UNIT_Ally.c" />
     <ClCompile Include="enemy.c" />
-    <ClCompile Include="Enemy_Unit_Info.c" />
+    <ClCompile Include="UNIT_Enemy.c" />
     <ClCompile Include="enemybase.c" />
     <ClCompile Include="FUNC_Animation_Motion.c" />
     <ClCompile Include="asset_loading.c" />
     <ClCompile Include="FUNC_Button.c" />
     <ClCompile Include="game.c" />
-    <ClCompile Include="hero.c" />
+    <ClCompile Include="INFO_Hero.c" />
     <ClCompile Include="SCENE_Intro.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="SCENE_MainMenu.c" />
@@ -211,17 +211,17 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ally.h" />
-    <ClInclude Include="Ally_Unit_Info.h" />
+    <ClInclude Include="UNIT_Ally.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="enemy.h" />
-    <ClInclude Include="Enemy_Unit_Info.h" />
+    <ClInclude Include="UNIT_Enemy.h" />
     <ClInclude Include="enemybase.h" />
     <ClInclude Include="FUNC_Animation_Motion.h" />
     <ClInclude Include="asset_loading.h" />
     <ClInclude Include="FUNC_Button.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="hero.h" />
+    <ClInclude Include="Hero.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SCENE_Intro.h" />
     <ClInclude Include="SCENE_MainMenu.h" />

@@ -51,6 +51,8 @@ void UpdateAllyUnits(float dt)
 	}
 }
 
+
+
 void DrawAllyUnits(void)
 {
 	for (int i = 0; i < MAX_UNIT; i++)

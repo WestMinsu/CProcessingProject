@@ -5,3 +5,5 @@ typedef enum
 	MELEE,
 	RANGED,
 }UnitType;
+
+

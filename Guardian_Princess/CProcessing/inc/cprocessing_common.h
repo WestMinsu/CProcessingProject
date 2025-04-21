@@ -163,19 +163,9 @@ typedef enum CP_TEXT_ALIGN_VERTICAL
 //		Organize sounds into separate groups to play/pause and control pitch and volume separately
 typedef enum CP_SOUND_GROUP
 {
-	CP_SOUND_GROUP_0,
-	CP_SOUND_GROUP_1,
-	CP_SOUND_GROUP_2,
-	CP_SOUND_GROUP_3,
-	CP_SOUND_GROUP_4,
-	CP_SOUND_GROUP_5,
-	CP_SOUND_GROUP_6,
-	CP_SOUND_GROUP_7,
-	CP_SOUND_GROUP_8,
-	CP_SOUND_GROUP_9,
-	CP_SOUND_GROUP_MAX,
-	CP_SOUND_GROUP_SFX = CP_SOUND_GROUP_0,
-	CP_SOUND_GROUP_MUSIC = CP_SOUND_GROUP_1
+	SFX,
+	UI,
+	BGM
 } CP_SOUND_GROUP;
 
 
