@@ -1,9 +1,4 @@
 #pragma once
-
-
-
-
-
 extern CP_Sound Mouse_Click_Sound;// 努腐 家府
 extern CP_Sound button_sound;// 滚瓢 家府 
 //----------------------------------------------
