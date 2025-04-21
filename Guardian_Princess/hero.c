@@ -10,7 +10,8 @@ void InitHero(void)
 	hero.collider.radius = 30;
 	hero.moveSpeed = 400;
 
-	hero.hp = 1000;
+	hero.maxHP = 1000;
+	hero.currentHP = hero.maxHP;
 	hero.attackDamage = 1;
 	hero.attackSpeed = 1;
 	hero.attackRange.position = hero.position;

@@ -4,6 +4,7 @@
 #include "SCENE_MainMenu.h"
 //에셋 로딩------------------------------------------------------------------------------------------------
 
+
 CP_Image Intro_digipen; //디지펜 로고
 CP_Image Intro_teamlogo;//팀 로고 출력
 CP_Image Intro_bic;//bic 로고 출력

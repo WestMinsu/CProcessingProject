@@ -13,6 +13,7 @@
 #include "constants.h"
 #include "colors.h"
 #include "resource.h"
+#include "enemybase.h"
 #include <stdio.h>
 #include "FUNC_Button.h"
 
@@ -36,12 +37,19 @@ CP_Color blue;
 CP_Color white;
 static float dt;
 
+
+
+
+
+#include <stdlib.h>
+
 Hero hero;
 Ally ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
 Enemy enemy[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 AllyResource allyResource;
+EnemyBase enemyBase;
 
 //--------------------
 
@@ -72,7 +80,7 @@ void initUnit(void)
 		ally[i].moveSpeed = UNIT_SPEED;
 		ally[i].type = MELEE;
 
-		ally[i].hp = 100;
+		ally[i].currentHP = 100;
 		ally[i].attackDamage = 1; 
 		ally[i].attackSpeed = 1;
 		ally[i].attackRange.position = ally[i].position;
@@ -84,7 +92,7 @@ void initUnit(void)
 		enemy[i].moveSpeed = UNIT_SPEED;
 		enemy[i].type = MELEE;
 
-		enemy[i].hp = 100;
+		enemy[i].currentHP = 100;
 		enemy[i].attackDamage = 1;
 		enemy[i].attackSpeed = 1;
 		enemy[i].attackRange.position = enemy[i].position;
@@ -106,9 +114,10 @@ void GameInit(void)
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 
-	//----------------------------------------------------------------
 
 	CP_System_ShowCursor(FALSE);
+
+	InitEnemyBase();
 	InitHero();
 	initUnit();
 
@@ -167,18 +176,24 @@ void GameUpdate(void)
 	CP_BOOL isFightWithEnemy = FALSE;
 	CP_BOOL isFightWithAlly = FALSE;
 
+
 	// ¿µ¿õ ÀüÅõ -------------------------
+
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (circleToCircle(hero.attackRange, enemy[i].collider))
 		{
 
+
 			printf("hit hero!!\n");
 			enemy[i].hp -= hero.attackDamage;
 			if (enemy[i].hp <= 0)
+
+			enemy[i].currentHP -= hero.attackDamage;
+			if (enemy[i].currentHP <= 0)
 			{
-				enemy[i].alived = FALSE;
+				enemy[i].alived = FALSE;	
 				enemy[i].collider.radius = 0;
 				enemy[i].attackRange.radius = 0;
 			}
@@ -191,10 +206,8 @@ void GameUpdate(void)
 		{
 			isFightWithAlly = TRUE;
 			enemy[i].moveSpeed = 0;
-			printf("damaged hero!\n");
-			hero.hp -= enemy[i].attackDamage;
-
-			if (hero.hp <= 0)
+			hero.currentHP -= enemy[i].attackDamage;
+			if (hero.currentHP <= 0)
 			{
 				printf("hero dead\n");
 				hero.moveSpeed = 0;
@@ -215,8 +228,8 @@ void GameUpdate(void)
 				isFightWithEnemy = TRUE;
 				ally[i].moveSpeed = 0;
 
-				enemy[j].hp -= ally[i].attackDamage;
-				if (enemy[j].hp <= 0)
+				enemy[j].currentHP -= ally[i].attackDamage;
+				if (enemy[j].currentHP <= 0)
 				{
 					enemy[j].alived = FALSE;
 					enemy[j].collider.radius = 0;
@@ -227,6 +240,7 @@ void GameUpdate(void)
 			if (!isFightWithEnemy)
 			{
 				ally[i].moveSpeed = UNIT_SPEED;
+				isFightWithEnemy = FALSE;
 			}
 
 		}
@@ -241,8 +255,8 @@ void GameUpdate(void)
 				isFightWithAlly = TRUE;
 				enemy[j].moveSpeed = 0;
 
-				ally[i].hp -= enemy[j].attackDamage;
-				if (ally[i].hp <= 0)
+				ally[i].currentHP -= enemy[j].attackDamage;
+				if (ally[i].currentHP <= 0)
 				{
 					ally[i].alived = FALSE;
 					ally[i].collider.radius = 0;
@@ -253,6 +267,23 @@ void GameUpdate(void)
 			if (!isFightWithAlly)
 			{
 				enemy[j].moveSpeed = UNIT_SPEED;
+				isFightWithAlly = FALSE;
+			}
+		}
+	}
+
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (circleToCircle(ally[i].attackRange, enemyBase.collider) && !isFightWithEnemy)
+		{
+			ally[i].moveSpeed = 0;
+
+			enemyBase.currentHP -= ally[i].attackDamage;
+			if (enemyBase.currentHP <= 0)
+			{
+				enemyBase.alived = FALSE;
+				enemyBase.collider.radius = 0;
+				ally[i].moveSpeed = UNIT_SPEED;
 			}
 		}
 	}
@@ -260,11 +291,25 @@ void GameUpdate(void)
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
 
 	UpdateHero(dt);
+
+
+	SummonEnemyBase();
+	DrawEnemyBase();
 	UpdateAllyUnits(dt);
 	UpdateEnemyUnits(dt);
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();
+
+	char heroHP[50] = { 0 };
+	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Settings_TextSize(20.0f);
+	CP_Font_DrawText(heroHP, hero.position.x, hero.position.y - 30);
+	
+	char enemyBaseHP[50] = { 0 };
+	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
+	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x, enemyBase.position.y - 30);
 }
 
 
