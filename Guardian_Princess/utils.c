@@ -2,6 +2,11 @@
 #include "utils.h"
 #include "game.h"
 
+<<<<<<< Updated upstream
+=======
+
+
+>>>>>>> Stashed changes
 CP_BOOL timeElapsed(EnemySpawner* enemySpawner, float time, UnitType type)
 {
 	float dt = 0;

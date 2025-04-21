@@ -1,7 +1,14 @@
 #include "cprocessing.h"
+#include <stdio.h>
+
+//-------------------------------
+
 #include "SCENE_MainMenu.h"
 #include "utils.h"
+<<<<<<< Updated upstream
 #include "FUNC_Animation_Motion.h"
+=======
+>>>>>>> Stashed changes
 #include "game.h"
 #include "asset_loading.h"
 #include "hero.h"
@@ -13,16 +20,55 @@
 #include <stdio.h>
 #include "FUNC_Button.h"
 
+<<<<<<< Updated upstream
 //에셋 목록-----------------------------------------------------------------------------
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 //-----------------------------------------------------------------------------
+=======
+//--------------------
+
+#define HERO_SPEED 400
+#define MAX_UNIT 10
+#define NUM_ENEMY_TYPES 2
+#define UNIT_SPEED 200
+
+//-------------------
+
+CP_BOOL cursor;
+CP_Color red;
+CP_Color green;
+CP_Color blue;
+CP_Color white;
+static float dt;
+
+>>>>>>> Stashed changes
 Hero hero;
 Ally ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
 Enemy enemy[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 
+<<<<<<< Updated upstream
+=======
+//--------------------
+
+
+
+void initHero(void)
+{
+	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+	hero.collider.radius = 30;
+	hero.moveSpeed = HERO_SPEED;
+
+	hero.hp = 1000;
+	hero.attackDamage = 1;
+	hero.attackSpeed = 1;
+	hero.attackRange.position = hero.position;
+	hero.attackRange.radius = 30;
+}
+
+>>>>>>> Stashed changes
 void initUnit(void)
 {
 	Sound_load();
@@ -93,6 +139,7 @@ void GameUpdate(void)
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
+<<<<<<< Updated upstream
 
 	// 버튼 함수 ------------------------------------------
 
@@ -101,6 +148,21 @@ void GameUpdate(void)
 
 	//아군 유닛 소환 ----------------------------
 	if (melee_input == 0)
+=======
+	//-----------------------------------
+
+	CP_Settings_Fill(white);
+	CP_Graphics_DrawRect(summonButton_x+100, summonButton_y+100, buttonWidth, buttonHeight);
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+
+	CP_Settings_TextAlignment(horizontal, vertical);
+
+	CP_Font_DrawText("Summon range", summonButton_x, summonButton_y);
+
+	//------------------------------
+
+	if (IsAreaClicked(summonButton_x, summonButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+>>>>>>> Stashed changes
 	{
 		SummonAllyUnit(MELEE);
 	}
@@ -209,10 +271,14 @@ void GameUpdate(void)
 
 	}
 	
+<<<<<<< Updated upstream
 
 
 
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+=======
+	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+>>>>>>> Stashed changes
 
 
 	DrawHero();
