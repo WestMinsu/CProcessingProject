@@ -1,9 +1,10 @@
 #include "ally.h"
 #include "constants.h"
 #include "colors.h"
+#include "resource.h"
 #include <stdio.h>
 extern Ally ally[MAX_UNIT];
-extern float dt;
+extern AllyResource allyResource;
 
 void SummonAllyUnit(UnitType type)
 {
@@ -16,6 +17,12 @@ void SummonAllyUnit(UnitType type)
 		return;
 	}
 
+	if (allyResource.money - ally[idx].price <= 0)
+	{
+		printf("No money!!!\n");
+		return;
+	}
+
 	ally[idx].collider.radius = 30;
 	ally[idx].attackRange.radius = 50;
 	ally[idx].type = type;
@@ -23,10 +30,25 @@ void SummonAllyUnit(UnitType type)
 	if (ally[idx].type == RANGED)
 	{
 		ally[idx].attackRange.radius = 200;
+		ally[idx].price = 50;
 	}
 
+	allyResource.money -= ally[idx].price;
 	ally[idx].alived = TRUE;
 	idx++;
+}
+
+void UpdateAllyUnits(float dt)
+{
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (ally[i].alived)
+		{
+			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
+			ally[i].attackRange.position = ally[i].collider.position;
+			ally[i].position.x += ally[i].moveSpeed * dt;
+		}
+	}
 }
 
 void DrawAllyUnits(void)
@@ -35,13 +57,15 @@ void DrawAllyUnits(void)
 	{
 		if (ally[i].alived)
 		{
-			CP_Settings_Fill(blue);
+			if (ally[i].type == MELEE)
+			{
+				CP_Settings_Fill(blue);
+			}
+			else if (ally[i].type == RANGED)
+			{
+				CP_Settings_Fill(pink);
+			}
 			CP_Graphics_DrawCircle(ally[i].position.x, ally[i].position.y, 30);
-
-			ally[i].collider.position = CP_Vector_Set(ally[i].position.x, ally[i].position.y);
-			ally[i].attackRange.position = ally[i].collider.position;
-			ally[i].position.x += ally[i].moveSpeed * dt;
-
 		}
 	}
 }

@@ -17,6 +17,13 @@ CP_Image button_start;
 CP_Image button_exit;
 CP_Image Main_Title_Image;
 
+struct MainMenuGameState
+{
+	CP_Sound Main_Title_Music;
+};
+
+static struct MainMenuGameState mainmenu_gamestate;
+
 void MainMenuInit(void)
 {
 //에셋 로딩 ----------------------------------------------------------------
@@ -26,6 +33,21 @@ void MainMenuInit(void)
 	button_exit = CP_Image_Load("Assets/main_title_assets/exit.png");
 	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/title_image.png");
 	CP_Sound_PlayMusic(Main_Title_Music); //메인 음악 루프 재생
+	mainmenu_gamestate.Main_Title_Music = CP_Sound_Load("Assets/main_title_assets/main_ost.mp3"); //메인 타이틀 음악
+	image_load();
+	sound_load();
+	font_load();
+
+
+	//TODO : 인트로로 뺴기 
+	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름 
+	CP_System_ShowCursor(FALSE);//커서 보이게 하기
+
+	// TODO : 음악 루프 재생
+	CP_Sound_Play(mainmenu_gamestate.Main_Title_Music);
+
+	//test11 = Animation_ImageLoader("test3", 50); //test1 이미지 로딩 
+	//test12 = Animation_ImageLoader("test4", 50);
 }
 
 void MainMenuUpdate(void)
@@ -40,7 +62,7 @@ void MainMenuUpdate(void)
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-	// 버튼 상호작용
+
 		if (start_input == 0)
 		{
 			CP_Sound_Play(button_sound);
@@ -56,6 +78,7 @@ void MainMenuUpdate(void)
 			CP_Sound_Play(Mouse_Click_Sound);
 		}
 }
+
 void MainMenuExit(void)
 {
 

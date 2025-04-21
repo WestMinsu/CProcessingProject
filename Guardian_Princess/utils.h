@@ -1,5 +1,7 @@
 #pragma once
-#include "game.h"
+#include "unit_info.h"
+
+typedef struct EnemySpawner EnemySpawner;
 
 
 CP_BOOL timeElapsed(EnemySpawner* enemySpawner, float time, UnitType type);

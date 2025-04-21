@@ -37,6 +37,15 @@
     <ClCompile Include="FUNC_Button.c" />
     <ClCompile Include="Enemy_Unit_Info.c" />
     <ClCompile Include="Ally_Unit_Info.c" />
+    <ClCompile Include="ally.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemy.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hero.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -65,5 +74,23 @@
     <ClInclude Include="FUNC_Button.h" />
     <ClInclude Include="Enemy_Unit_Info.h" />
     <ClInclude Include="Ally_Unit_Info.h" />
+    <ClInclude Include="enemy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ally.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hero.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

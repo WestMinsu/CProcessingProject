@@ -5,10 +5,6 @@
 
 #include "SCENE_MainMenu.h"
 #include "utils.h"
-<<<<<<< Updated upstream
-#include "FUNC_Animation_Motion.h"
-=======
->>>>>>> Stashed changes
 #include "game.h"
 #include "asset_loading.h"
 #include "hero.h"
@@ -16,17 +12,15 @@
 #include "enemy.h"
 #include "constants.h"
 #include "colors.h"
-#include "globals.h"
+#include "resource.h"
 #include <stdio.h>
 #include "FUNC_Button.h"
 
-<<<<<<< Updated upstream
+
 //에셋 목록-----------------------------------------------------------------------------
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 //-----------------------------------------------------------------------------
-=======
-//--------------------
 
 #define HERO_SPEED 400
 #define MAX_UNIT 10
@@ -42,18 +36,14 @@ CP_Color blue;
 CP_Color white;
 static float dt;
 
->>>>>>> Stashed changes
 Hero hero;
 Ally ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
 Enemy enemy[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
+AllyResource allyResource;
 
-<<<<<<< Updated upstream
-=======
 //--------------------
-
-
 
 void initHero(void)
 {
@@ -68,7 +58,6 @@ void initHero(void)
 	hero.attackRange.radius = 30;
 }
 
->>>>>>> Stashed changes
 void initUnit(void)
 {
 	Sound_load();
@@ -88,6 +77,7 @@ void initUnit(void)
 		ally[i].attackSpeed = 1;
 		ally[i].attackRange.position = ally[i].position;
 		ally[i].attackRange.radius = 0;
+		ally[i].price = 30;
 
 		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 		enemy[i].collider.radius = 0;
@@ -108,23 +98,27 @@ void initUnit(void)
 	}
 }
 
+
+
 void GameInit(void)
 {
-
-	//에셋 로딩 ----------------------------------------------------------
+		//에셋 로딩 ----------------------------------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 
 	//----------------------------------------------------------------
 
-
-	initHero();
+	CP_System_ShowCursor(FALSE);
+	InitHero();
 	initUnit();
+
+	allyResource.money = 300;
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
 	blue = CP_Color_CreateHex(0x0000FFFF);
 	white = CP_Color_CreateHex(0xFFFFFFFF);
+	pink = CP_Color_CreateHex(0xF08080FF);
 
 	CP_Settings_TextSize(40.0f);
 }
@@ -139,7 +133,7 @@ void GameUpdate(void)
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-<<<<<<< Updated upstream
+
 
 	// 버튼 함수 ------------------------------------------
 
@@ -148,31 +142,15 @@ void GameUpdate(void)
 
 	//아군 유닛 소환 ----------------------------
 	if (melee_input == 0)
-=======
+
 	//-----------------------------------
 
-	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(summonButton_x+100, summonButton_y+100, buttonWidth, buttonHeight);
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	float dt = CP_System_GetDt();
 
-	CP_Settings_TextAlignment(horizontal, vertical);
-
-	CP_Font_DrawText("Summon range", summonButton_x, summonButton_y);
-
-	//------------------------------
-
-	if (IsAreaClicked(summonButton_x, summonButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
->>>>>>> Stashed changes
-	{
-		SummonAllyUnit(MELEE);
-	}
-	
 	if (range_input == 0)
 	{
 		SummonAllyUnit(RANGED);
 	}
-
-	//적 유닛 소환 --------------------------
 
 	if (timeElapsed(enemySpawner, 1.0f, MELEE))
 	{
@@ -195,6 +173,7 @@ void GameUpdate(void)
 	{
 		if (circleToCircle(hero.attackRange, enemy[i].collider))
 		{
+
 			printf("hit hero!!\n");
 			enemy[i].hp -= hero.attackDamage;
 			if (enemy[i].hp <= 0)
@@ -244,6 +223,19 @@ void GameUpdate(void)
 					enemy[j].attackRange.radius = 0;
 				}	
 			}
+
+			if (!isFightWithEnemy)
+			{
+				ally[i].moveSpeed = UNIT_SPEED;
+			}
+
+		}
+	}
+	
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		for (int j = 0; j < MAX_UNIT; j++)
+		{
 			if (circleToCircle(enemy[j].attackRange, ally[i].collider))
 			{
 				isFightWithAlly = TRUE;
@@ -257,30 +249,19 @@ void GameUpdate(void)
 					ally[i].attackRange.radius = 0;
 				}
 			}
-			if (!isFightWithEnemy)
-			{
-				ally[i].moveSpeed = UNIT_SPEED;
-				//isFightWithEnemy = FALSE;
-			}
+
 			if (!isFightWithAlly)
 			{
 				enemy[j].moveSpeed = UNIT_SPEED;
-				//isFightWithAlly = FALSE;
 			}
 		}
-
 	}
-	
-<<<<<<< Updated upstream
-
-
 
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
-=======
-	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
->>>>>>> Stashed changes
 
-
+	UpdateHero(dt);
+	UpdateAllyUnits(dt);
+	UpdateEnemyUnits(dt);
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();
@@ -289,5 +270,5 @@ void GameUpdate(void)
 
 void GameExit(void)
 {
-
+	
 }

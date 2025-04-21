@@ -15,5 +15,6 @@ typedef struct
 	float attackSpeed;
 }Hero;
 
-void initHero(void);
+void InitHero(void);
+void UpdateHero(float dt);
 void DrawHero(void);

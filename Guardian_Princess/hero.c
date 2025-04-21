@@ -1,16 +1,10 @@
 #include "hero.h"
 #include "colors.h"
 #include "globals.h"
-#include "FUNC_Animation_Motion.h"
-
-
 
 
 extern Hero hero;
-
-
-
-void initHero(void)
+void InitHero(void)
 {
 	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
 	hero.collider.radius = 30;
@@ -23,13 +17,9 @@ void initHero(void)
 	hero.attackRange.radius = 50;
 }
 
-void DrawHero(void)
-{	//TODO
 
-	
-
-	hero.collider.position = CP_Vector_Set(hero.position.x, hero.position.y);
-	hero.attackRange.position = hero.collider.position;
+void UpdateHero(float dt)
+{
 	if (CP_Input_KeyDown(KEY_A))
 	{
 		hero.position.x -= hero.moveSpeed * dt;
@@ -38,4 +28,12 @@ void DrawHero(void)
 	{
 		hero.position.x += hero.moveSpeed * dt;
 	}
+	hero.collider.position = CP_Vector_Set(hero.position.x, hero.position.y);
+	hero.attackRange.position = hero.collider.position;
+}
+
+void DrawHero(void)
+{
+	CP_Settings_Fill(green);
+	CP_Graphics_DrawCircle(hero.position.x, hero.position.y, 30);
 }

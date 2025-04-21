@@ -1,24 +1,19 @@
 #pragma once
 #include "utils.h"
+#include "unit_info.h"
 
-typedef enum 
-{
-	MELEE,
-	RANGED,
-}UnitType;
-
-typedef struct
+typedef struct 
 {
 	float timer;
 } AllySpawner;
 
 
-typedef struct
+typedef struct EnemySpawner
 {
 	float timer;
 } EnemySpawner;
 
-void initHero(void);
+void InitHero(void);
 
 void initUnit(void);
 
