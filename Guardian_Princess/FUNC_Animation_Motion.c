@@ -16,7 +16,6 @@ CP_Image* Animation_ImageLoader(char foldername[100], int totalframe)//폴더 이름
 		sprintf_s(buffer, 100, "Assets/animation/%s/%d.png", foldername, i);
 
 		frame_list[i] = CP_Image_Load(buffer);
-
 	}
 
 	return frame_list;
@@ -34,37 +33,38 @@ void Animation_play(CP_Image* loaded_files, int totalframe, CP_BOOL looping, flo
 	static int frame_count = 0;
 	static int frame_slow = 0;
 
-	// Todo: 왜 리턴하는지 설명
 	if (loaded_files == 0)
 	{
 		return;
 	}
+	//에러 핸들링
 
-	if (frame_slow == 2)
+	if (totalframe > frame_count)
 	{
-		if (totalframe != frame_count + 1)
+		CP_Image_Draw(loaded_files[frame_count], aniX, aniY, aniW, aniH, aniA);
+		
+
+			if (frame_slow == 1)
+			{
+				frame_count++;
+				frame_slow = 0;
+			}
+		frame_slow++;
+	}	
+	else
+	{
+		if (looping == 1)
 		{
+			frame_count = 0;
 			CP_Image_Draw(loaded_files[frame_count], aniX, aniY, aniW, aniH, aniA);
-			frame_count++;
 		}
 		else
 		{
-			if (looping == 1)
-			{
-				frame_count = 0;
-				CP_Image_Draw(loaded_files[frame_count], aniX, aniY, aniW, aniH, aniA);
-				frame_count++;
-			}
-
+			return;
 		}
-		frame_slow = 0;
-		frame_slow++;
-	}
-	else
-	{
-		frame_slow++;
 
 	}
+
 }
 
 
