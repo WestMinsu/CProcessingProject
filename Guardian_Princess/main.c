@@ -1,11 +1,12 @@
 #include "cprocessing.h"
-#include "SCENE_MainMenu.h"
-#include "asset_loading.h"
-#include "utils.h"
+#include "SCENE_Intro.h" // 인트로 
+//---------------------------------------------------;
+
 int main(void)
 {
-	CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
-	CP_System_SetWindowSize(1600, 900);
+	CP_Engine_SetNextGameState(IntroInit, IntroUpdate, IntroExit);
+	CP_System_SetWindowSize(1920, 1080); //fhd 사이즈 화면
 	CP_Engine_Run();
+	
 	return 0;
 }

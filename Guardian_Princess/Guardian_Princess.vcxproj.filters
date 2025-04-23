@@ -36,6 +36,15 @@
     <ClCompile Include="hero.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FUNC_Animation_Motion.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FUNC_BUTTON.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unit_info.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -69,6 +78,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SCENE_Intro.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FUNC_Animation_Motion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FUNC_BUTTON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mainmenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="unit_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

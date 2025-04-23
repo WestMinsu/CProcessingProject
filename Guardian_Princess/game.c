@@ -11,6 +11,7 @@
 #include "colors.h"
 #include "resource.h"
 #include "enemybase.h"
+#include "FUNC_Button.h"
 
 Hero hero;
 AllySpawner allySpawner[MAX_UNIT];
@@ -22,12 +23,19 @@ CP_BOOL isFightWithEnemy[MAX_UNIT];
 CP_BOOL isFightWithAlly[MAX_UNIT];
 Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
+CP_Image melee_button_image;
+CP_Image ranged_button_image;
+CP_Image battle_background;
 
 //TODO: 죽으면 spawnTime = 0으로
 
 void GameInit(void)
 {
 	CP_System_ShowCursor(FALSE);
+
+	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
+	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
+	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
 	InitEnemyBase();
 	InitHero();
@@ -61,63 +69,80 @@ void GameUpdate(void)
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-	CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
+	//CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 	SummonEnemyBase();
+
+	// TODO: Button_Draw_Square 함수 Draw만 하게 수정하기(값 반환x), Draw함수는 함수 뒷부분에서 호출
+	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
 
 	float dt = CP_System_GetDt();
 
-	// 버튼 위치
-	float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f - 250;
-	float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-	float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
-	float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
+	//// 버튼 위치
+	//float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f - 250;
+	//float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
+	//float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
+	//float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
 
-	// 버튼(직사각형 모양) 그리기
-	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight);
+	//// 버튼(직사각형 모양) 그리기
+	//CP_Settings_Fill(white);
+	//CP_Graphics_DrawRect(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight);
 
-	// 글씨 쓰기
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
-	CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
-	CP_Settings_TextAlignment(horizontal, vertical);
-	CP_Font_DrawText("Melee", summonMeleeButton_x, summonMeleeButton_y);
+	//// 글씨 쓰기
+	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	//CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
+	//CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
+	//CP_Settings_TextAlignment(horizontal, vertical);
+	//CP_Font_DrawText("Melee", summonMeleeButton_x, summonMeleeButton_y);
 
-	float summonRangedButton_x = CP_System_GetWindowWidth() / 2.0f + 250;
-	float summonRangedButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
+	//float summonRangedButton_x = CP_System_GetWindowWidth() / 2.0f + 250;
+	//float summonRangedButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
 
-	// 버튼(직사각형 모양) 그리기
-	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight);
+	//// 버튼(직사각형 모양) 그리기
+	//CP_Settings_Fill(white);
+	//CP_Graphics_DrawRect(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight);
 
-	// 글씨 쓰기
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	CP_Settings_TextAlignment(horizontal, vertical);
-	CP_Font_DrawText("Ranged", summonRangedButton_x, summonRangedButton_y);
+	//// 글씨 쓰기
+	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	//CP_Settings_TextAlignment(horizontal, vertical);
+	//CP_Font_DrawText("Ranged", summonRangedButton_x, summonRangedButton_y);
 
 
-	if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+	//if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+	//{
+	//	for (int i = 0; i < MAX_UNIT; i++)
+	//	{
+	//		if (!ally[i].alived)
+	//		{
+	//			SummonUnit(ally, WARRIOR);
+	//			break;
+	//		}
+	//	}
+	//}
+
+	//if (IsAreaClicked(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+	//{
+	//	for (int i = 0; i < MAX_UNIT; i++)
+	//	{
+	//		if (!ally[i].alived)
+	//		{
+	//			SummonUnit(ally, ARCHER);
+	//			break;
+	//		}
+	//	}
+	//}
+
+	if (melee_input == 0)
 	{
-		for (int i = 0; i < MAX_UNIT; i++)
-		{
-			if (!ally[i].alived)
-			{
-				SummonUnit(ally, WARRIOR);
-				break;
-			}
-		}
+		SummonUnit(ally, WARRIOR);
 	}
 
-	if (IsAreaClicked(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
+
+	if (range_input == 0)
 	{
-		for (int i = 0; i < MAX_UNIT; i++)
-		{
-			if (!ally[i].alived)
-			{
-				SummonUnit(ally, ARCHER);
-				break;
-			}
-		}
+		SummonUnit(ally, ARCHER);
 	}
 
 	if (timeElapsed(enemySpawner, 1.3f, WARRIOR))
@@ -277,7 +302,7 @@ void GameUpdate(void)
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
-	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawEnemyBase();
 	DrawHero();
 	DrawUnits(ally);
