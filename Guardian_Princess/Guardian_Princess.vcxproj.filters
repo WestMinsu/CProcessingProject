@@ -15,33 +15,60 @@
     <ClCompile Include="game.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainmenu.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="utils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="asset_loading.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unit_info.c">
+    <ClCompile Include="SCENE_MainMenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemybase.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SCENE_Intro.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hero.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mainmenu.h">
+    <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="utils.h">
+    <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="asset_loading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unit_info.h">
+    <ClInclude Include="unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="game.h">
+    <ClInclude Include="hero.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enemybase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_Intro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,11 +1,28 @@
 #pragma once
+#include "utils.h"
+#include "unit.h"
 
-void Summon_Unit(void);
+typedef struct AllySpawner
+{
+	float timer;
+} AllySpawner;
 
-void Draw_Unit(void);
 
-void Game_Init(void);
+typedef struct EnemySpawner
+{
+	float timer;
+} EnemySpawner;
 
-void Game_Update(void);
+void InitHero(void);
 
-void Game_Exit(void);
+void InitUnit(void);
+
+void SummonUnit(Unit* unit, UnitType type);
+
+void DrawUnits(Unit* unit);
+
+void GameInit(void);
+
+void GameUpdate(void);
+
+void GameExit(void);

@@ -10,8 +10,11 @@ extern CP_Sound button_sound;// 버튼 소리
 //-----------------------------------------------
 
 extern CP_Image Main_Title_Image; //메인 타이틀 이미지
-extern CP_Image Cursor_image; // 커서 이미지
+extern CP_Image Cursor_Image; // 커서 이미지
 extern CP_Image button_test;//  버튼 이미지
+
+extern CP_Image button_start;// 테스트 버튼
+extern CP_Image button_exit;
 
 //------------------------------------------------
 
