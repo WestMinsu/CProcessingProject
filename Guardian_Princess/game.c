@@ -277,7 +277,7 @@ void GameUpdate(void)
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
-	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
+	CP_Image_Draw(cursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawEnemyBase();
 	DrawHero();
 	DrawUnits(ally);
