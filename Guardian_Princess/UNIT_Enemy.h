@@ -1,8 +1,8 @@
 #pragma once
 typedef enum
 {
-	MELEE,
-	RANGED,
+	WARRIOR,
+	ARCHER,
 }UnitType;
 
 

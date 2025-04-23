@@ -195,6 +195,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ally.c" />
+    <ClCompile Include="FUNC_StageReset.c" />
     <ClCompile Include="UNIT_Ally.c" />
     <ClCompile Include="enemy.c" />
     <ClCompile Include="UNIT_Enemy.c" />
@@ -203,7 +204,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="asset_loading.c" />
     <ClCompile Include="FUNC_Button.c" />
     <ClCompile Include="game.c" />
-    <ClCompile Include="INFO_Hero.c" />
+    <ClCompile Include="Hero.c" />
     <ClCompile Include="SCENE_Intro.c" />
     <ClCompile Include="Main.c" />
     <ClCompile Include="SCENE_MainMenu.c" />
@@ -211,6 +212,7 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ally.h" />
+    <ClInclude Include="FUNC_StageReset.h" />
     <ClInclude Include="UNIT_Ally.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="constants.h" />

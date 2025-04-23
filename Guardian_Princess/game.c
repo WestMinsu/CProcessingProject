@@ -14,7 +14,8 @@
 #include "resource.h"
 #include "enemybase.h"
 #include "FUNC_Button.h"
-
+#include "UNIT_Ally.h"
+#include "UNIT_Enemy.h"
 //에셋 목록-----------------------------------------------------------------------------
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
@@ -30,27 +31,14 @@ CP_Color blue;
 CP_Color white;
 
 Hero hero;
-Ally ally[MAX_UNIT];
+ALLY ally[MAX_UNIT];
 AllySpawner allySpawner[MAX_UNIT];
+
 Enemy enemy[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
 AllyResource allyResource;
 EnemyBase enemyBase;
 
-//--------------------
-
-void initHero(void)
-{
-	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
-	hero.collider.radius = 30;
-	hero.moveSpeed = HERO_SPEED;
-
-	hero.currentHP = 1000;
-	hero.attackDamage = 1;
-	hero.attackSpeed = 1;
-	hero.attackRange.position = hero.position;
-	hero.attackRange.radius = 30;
-}
 
 void initUnit(void)
 {
@@ -59,19 +47,19 @@ void initUnit(void)
 		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
 		ally[i].collider.radius = 0;
 		ally[i].moveSpeed = UNIT_SPEED;
-		ally[i].type = MELEE;
+		ally[i].type = WARRIOR;
 
 		ally[i].currentHP = 100;
 		ally[i].attackDamage = 1; 
 		ally[i].attackSpeed = 1;
 		ally[i].attackRange.position = ally[i].position;
 		ally[i].attackRange.radius = 0;
-		ally[i].price = 30;
+		ally[i].price = 30; //아군 유닛 정보 초기화
 
 		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 		enemy[i].collider.radius = 0;
 		enemy[i].moveSpeed = UNIT_SPEED;
-		enemy[i].type = MELEE;
+		enemy[i].type = WARRIOR;
 
 		enemy[i].currentHP = 100;
 		enemy[i].attackDamage = 1;
@@ -118,6 +106,7 @@ void GameUpdate(void)
 	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth()/4.0f*1, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth()/8.0f, CP_System_GetWindowHeight() /4.0f, 255);
 	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth()/4.0f*3, CP_System_GetWindowHeight()/4.0f * 3.0f, CP_System_GetWindowWidth() /8.0f, CP_System_GetWindowHeight() /4.0f,255);
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+	
 	DrawHero();
 	DrawAllyUnits();
 	DrawEnemyUnits();
@@ -127,34 +116,34 @@ void GameUpdate(void)
 
 	if (melee_input == 0)
 	{
-		SummonAllyUnit(MELEE);
+		SummonAllyUnit(WARRIOR);
 	}
 
-	if (timeElapsed(enemySpawner, 1.0f, MELEE))
+	if (timeElapsed(enemySpawner, 1.0f, WARRIOR))
 	{
-		SummonEnemyUnit(MELEE);
+		SummonEnemyUnit(WARRIOR);
 	}
 
-	if (timeElapsed(enemySpawner, 3.0f, MELEE))
+	if (timeElapsed(enemySpawner, 3.0f, WARRIOR))
 	{
-		SummonEnemyUnit(MELEE);
+		SummonEnemyUnit(WARRIOR);
 	}
 
 	//---------------------------------------------------------------------------------------------------------------------------------------------------
 
 	if (range_input == 0)
 	{
-		SummonAllyUnit(RANGED);
+		SummonAllyUnit(ARCHER);
 	}
 
-	if (timeElapsed(enemySpawner, 1.0f, RANGED))
+	if (timeElapsed(enemySpawner, 1.0f, ARCHER))
 	{
-		SummonEnemyUnit(RANGED);
+		SummonEnemyUnit(ARCHER);
 	}
 
-	if (timeElapsed(enemySpawner, 3.0f, RANGED))
+	if (timeElapsed(enemySpawner, 3.0f, ARCHER))
 	{
-		SummonEnemyUnit(RANGED);
+		SummonEnemyUnit(ARCHER);
 	}
 
 	//--------------------------------------------------------------------------------------

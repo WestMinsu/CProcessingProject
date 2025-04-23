@@ -19,7 +19,7 @@ void SummonEnemyUnit(UnitType type)
 	enemy[idx].attackRange.radius = 50;
 	enemy[idx].type = type;
 
-	if (enemy[idx].type == RANGED)
+	if (enemy[idx].type == ARCHER)
 	{
 		enemy[idx].attackRange.radius = 200;
 	}
@@ -48,11 +48,11 @@ void DrawEnemyUnits(void)
 	{
 		if (enemy[i].alived)
 		{
-			if (enemy[i].type == MELEE)
+			if (enemy[i].type == WARRIOR)
 			{
 				CP_Settings_Fill(red);
 			}
-			else if (enemy[i].type == RANGED)
+			else if (enemy[i].type == ARCHER)
 			{
 				CP_Settings_Fill(white);
 			}

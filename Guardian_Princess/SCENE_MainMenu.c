@@ -15,6 +15,11 @@ CP_Image button_start;
 CP_Image button_exit;
 CP_Image Main_Title_Image;
 
+CP_Image* test55;
+CP_Image* test66;
+
+AnimationFrameInfo mainMenu1 = { 0,0 };
+AnimationFrameInfo mainMenu2 = { 0,0 };
 //----------------------------------------------------------------
 
 void MainMenuInit(void)
@@ -26,17 +31,24 @@ void MainMenuInit(void)
 	button_exit = CP_Image_Load("Assets/main_title_assets/exit.png");
 	Main_Title_Image = CP_Image_Load("Assets/main_title_assets/title_image.png");
 
+	test55 = Animation_ImageLoader("test5", 20);
+	test66 = Animation_ImageLoader("test11", 8);
+
 	CP_Sound_PlayAdvanced(Main_Title_Music, 0.8f, 1.0f, 1, BGM); //메인 음악 루프 재생
 }
 
 void MainMenuUpdate(void)
 {
 	//이미지 draw ---------------------------------------------
+	
+
 	CP_Image_Draw(Main_Title_Image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255); // 메인 배경
 	int start_input = Button_Draw_Square(button_start, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
 	int exit_input = Button_Draw_Square(button_exit, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
 	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255); //커서 이미지
-
+	Animation_play(test55,&mainMenu1,20, 1, 500, 500, 500, 500, 255);
+	Animation_play(test66,&mainMenu2, 8, 1, 800, 800, 500, 500, 255);
+	
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		if (start_input == 0)
 		{

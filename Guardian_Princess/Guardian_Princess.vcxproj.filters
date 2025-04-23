@@ -38,9 +38,6 @@
     <ClCompile Include="enemy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hero.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="enemybase.c" />
     <ClCompile Include="UNIT_Enemy.c">
       <Filter>Source Files</Filter>
@@ -48,12 +45,13 @@
     <ClCompile Include="FUNC_Button.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="INFO_Hero.c">
+    <ClCompile Include="Hero.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="UNIT_Ally.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FUNC_StageReset.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -109,5 +107,6 @@
     <ClInclude Include="UNIT_Ally.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="FUNC_StageReset.h" />
   </ItemGroup>
 </Project>

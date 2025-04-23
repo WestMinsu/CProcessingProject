@@ -3,15 +3,12 @@
 #include "SCENE_Intro.h"
 #include "SCENE_MainMenu.h"
 //에셋 로딩------------------------------------------------------------------------------------------------
-CP_Sound Logo_song;
-CP_Image digipen_logo;
-CP_Image Logo_image;
+CP_Sound LogoSong;
+CP_Image DigipenLogo;
+CP_Image LogoImage;
 
 //--------------
-
-int should_play = 1;
-
-void GAME_PREUPDATE(void)
+void GamePreUpdate(void)
 {
 	Image_load();
 	Sound_load();
@@ -19,9 +16,10 @@ void GAME_PREUPDATE(void)
 	CP_System_ShowCursor(FALSE);
 }
 
-void Intro_Init(void)
+
+void IntroInit(void)
 {
-	CP_Engine_SetPreUpdateFunction(GAME_PREUPDATE); //프리 스테이트 설정
+	CP_Engine_SetPreUpdateFunction(GamePreUpdate); //프리 스테이트 설정
 	//게임 초기 시스템 설정--------------------------------
 	CP_System_SetWindowTitle("Guardian Princess"); //프로그램 창 이름 
 	CP_Settings_ImageMode(CP_POSITION_CENTER); //이미지 중점 가운데로 설정.
@@ -29,42 +27,49 @@ void Intro_Init(void)
 	CP_Graphics_ClearBackground(Default_BG); //기본 배경 설정
 	//에셋 로딩--------------------------------
 
-	Logo_song = CP_Sound_Load("Assets/intro/frostbyte_logo.mp3");
-	Logo_image = CP_Image_Load("Assets/intro/logo_image.png");
-	digipen_logo = CP_Image_Load("Assets/intro/Digipen_logo.png");
+	LogoSong = CP_Sound_Load("Assets/intro/frostbyte_logo.mp3");
+	LogoImage = CP_Image_Load("Assets/intro/logo_image.png");
+	DigipenLogo = CP_Image_Load("Assets/intro/Digipen_logo.png");
 }
 
-void Intro_Update(void)
+void IntroUpdate(void)
 {
-	float intro_count = CP_System_GetSeconds();
-	
-	if (intro_count <= 3.0f)
+
+	static int IsAudioPlayed = FALSE;
+	static int skip = 0;
+	float introCount = CP_System_GetSeconds();
+
+	if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
 	{
-		CP_Image_Draw(digipen_logo, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+		skip++;
 	}
-	else if (intro_count > 3.0f && intro_count <6.0f)
+
+	
+	if (skip == 0 && introCount <= 3.0f)
 	{
-		CP_Image_Draw(Logo_image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
-		if (should_play)
-		{
-			CP_Sound_PlayAdvanced(Logo_song, 1.5f, 1.0f,0,BGM);
-			should_play = 0;
-		}
+		CP_Image_Draw(DigipenLogo, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 
 	}
-	else if(intro_count > 6.0f)
+	else if (skip == 1  && introCount <6.0f)
+	{
+		CP_Image_Draw(LogoImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+
+		if (IsAudioPlayed == FALSE)
+		{
+			CP_Sound_PlayAdvanced(LogoSong, 1.5f, 1.0f,0,BGM);
+			IsAudioPlayed = TRUE;
+		}
+	}
+	else
 	{ 
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}	
-	else
-	{
-	}
 }
 
-void Intro_Exit(void)
+void IntroExit(void)
 {
-	CP_Image_Free(&Logo_image);
-	CP_Image_Free(&digipen_logo);
+	CP_Image_Free(&LogoImage);
+	CP_Image_Free(&DigipenLogo);
 
-	CP_Sound_Free(&Logo_song);
+	CP_Sound_Free(&LogoSong);
 }

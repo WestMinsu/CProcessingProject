@@ -4,7 +4,7 @@
 
 int main(void)
 {
-	CP_Engine_SetNextGameState(Intro_Init, Intro_Update, Intro_Exit);
+	CP_Engine_SetNextGameState(IntroInit, IntroUpdate, IntroExit);
 	CP_System_SetWindowSize(1920, 1080); //fhd 사이즈 화면
 	CP_Engine_Run();
 	
