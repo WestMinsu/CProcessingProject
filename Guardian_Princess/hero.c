@@ -1,5 +1,6 @@
 #include "hero.h"
 #include "colors.h"
+#include "FUNC_Animation_Motion.h"
 
 extern Hero hero;
 
@@ -19,9 +20,12 @@ void InitHero(void)
 
 void UpdateHero(float dt)
 {
+	
+
 	if (CP_Input_KeyDown(KEY_A))
 	{
 		hero.position.x -= hero.moveSpeed * dt;
+
 	}
 	else if (CP_Input_KeyDown(KEY_D))
 	{

@@ -3,6 +3,7 @@
 #include <string.h>
 #include "cprocessing.h"
 #include "FUNC_Animation_Motion.h"
+#include "unit.h"
 
 //에러 핸들링
 static int frame = 0;

@@ -4,10 +4,13 @@
 #include "resource.h"
 #include "utils.h"
 #include <stdio.h>
+#include "FUNC_Animation_Motion.h"
 Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;
 int enemyPopulation = 0;
+
+
 
 void InitUnit(void)
 {
@@ -27,6 +30,10 @@ void InitUnit(void)
 		ally[i].targetUnit = NULL;
 		ally[i].alived = FALSE;
 
+		ally[i].unitSetting.frameCount = 0;
+		ally[i].unitSetting.frameSlow = 0;
+		ally[i].unitSetting.frameSlowRate = 3;
+
 		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 		enemy[i].collider.radius = 0;
 		enemy[i].moveSpeed = UNIT_SPEED;
@@ -40,12 +47,15 @@ void InitUnit(void)
 		enemy[i].price = 20;
 		enemy[i].targetUnit = NULL;
 		enemy[i].alived = FALSE;
+
+		enemy[i].unitSetting.frameCount = 0;
+		enemy[i].unitSetting.frameSlow = 0;
+		enemy[i].unitSetting.frameSlowRate = 6;
 	}
 }
 
 void SummonUnit(Unit* unit, UnitType type)
 {
-
 	if (allyPopulation >= MAX_UNIT)
 	{
 		printf("%d", allyPopulation);
@@ -66,6 +76,8 @@ void SummonUnit(Unit* unit, UnitType type)
 			unit[allyPopulation - 1].currentHP = 100;
 			unit[allyPopulation - 1].attackRange.radius = 50;
 			unit[allyPopulation - 1].price = 10;
+			unit[allyPopulation - 1].unitSetting.frameCount = 0;
+
 		}
 		else if (unit[allyPopulation - 1].type == ARCHER)
 		{
@@ -140,7 +152,7 @@ void UpdateUnits(float dt)
 	}
 }
 
-void DrawUnits(Unit* unit)
+void DrawUnits(Unit* unit, CP_Image*unitani, int totalframe)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -149,23 +161,27 @@ void DrawUnits(Unit* unit)
 			if (unit[i].type == WARRIOR)
 			{
 				if (unit == ally)
-					CP_Settings_Fill(blue);
+				{
+
+					Animation_play(unitani, &unit[i].unitSetting , totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
+				}
 				else if (unit == enemy)
 				{
-					CP_Settings_Fill(red);
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
 			else if (unit[i].type == ARCHER)
 			{
 
 				if (unit == ally)
-					CP_Settings_Fill(pink);
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
 				else if (unit == enemy)
 				{
-					CP_Settings_Fill(white);
+					Animation_play(unitani, &unit[i].unitSetting,totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
-			CP_Graphics_DrawCircle(unit[i].position.x, unit[i].position.y, 30);
+		
+
 		}
 	}
 }

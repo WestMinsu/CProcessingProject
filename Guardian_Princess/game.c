@@ -12,6 +12,7 @@
 #include "resource.h"
 #include "enemybase.h"
 #include "FUNC_Button.h"
+#include "FUNC_Animation_Motion.h"
 
 Hero hero;
 AllySpawner allySpawner[MAX_UNIT];
@@ -23,20 +24,50 @@ CP_BOOL isFightWithEnemy[MAX_UNIT];
 CP_BOOL isFightWithAlly[MAX_UNIT];
 Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
+
+//---------------------------------------------
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image battle_background;
+//-----------------------------------
+CP_Image* heroAttack;
+CP_Image* heroDead;
+CP_Image* heroHurt;
+CP_Image* heroWait;
+CP_Image* heroWalk;
+
+CP_Image* unitTest;
+CP_Image* unitTest2;
+//--------------------------------------------------------
+AnimationFrameInfo heroattackF = { 0,0,2 };
+AnimationFrameInfo heroDeadF = { 0,0,2 };
+AnimationFrameInfo heroHurtF = { 0,0,2};
+AnimationFrameInfo heroWaitF = { 0,0,2 };
+AnimationFrameInfo heroWalkF = { 0,0,2};
+
+AnimationFrameInfo unittestF = { 0,0,3};
+AnimationFrameInfo unittest2F = { 0,0,6 };
+//----------------------------------------------------
+
 
 //TODO: 죽으면 spawnTime = 0으로
 
 void GameInit(void)
 {
-	CP_System_ShowCursor(FALSE);
-
+	//에셋 로딩 ----------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
+	heroAttack = Animation_ImageLoader("hero_attack", 5);
+	heroDead = Animation_ImageLoader("hero_dead", 4);
+	heroHurt = Animation_ImageLoader("hero_hurt", 1);
+	heroWait = Animation_ImageLoader("hero_wait", 5);
+	heroWalk = Animation_ImageLoader("hero_walk", 7);
+
+	unitTest = Animation_ImageLoader("unit_test", 19);
+	unitTest2 = Animation_ImageLoader("unit_test2", 14);
+	//----------------------------------------
 	InitEnemyBase();
 	InitHero();
 	InitUnit();
@@ -80,60 +111,6 @@ void GameUpdate(void)
 
 	float dt = CP_System_GetDt();
 
-	//// 버튼 위치
-	//float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f - 250;
-	//float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-	//float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
-	//float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
-
-	//// 버튼(직사각형 모양) 그리기
-	//CP_Settings_Fill(white);
-	//CP_Graphics_DrawRect(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight);
-
-	//// 글씨 쓰기
-	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	//CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
-	//CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
-	//CP_Settings_TextAlignment(horizontal, vertical);
-	//CP_Font_DrawText("Melee", summonMeleeButton_x, summonMeleeButton_y);
-
-	//float summonRangedButton_x = CP_System_GetWindowWidth() / 2.0f + 250;
-	//float summonRangedButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-
-	//// 버튼(직사각형 모양) 그리기
-	//CP_Settings_Fill(white);
-	//CP_Graphics_DrawRect(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight);
-
-	//// 글씨 쓰기
-	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	//CP_Settings_TextAlignment(horizontal, vertical);
-	//CP_Font_DrawText("Ranged", summonRangedButton_x, summonRangedButton_y);
-
-
-	//if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
-	//{
-	//	for (int i = 0; i < MAX_UNIT; i++)
-	//	{
-	//		if (!ally[i].alived)
-	//		{
-	//			SummonUnit(ally, WARRIOR);
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//if (IsAreaClicked(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
-	//{
-	//	for (int i = 0; i < MAX_UNIT; i++)
-	//	{
-	//		if (!ally[i].alived)
-	//		{
-	//			SummonUnit(ally, ARCHER);
-	//			break;
-	//		}
-	//	}
-	//}
-
 	if (melee_input == 0)
 	{
 		SummonUnit(ally, WARRIOR);
@@ -155,8 +132,7 @@ void GameUpdate(void)
 		SummonUnit(enemy, ARCHER);
 	}
 
-	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
-	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
+
 
 
 	for (int j = 0; j < MAX_UNIT; j++)
@@ -302,11 +278,10 @@ void GameUpdate(void)
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
-	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawEnemyBase();
 	DrawHero();
-	DrawUnits(ally);
-	DrawUnits(enemy);
+	DrawUnits(ally, unitTest,19);
+	DrawUnits(enemy,unitTest2,14);
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);
