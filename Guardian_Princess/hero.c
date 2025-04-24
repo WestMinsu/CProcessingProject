@@ -12,7 +12,7 @@ void InitHero(void)
 	hero.maxHP = 1000;
 	hero.currentHP = hero.maxHP;
 	hero.attackDamage = 1;
-	hero.attackSpeed = 1;
+	hero.attackCoolDown = 5;
 	hero.attackRange.position = hero.position;
 	hero.attackRange.radius = 50;
 }

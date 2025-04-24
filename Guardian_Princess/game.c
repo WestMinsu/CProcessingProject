@@ -14,8 +14,8 @@
 #include "FUNC_Button.h"
 
 Hero hero;
-AllySpawner allySpawner[MAX_UNIT];
-EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
+UnitSpawner allySpawner[NUM_UNIT_TYPES];
+UnitSpawner enemySpawner[NUM_UNIT_TYPES];
 Resource allyResource;
 Resource enemyResource;
 EnemyBase enemyBase;
@@ -26,7 +26,9 @@ Unit enemy[MAX_UNIT];
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image battle_background;
-
+AttackTimer unitAttackTimer[MAX_UNIT];
+AttackTimer heroAttackTimer;
+CP_BOOL isClicked[NUM_UNIT_TYPES];
 //TODO: Á×À¸¸é spawnTime = 0À¸·Î
 
 void GameInit(void)
@@ -136,21 +138,38 @@ void GameUpdate(void)
 
 	if (melee_input == 0)
 	{
-		SummonUnit(ally, WARRIOR);
+		isClicked[0] = TRUE;
 	}
 
+	if (isClicked[0])
+	{
+		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
+		{
+			SummonUnit(ally, WARRIOR);
+			isClicked[0] = FALSE;
+		}
+	}
 
 	if (range_input == 0)
 	{
-		SummonUnit(ally, ARCHER);
+		isClicked[1] = TRUE;
 	}
 
-	if (timeElapsed(enemySpawner, 1.3f, WARRIOR))
+	if (isClicked[1])
+	{
+		if (SpawnTimeElapsed(allySpawner, 3.0f, ARCHER))
+		{
+			SummonUnit(ally, ARCHER);
+			isClicked[1] = FALSE;
+		}
+	}
+	
+	if (SpawnTimeElapsed(enemySpawner, 1.3f, WARRIOR))
 	{
 		SummonUnit(enemy, WARRIOR);
 	}
 
-	if (timeElapsed(enemySpawner, 3.0f, ARCHER))
+	if (SpawnTimeElapsed(enemySpawner, 3.0f, ARCHER))
 	{
 		SummonUnit(enemy, ARCHER);
 	}
@@ -158,17 +177,21 @@ void GameUpdate(void)
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 
-
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
 		if (circleToCircle(hero.attackRange, enemy[j].collider))
 		{
-			enemy[j].currentHP -= hero.attackDamage;
-			if (enemy[j].currentHP <= 0)
+
+			if (heroAttackTimeElapsed(hero.attackCoolDown))
 			{
-				enemy[j].alived = FALSE;
-				enemy[j].collider.radius = 0;
-				enemy[j].attackRange.radius = 0;
+				enemy[j].currentHP -= hero.attackDamage;
+				printf("enemy HP: %d\n", enemy[j].currentHP);
+				if (enemy[j].currentHP <= 0)
+				{
+					enemy[j].alived = FALSE;
+					enemy[j].collider.radius = 0;
+					enemy[j].attackRange.radius = 0;
+				}
 			}
 		}
 
@@ -177,15 +200,19 @@ void GameUpdate(void)
 			isFightWithAlly[j] = TRUE;
 			enemy[j].moveSpeed = 0;
 
-			hero.currentHP -= enemy[j].attackDamage;
-			if (hero.currentHP <= 0)
+			if (unitAttackTimeElapsed(unitAttackTimer, enemy[j].attackCoolDown, j))
 			{
-				printf("hero dead\n");
-				hero.moveSpeed = 0;
-				hero.collider.radius = 0;
-				hero.attackRange.radius = 0;
-				isFightWithAlly[j] = FALSE;
-				enemy[j].moveSpeed = UNIT_SPEED;
+				hero.currentHP -= enemy[j].attackDamage;
+				//printf("hero hp: %d", hero.currentHP);
+				if (hero.currentHP <= 0)
+				{
+					printf("hero dead\n");
+					hero.moveSpeed = 0;
+					hero.collider.radius = 0;
+					hero.attackRange.radius = 0;
+					isFightWithAlly[j] = FALSE;
+					enemy[j].moveSpeed = UNIT_SPEED;
+				}
 			}
 		}
 		else
@@ -215,22 +242,25 @@ void GameUpdate(void)
 	{
 		if (ally[i].targetUnit != NULL)
 		{
-			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
-			//printf("enemy hp: %d\n", ally[i].targetUnit->currentHP);
-			if (ally[i].targetUnit->currentHP <= 0)
+			if (unitAttackTimeElapsed(unitAttackTimer, ally[i].attackCoolDown, i))
 			{
-				ally[i].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
-				ally[i].targetUnit->alived = FALSE;
-				ally[i].targetUnit->collider.radius = 0;
-				ally[i].targetUnit->attackRange.radius = 0;
-
-				isFightWithEnemy[i] = FALSE;
-				ally[i].targetUnit = NULL;
-	/*			if (enemyPopulation > 0)
+				ally[i].targetUnit->currentHP -= ally[i].attackDamage;
+				//printf("enemy hp: %d\n", ally[i].targetUnit->currentHP);
+				if (ally[i].targetUnit->currentHP <= 0)
 				{
-					enemyPopulation--;
-					printf("%d\n", enemyPopulation);
-				}*/
+					ally[i].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+					ally[i].targetUnit->alived = FALSE;
+					ally[i].targetUnit->collider.radius = 0;
+					ally[i].targetUnit->attackRange.radius = 0;
+
+					isFightWithEnemy[i] = FALSE;
+					ally[i].targetUnit = NULL;
+					/*			if (enemyPopulation > 0)
+								{
+									enemyPopulation--;
+									printf("%d\n", enemyPopulation);
+								}*/
+				}
 			}
 		}
 		if (!isFightWithEnemy[i])
@@ -261,21 +291,24 @@ void GameUpdate(void)
 	{
 		if (enemy[j].targetUnit != NULL)
 		{
-			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
-			//printf("ally hp: %d\n", enemy[j].targetUnit->currentHP);
-			if (enemy[j].targetUnit->currentHP <= 0)
+			if (unitAttackTimeElapsed(unitAttackTimer, enemy[j].attackCoolDown, j))
 			{
-				enemy[j].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
-				enemy[j].targetUnit->alived = FALSE;
-				enemy[j].targetUnit->collider.radius = 0;
-				enemy[j].targetUnit->attackRange.radius = 0;
-
-				isFightWithAlly[j] = FALSE;
-				enemy[j].targetUnit = NULL;
-				if (allyPopulation > 0)
+				enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
+				//printf("ally hp: %d\n", enemy[j].targetUnit->currentHP);
+				if (enemy[j].targetUnit->currentHP <= 0)
 				{
-					allyPopulation--;
-					printf("%d\n", allyPopulation);
+					enemy[j].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+					enemy[j].targetUnit->alived = FALSE;
+					enemy[j].targetUnit->collider.radius = 0;
+					enemy[j].targetUnit->attackRange.radius = 0;
+
+					isFightWithAlly[j] = FALSE;
+					enemy[j].targetUnit = NULL;
+					if (allyPopulation > 0)
+					{
+						allyPopulation--;
+						printf("%d\n", allyPopulation);
+					}
 				}
 			}
 		}

@@ -18,15 +18,46 @@ int IsCircleClicked(float circle_center_x, float circle_center_y, float diameter
 	return 0;
 }
 
-CP_BOOL timeElapsed(EnemySpawner* enemySpawner, float time, UnitType type)
+CP_BOOL SpawnTimeElapsed(UnitSpawner* unitSpawner, float time, UnitType type)
 {
 	float dt = 0;
 	dt = CP_System_GetDt();
 
-	enemySpawner[type].timer += dt;
-	if (enemySpawner[type].timer >= time)
+	unitSpawner[type].timer += dt;
+	if (unitSpawner[type].timer >= time)
 	{
-		enemySpawner[type].timer = 0;
+		unitSpawner[type].timer = 0;
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+CP_BOOL unitAttackTimeElapsed(AttackTimer* unitAttackTimer, float time, int index)
+{
+	float dt = 0;
+	dt = CP_System_GetDt();
+
+	unitAttackTimer[index].timer += dt;
+	if (unitAttackTimer[index].timer >= time)
+	{
+		unitAttackTimer[index].timer = 0;
+		return TRUE;
+	}
+	else
+		return FALSE;
+}
+
+extern AttackTimer heroAttackTimer;
+CP_BOOL heroAttackTimeElapsed(float time)
+{
+	float dt = 0;
+	dt = CP_System_GetDt();
+
+	heroAttackTimer.timer += dt;
+	if (heroAttackTimer.timer >= time)
+	{
+		heroAttackTimer.timer = 0;
 		return TRUE;
 	}
 	else

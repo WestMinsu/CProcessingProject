@@ -13,7 +13,7 @@ typedef struct
 	int maxHP;
 	int currentHP;
 	int attackDamage;
-	float attackSpeed;
+	float attackCoolDown;
 }Hero;
 
 void InitHero(void);

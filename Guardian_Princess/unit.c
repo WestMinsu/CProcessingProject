@@ -20,7 +20,7 @@ void InitUnit(void)
 
 		ally[i].currentHP = 1;
 		ally[i].attackDamage = 0;
-		ally[i].attackSpeed = 0;
+		ally[i].attackCoolDown = 3;
 		ally[i].attackRange.position = ally[i].position;
 		ally[i].attackRange.radius = 0;
 		ally[i].price = 1;
@@ -34,7 +34,7 @@ void InitUnit(void)
 
 		enemy[i].currentHP = 1;
 		enemy[i].attackDamage = 0;
-		enemy[i].attackSpeed = 0;
+		enemy[i].attackCoolDown = 5;
 		enemy[i].attackRange.position = enemy[i].position;
 		enemy[i].attackRange.radius = 0;
 		enemy[i].price = 20;
@@ -45,7 +45,9 @@ void InitUnit(void)
 
 void SummonUnit(Unit* unit, UnitType type)
 {
-
+	// 1. unit 아군인지 적군인지 판단
+	// 2. 아군이든 적군이든 인덱스를 찾는다
+	// 3. 그 찾은 유닛을 타입에 따라서 초기화 한다.
 	if (allyPopulation >= MAX_UNIT)
 	{
 		printf("%d", allyPopulation);
@@ -62,17 +64,17 @@ void SummonUnit(Unit* unit, UnitType type)
 
 		if (unit[allyPopulation - 1].type == WARRIOR)
 		{
-			unit[allyPopulation - 1].attackDamage = 3;
+			unit[allyPopulation - 1].attackDamage = 34;
 			unit[allyPopulation - 1].currentHP = 100;
 			unit[allyPopulation - 1].attackRange.radius = 50;
 			unit[allyPopulation - 1].price = 10;
 		}
 		else if (unit[allyPopulation - 1].type == ARCHER)
 		{
-			unit[allyPopulation - 1].attackDamage = 2;
-			unit[allyPopulation - 1].currentHP = 100;
-			unit[allyPopulation - 1].attackRange.radius = 500;
-			unit[allyPopulation - 1].price = 50;
+			unit[allyPopulation - 1].attackDamage = 20;
+			unit[allyPopulation - 1].currentHP = 50;
+			unit[allyPopulation - 1].attackRange.radius = 300;
+			unit[allyPopulation - 1].price = 20;
 		}
 		if (allyResource.money - unit[allyPopulation - 1].price <= 0)
 		{
@@ -98,17 +100,17 @@ void SummonUnit(Unit* unit, UnitType type)
 
 		if (unit[enemyPopulation - 1].type == WARRIOR)
 		{
-			unit[enemyPopulation - 1].attackDamage = 3;
+			unit[enemyPopulation - 1].attackDamage = 34;
 			unit[enemyPopulation - 1].currentHP = 100;
 			unit[enemyPopulation - 1].attackRange.radius = 50;
 			unit[enemyPopulation - 1].price = 10;
 		}
 		else if (unit[enemyPopulation - 1].type == ARCHER)
 		{
-			unit[enemyPopulation - 1].attackDamage = 2;
-			unit[enemyPopulation - 1].currentHP = 100;
-			unit[enemyPopulation - 1].attackRange.radius = 500;
-			unit[enemyPopulation - 1].price = 50;
+			unit[enemyPopulation - 1].attackDamage = 20;
+			unit[enemyPopulation - 1].currentHP = 50;
+			unit[enemyPopulation - 1].attackRange.radius = 300;
+			unit[enemyPopulation - 1].price = 20;
 		}
 		if (enemyResource.money - unit[enemyPopulation - 1].price <= 0)
 		{

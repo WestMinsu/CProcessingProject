@@ -18,7 +18,7 @@ typedef struct Unit
 
 	int currentHP;
 	int attackDamage;
-	float attackSpeed;
+	float attackCoolDown;
 	int price;
 	struct Unit* targetUnit;
 }Unit;

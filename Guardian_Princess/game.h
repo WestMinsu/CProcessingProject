@@ -2,16 +2,15 @@
 #include "utils.h"
 #include "unit.h"
 
-typedef struct AllySpawner
+typedef struct UnitSpawner
 {
 	float timer;
-} AllySpawner;
+} UnitSpawner;
 
-
-typedef struct EnemySpawner
+typedef struct AttackTimer
 {
 	float timer;
-} EnemySpawner;
+} AttackTimer;
 
 void InitHero(void);
 
