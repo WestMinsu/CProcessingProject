@@ -24,7 +24,7 @@ CP_Image* Animation_ImageLoader(char foldername[100], int totalframe)//폴더 이름
 }
 
 
-void Animation_play(CP_Image* loaded_files, AnimationFrameInfo*frameSetting,int totalframe, CP_BOOL looping, float aniX, float aniY, float aniW, float aniH, int aniA)
+void Animation_play(CP_Image* loaded_files, AnimationFrameInfo*frameSetting,int totalframe,CP_BOOL looping, float aniX, float aniY, float aniW, float aniH, int aniA)
 //애니메이션 재생 함수 // update 함수 안에서만 사용할 것
 //"asset/animation" 폴더 내에 있는 폴더 명,//변수명 아무거나// 총 프레임(마지막 이미지 파일 명) / 재생 위치 및 크기정보 x,y,w,h,알파값 
 {
@@ -40,7 +40,7 @@ void Animation_play(CP_Image* loaded_files, AnimationFrameInfo*frameSetting,int 
 		CP_Image_Draw(loaded_files[frameSetting->frameCount], aniX, aniY, aniW, aniH, aniA);
 		
 
-			if (frameSetting->frameSlow == 2)
+			if (frameSetting->frameSlow == frameSetting->frameSlowRate)
 			{
 				frameSetting->frameCount++;
 				frameSetting->frameSlow = 0;

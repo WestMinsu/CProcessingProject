@@ -18,8 +18,8 @@ CP_Image Main_Title_Image;
 CP_Image* test55;
 CP_Image* test66;
 
-AnimationFrameInfo mainMenu1 = { 0,0 };
-AnimationFrameInfo mainMenu2 = { 0,0 };
+AnimationFrameInfo mainMenu1 = { 0,0,2 };
+AnimationFrameInfo mainMenu2 = { 0,0,5 };
 //----------------------------------------------------------------
 
 void MainMenuInit(void)

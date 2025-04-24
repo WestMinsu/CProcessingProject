@@ -4,6 +4,7 @@ typedef struct AnimationFrameInfo
 {
 	int frameCount;
 	int frameSlow;
+	int frameSlowRate;
 
 }AnimationFrameInfo;
 
