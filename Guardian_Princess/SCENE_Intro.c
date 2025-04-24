@@ -49,11 +49,8 @@ void IntroUpdate(void)
 		CP_Image_Draw(DigipenLogo, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 
 	}
-<<<<<<< Updated upstream
+
 	else if (skip <= 1 && introCount < 6.0f)
-=======
-	else if (skip <= 1  && introCount <6.0f)
->>>>>>> Stashed changes
 	{
 		CP_Image_Draw(LogoImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 
@@ -63,6 +60,7 @@ void IntroUpdate(void)
 			IsAudioPlayed = TRUE;
 		}
 	}
+
 	else
 	{
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);

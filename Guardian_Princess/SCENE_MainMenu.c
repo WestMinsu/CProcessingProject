@@ -45,7 +45,6 @@ void MainMenuUpdate(void)
 	CP_Image_Draw(Main_Title_Image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255); // 메인 배경
 	int start_input = Button_Draw_Square(button_start, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
 	int exit_input = Button_Draw_Square(button_exit, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
-<<<<<<< Updated upstream
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255); //커서 이미지
 	Animation_play(test55, &mainMenu1, 20, 1, 500, 500, 500, 500, 255);
 	Animation_play(test66, &mainMenu2, 8, 1, 800, 800, 500, 500, 255);
@@ -65,31 +64,6 @@ void MainMenuUpdate(void)
 	{
 		CP_Sound_PlayAdvanced(Mouse_Click_Sound, 1.0f, 1.0f, 0, UI);
 	}
-
-=======
-	CP_Image_Draw(Cursor_Image, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255); //커서 이미지
-
-
-	Animation_play(test55,&mainMenu1,20, 1, 500, 500, 500, 500, 255);
-	Animation_play(test66,&mainMenu2, 8, 1, 800, 800, 500, 500, 255);
-	
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		if (start_input == 0)
-		{
-			CP_Sound_PlayAdvanced(button_sound, 1.0f, 1.0f, 0, UI);
-			CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
-		}
-		else if (exit_input == 0)
-		{
-			CP_Sound_PlayAdvanced(button_sound, 1.0f, 1.0f, 0, UI);
-			CP_Engine_Terminate();
-		}
-		else if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
-		{
-			CP_Sound_PlayAdvanced(Mouse_Click_Sound, 1.0f, 1.0f, 0, UI);
-		}
-		
->>>>>>> Stashed changes
 }
 void MainMenuExit(void)
 {

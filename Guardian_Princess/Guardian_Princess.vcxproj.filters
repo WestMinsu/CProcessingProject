@@ -39,10 +39,10 @@
     <ClCompile Include="FUNC_Animation_Motion.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FUNC_BUTTON.c">
+    <ClCompile Include="unit_info.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unit_info.c">
+    <ClCompile Include="FUNC_BUTTON.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -83,13 +83,13 @@
     <ClInclude Include="FUNC_Animation_Motion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FUNC_BUTTON.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="unit_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FUNC_BUTTON.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
