@@ -65,4 +65,5 @@ D - 오른쪽으로 이동
 마우스 클릭으로 유닛 생산
 
 ### 플레이 영상
-1주차 - https://drive.google.com/file/d/1AAtsDeci8MFzCPbUIcQ4WyWYta2DTFIo/view?usp=sharing
+1주차 - https://drive.google.com/file/d/1AAtsDeci8MFzCPbUIcQ4WyWYta2DTFIo/view?usp=sharing     
+2주차 - https://drive.google.com/file/d/111jmq__4ogSYlMXFi1s_J7HyCpU1iGOT/view?usp=sharing
