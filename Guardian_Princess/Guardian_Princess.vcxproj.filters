@@ -45,6 +45,12 @@
     <ClCompile Include="FUNC_BUTTON.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SCENE_MainTitle.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SCENE_StageEnd.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -90,6 +96,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FUNC_BUTTON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_MainTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_StageEnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

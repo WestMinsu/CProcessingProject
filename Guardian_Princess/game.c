@@ -12,6 +12,9 @@
 #include "resource.h"
 #include "enemybase.h"
 #include "FUNC_Button.h"
+#include "FUNC_Animation_Motion.h"
+#include "SCENE_StageEnd.h"
+
 
 Hero hero;
 UnitSpawner allySpawner[NUM_UNIT_TYPES];
@@ -29,15 +32,40 @@ CP_Image battle_background;
 AttackTimer unitAttackTimer[MAX_UNIT];
 AttackTimer heroAttackTimer;
 CP_BOOL isClicked[NUM_UNIT_TYPES];
+
+//-------------------------------------------------------
+CP_Image* heroAttack;
+CP_Image* heroDead;
+CP_Image* heroHurt;
+CP_Image* heroWait;
+CP_Image* heroWalk;
+
+CP_Image* unitTest;
+CP_Image* unitTest2;
+//--------------------------------------------------------
+
+extern CP_Vector allyPosition;
+extern CP_Vector enemyPosition;
+
 //TODO: 죽으면 spawnTime = 0으로
 
 void GameInit(void)
 {
 	CP_System_ShowCursor(FALSE);
 
+	//에셋 로딩 ----------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
+
+	heroAttack = Animation_ImageLoader("hero_attack", 5);
+	heroDead = Animation_ImageLoader("hero_dead", 4);
+	heroHurt = Animation_ImageLoader("hero_hurt", 1);
+	heroWait = Animation_ImageLoader("hero_wait", 5);
+	heroWalk = Animation_ImageLoader("hero_walk", 7);
+
+	unitTest = Animation_ImageLoader("unit_test", 19);
+	unitTest2 = Animation_ImageLoader("unit_test2", 14);
 
 	InitEnemyBase();
 	InitHero();
@@ -52,7 +80,7 @@ void GameInit(void)
 		isFightWithAlly[i] = FALSE;
 	}
 
-	allyResource.money = 300;
+	allyResource.money = 50;
 	enemyResource.money = 10000;
 
 	red = CP_Color_CreateHex(0xFF0000FF);
@@ -82,66 +110,12 @@ void GameUpdate(void)
 
 	float dt = CP_System_GetDt();
 
-	//// 버튼 위치
-	//float summonMeleeButton_x = CP_System_GetWindowWidth() / 2.0f - 250;
-	//float summonMeleeButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-	//float buttonWidth = CP_System_GetWindowWidth() / 4.0f;
-	//float buttonHeight = CP_System_GetWindowHeight() / 4.0f;
-
-	//// 버튼(직사각형 모양) 그리기
-	//CP_Settings_Fill(white);
-	//CP_Graphics_DrawRect(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight);
-
-	//// 글씨 쓰기
-	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	//CP_TEXT_ALIGN_HORIZONTAL horizontal = CP_TEXT_ALIGN_H_CENTER;
-	//CP_TEXT_ALIGN_VERTICAL vertical = CP_TEXT_ALIGN_V_MIDDLE;
-	//CP_Settings_TextAlignment(horizontal, vertical);
-	//CP_Font_DrawText("Melee", summonMeleeButton_x, summonMeleeButton_y);
-
-	//float summonRangedButton_x = CP_System_GetWindowWidth() / 2.0f + 250;
-	//float summonRangedButton_y = CP_System_GetWindowHeight() / 4.0f * 3.0f;
-
-	//// 버튼(직사각형 모양) 그리기
-	//CP_Settings_Fill(white);
-	//CP_Graphics_DrawRect(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight);
-
-	//// 글씨 쓰기
-	//CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	//CP_Settings_TextAlignment(horizontal, vertical);
-	//CP_Font_DrawText("Ranged", summonRangedButton_x, summonRangedButton_y);
-
-
-	//if (IsAreaClicked(summonMeleeButton_x, summonMeleeButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
-	//{
-	//	for (int i = 0; i < MAX_UNIT; i++)
-	//	{
-	//		if (!ally[i].alived)
-	//		{
-	//			SummonUnit(ally, WARRIOR);
-	//			break;
-	//		}
-	//	}
-	//}
-
-	//if (IsAreaClicked(summonRangedButton_x, summonRangedButton_y, buttonWidth, buttonHeight, CP_Input_GetMouseX(), CP_Input_GetMouseY()))
-	//{
-	//	for (int i = 0; i < MAX_UNIT; i++)
-	//	{
-	//		if (!ally[i].alived)
-	//		{
-	//			SummonUnit(ally, ARCHER);
-	//			break;
-	//		}
-	//	}
-	//}
-
 	if (melee_input == 0)
 	{
 		isClicked[0] = TRUE;
 	}
 
-	if (isClicked[0])
+	if (isClicked[0])	
 	{
 		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
 		{
@@ -181,20 +155,40 @@ void GameUpdate(void)
 	{
 		if (circleToCircle(hero.attackRange, enemy[j].collider))
 		{
+			if (hero.targetUnit == NULL)
+			{
+				hero.targetUnit = &enemy[j];
+			}
+		}
+	}
 
+	for (int j = 0; j < MAX_UNIT; j++)
+	{
+		if (hero.targetUnit != NULL)
+		{
 			if (heroAttackTimeElapsed(hero.attackCoolDown))
 			{
-				enemy[j].currentHP -= hero.attackDamage;
-				printf("enemy HP: %d\n", enemy[j].currentHP);
-				if (enemy[j].currentHP <= 0)
+				hero.targetUnit->currentHP -= hero.attackDamage;
+				printf("enemy HP: %d\n", hero.targetUnit->currentHP);
+				if (hero.targetUnit->currentHP <= 0)
 				{
-					enemy[j].alived = FALSE;
-					enemy[j].collider.radius = 0;
-					enemy[j].attackRange.radius = 0;
+					hero.targetUnit->position = enemyPosition;
+					hero.targetUnit->alived = FALSE;
+					hero.targetUnit->collider.radius = 0;
+					hero.targetUnit->attackRange.radius = 0;
+					hero.targetUnit = NULL;
+					if (enemyPopulation > 0)
+					{
+						enemyPopulation--;
+						printf("enemyPopulation: %d\n", enemyPopulation);
+					}
 				}
 			}
 		}
+	}
 
+	for (int j = 0; j < MAX_UNIT; j++)
+	{
 		if (circleToCircle(enemy[j].attackRange, hero.collider))
 		{
 			isFightWithAlly[j] = TRUE;
@@ -248,18 +242,22 @@ void GameUpdate(void)
 				//printf("enemy hp: %d\n", ally[i].targetUnit->currentHP);
 				if (ally[i].targetUnit->currentHP <= 0)
 				{
-					ally[i].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+					if (ally[i].targetUnit->type == WARRIOR)
+						allyResource.money += 30;
+					else if(ally[i].targetUnit->type == ARCHER)
+						allyResource.money += 50;
+					ally[i].targetUnit->position = enemyPosition;
 					ally[i].targetUnit->alived = FALSE;
 					ally[i].targetUnit->collider.radius = 0;
 					ally[i].targetUnit->attackRange.radius = 0;
 
 					isFightWithEnemy[i] = FALSE;
 					ally[i].targetUnit = NULL;
-					/*			if (enemyPopulation > 0)
-								{
-									enemyPopulation--;
-									printf("%d\n", enemyPopulation);
-								}*/
+					if (enemyPopulation > 0)
+					{
+						enemyPopulation--;
+						printf("enemyPopulation: %d\n", enemyPopulation);
+					}
 				}
 			}
 		}
@@ -307,7 +305,7 @@ void GameUpdate(void)
 					if (allyPopulation > 0)
 					{
 						allyPopulation--;
-						printf("%d\n", allyPopulation);
+						printf("allyPopulation: %d\n", allyPopulation);
 					}
 				}
 			}
@@ -324,10 +322,15 @@ void GameUpdate(void)
 		{
 			ally[i].moveSpeed = 0;
 
-			enemyBase.currentHP -= ally[i].attackDamage;
-			if (enemyBase.currentHP <= 0)
+
+			if (unitAttackTimeElapsed(unitAttackTimer, ally[i].attackCoolDown, i))
 			{
-				//TODO: stage clear
+				enemyBase.currentHP -= ally[i].attackDamage;
+				if (enemyBase.currentHP <= 0)
+				{
+					// 게임 끝 --------스테이지 승리
+					CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
+				}
 			}
 		}
 	}
@@ -338,18 +341,42 @@ void GameUpdate(void)
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 	DrawEnemyBase();
 	DrawHero();
-	DrawUnits(ally);
-	DrawUnits(enemy);
+	DrawUnits(ally, unitTest, 19);
+	DrawUnits(enemy, unitTest2, 14);
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
 	CP_Settings_TextSize(20.0f);
 	CP_Font_DrawText(heroHP, hero.position.x, hero.position.y - 30);
+
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		char allyHP[10][50] = { 0 };
+		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d", ally[i].currentHP);
+		if(ally[i].alived)
+		CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 30);
+	}
+
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		char enemyHP[10][50] = { 0 };
+		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d", enemy[i].currentHP);
+		if (enemy[i].alived)
+			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 70);
+	}
 	
 	char enemyBaseHP[50] = { 0 };
 	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
 	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x, enemyBase.position.y - 30);
+
+	char allyMoney[50] = { 0 };
+	sprintf_s(allyMoney, _countof(enemyBaseHP), "money: %d", allyResource.money);
+	CP_Font_DrawText(allyMoney, 100, 300);
+
+	char allyPop[50] = { 0 };
+	sprintf_s(allyPop, _countof(allyPop), "ally Population: %d / %d", allyPopulation, MAX_UNIT);
+	CP_Font_DrawText(allyPop, 200, 300);
 }
 
 void GameExit(void)

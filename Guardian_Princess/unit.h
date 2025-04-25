@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "constants.h"
 #include "resource.h"
+#include "FUNC_Animation_Motion.h"
 
 extern int allyPopulation;
 extern int enemyPopulation;
@@ -20,6 +21,7 @@ typedef struct Unit
 	int attackDamage;
 	float attackCoolDown;
 	int price;
+	AnimationFrameInfo unitSetting;
 	struct Unit* targetUnit;
 }Unit;
 
@@ -29,4 +31,4 @@ extern Unit enemy[MAX_UNIT];
 void InitUnit(void);
 void SummonUnit(Unit* unit, UnitType type);
 void UpdateUnits(float dt);
-void DrawUnits(Unit* unit);
+void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);

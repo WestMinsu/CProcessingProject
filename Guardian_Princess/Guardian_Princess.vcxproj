@@ -198,6 +198,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="FUNC_BUTTON.c" />
     <ClCompile Include="hero.c" />
     <ClCompile Include="SCENE_Intro.c" />
+    <ClCompile Include="SCENE_MainTitle.c" />
+    <ClCompile Include="SCENE_StageEnd.c" />
     <ClCompile Include="unit.c" />
     <ClCompile Include="enemybase.c" />
     <ClCompile Include="asset_loading.c" />
@@ -216,6 +218,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="resource.h" />
     <ClInclude Include="SCENE_Intro.h" />
     <ClInclude Include="SCENE_MainMenu.h" />
+    <ClInclude Include="SCENE_MainTitle.h" />
+    <ClInclude Include="SCENE_StageEnd.h" />
     <ClInclude Include="unit.h" />
     <ClInclude Include="constants.h" />
     <ClInclude Include="asset_loading.h" />

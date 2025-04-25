@@ -14,6 +14,7 @@ typedef struct
 	int currentHP;
 	int attackDamage;
 	float attackCoolDown;
+	struct Unit* targetUnit;
 }Hero;
 
 void InitHero(void);
