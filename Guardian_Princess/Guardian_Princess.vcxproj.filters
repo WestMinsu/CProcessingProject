@@ -49,6 +49,8 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FUNC_AnimationState.c" />
+    <ClCompile Include="SCENE_StageEnd.c" />
+    <ClCompile Include="SCENE_MainTitle.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -103,5 +105,7 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FUNC_AnimationState.h" />
+    <ClInclude Include="SCENE_StageEnd.h" />
+    <ClInclude Include="SCENE_MainTitle.h" />
   </ItemGroup>
 </Project>

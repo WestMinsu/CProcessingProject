@@ -13,6 +13,7 @@
 #include "enemybase.h"
 #include "FUNC_Button.h"
 #include "FUNC_Animation_Motion.h"
+#include "SCENE_StageEnd.h"
 
 Hero hero;
 AllySpawner allySpawner[MAX_UNIT];
@@ -29,6 +30,8 @@ Unit enemy[MAX_UNIT];
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image battle_background;
+
+CP_Sound battleBGM;
 //-----------------------------------
 CP_Image* heroAttack;
 CP_Image* heroDead;
@@ -39,15 +42,8 @@ CP_Image* heroWalk;
 CP_Image* unitTest;
 CP_Image* unitTest2;
 //--------------------------------------------------------
-AnimationFrameInfo heroattackF = { 0,0,2 };
-AnimationFrameInfo heroDeadF = { 0,0,2 };
-AnimationFrameInfo heroHurtF = { 0,0,2};
-AnimationFrameInfo heroWaitF = { 0,0,2 };
-AnimationFrameInfo heroWalkF = { 0,0,2};
 
-AnimationFrameInfo unittestF = { 0,0,3};
-AnimationFrameInfo unittest2F = { 0,0,6 };
-//----------------------------------------------------
+int BGMPlayGame = 1;
 
 
 //TODO: 죽으면 spawnTime = 0으로
@@ -67,6 +63,9 @@ void GameInit(void)
 
 	unitTest = Animation_ImageLoader("unit_test", 19);
 	unitTest2 = Animation_ImageLoader("unit_test2", 14);
+
+	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
+
 	//----------------------------------------
 	InitEnemyBase();
 	InitHero();
@@ -108,6 +107,15 @@ void GameUpdate(void)
 	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+
+	// 음악 재생
+	if (BGMPlayGame == 1)
+	{
+		CP_Sound_PlayAdvanced(battleBGM, 1.0f, 1.0f, 1, BGM);
+		BGMPlayGame = 0;
+	}
+	
+
 
 	float dt = CP_System_GetDt();
 
@@ -270,7 +278,9 @@ void GameUpdate(void)
 			enemyBase.currentHP -= ally[i].attackDamage;
 			if (enemyBase.currentHP <= 0)
 			{
-				//TODO: stage clear
+				// 게임 끝 --------스테이지 승리
+
+				CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
 			}
 		}
 	}
@@ -296,11 +306,8 @@ void GameUpdate(void)
 
 void GameExit(void)
 {
-	// TODO: free
-	// 
-	// 
-	// 
-	// 
-	// 
-	// 
+	CP_Image_Free(&melee_button_image);
+	CP_Image_Free(&ranged_button_image);
+	CP_Image_Free(&battle_background);
+	CP_Sound_Free(&battleBGM);
 }

@@ -2,11 +2,15 @@
 #include "asset_loading.h"
 #include "SCENE_Intro.h"
 #include "SCENE_MainMenu.h"
+#include "SCENE_MainTitle.h"
 //에셋 로딩------------------------------------------------------------------------------------------------
 CP_Sound LogoSong;
 CP_Image DigipenLogo;
 CP_Image LogoImage;
+//--페이드 인, 아웃 관리------
+
 //--------------
+
 void GamePreUpdate(void)
 {
 	ImageLoad();
@@ -26,42 +30,69 @@ void IntroInit(void)
 	CP_Graphics_ClearBackground(Default_BG); //기본 배경 설정
 	//에셋 로딩--------------------------------
 
-	LogoSong = CP_Sound_Load("Assets/intro/frostbyte_logo.mp3");
-	LogoImage = CP_Image_Load("Assets/intro/logo_image.png");
-	DigipenLogo = CP_Image_Load("Assets/intro/Digipen_logo.png");
+	LogoSong = CP_Sound_Load("Assets/Intro/frostbyte_logo.mp3");
+	LogoImage = CP_Image_Load("Assets/Intro/logo_image.png");
+	DigipenLogo = CP_Image_Load("Assets/Intro/Digipen_logo.png");
 }
 
 void IntroUpdate(void)
 {
 
-	static int IsAudioPlayed = FALSE;
-	static int skip = 0;
+	static int introAlpha = 0; // 화면 트랜지션 (알파값 조정)
+	static int fadeSlow = 0; //화면 트랜지션 속도 관리 
+	static int IsAudioPlayed = FALSE; // 오디오 한번만 재생 
+	static int Introskip = 0; //클릭시 인트로 스킵 확인 변수
+
+
 	float introCount = CP_System_GetSeconds();
 
-	if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))
+	if (CP_Input_MouseReleased(MOUSE_BUTTON_LEFT))//클릭시 인트로 스킵
 	{
-		skip++;
+		Introskip++;
 	}
 
-
-	if (skip == 0 && introCount <= 3.0f)
+	if (Introskip == 0 && introCount <= 3.0f)
 	{
-		CP_Image_Draw(DigipenLogo, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+		CP_Image_Draw(DigipenLogo, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, introAlpha);
 
-	}
-	else if (skip <= 1 && introCount < 6.0f)
-	{
-		CP_Image_Draw(LogoImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+		fadeSlow++; 
 
-		if (IsAudioPlayed == FALSE)
+		if (introAlpha <= 255)
 		{
+			if(fadeSlow == 1)
+				introAlpha++;
+				fadeSlow = 0;
+		}
+
+	}
+	else if (Introskip <= 1 && introCount < 6.0f)
+	{
+		
+
+		if (IsAudioPlayed == FALSE) //로고소리 플레이
+		{
+			introAlpha = 0;
 			CP_Sound_PlayAdvanced(LogoSong, 1.5f, 1.0f, 0, 2);
 			IsAudioPlayed = TRUE;
 		}
+
+		CP_Image_Draw(LogoImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, introAlpha);
+
+		fadeSlow++;
+
+		if (introAlpha <= 255)
+		{
+			if (fadeSlow == 1)
+			{
+				introAlpha++;
+				fadeSlow = 0;
+			}
+		}
+
 	}
 	else
 	{
-		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
+		CP_Engine_SetNextGameState(MainTitleInit, MainTitleUpdate, MainTitleExit);
 	}
 }
 
