@@ -18,7 +18,7 @@ void InitUnit(void);
 
 void SummonUnit(Unit* unit, UnitType type);
 
-void DrawUnits(Unit* unit);
+void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);
 
 void GameInit(void);
 

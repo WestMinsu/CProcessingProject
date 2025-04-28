@@ -8,12 +8,15 @@ Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;
 int enemyPopulation = 0;
-
+CP_Vector allyPosition;
+CP_Vector enemyPosition;
 void InitUnit(void)
 {
+	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		ally[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+		ally[i].position = allyPosition;
 		ally[i].collider.radius = 0;
 		ally[i].moveSpeed = UNIT_SPEED;
 		ally[i].type = WARRIOR;
@@ -27,7 +30,7 @@ void InitUnit(void)
 		ally[i].targetUnit = NULL;
 		ally[i].alived = FALSE;
 
-		enemy[i].position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+		enemy[i].position = enemyPosition;
 		enemy[i].collider.radius = 0;
 		enemy[i].moveSpeed = UNIT_SPEED;
 		enemy[i].type = WARRIOR;
@@ -50,77 +53,146 @@ void SummonUnit(Unit* unit, UnitType type)
 	// 3. 그 찾은 유닛을 타입에 따라서 초기화 한다.
 	if (allyPopulation >= MAX_UNIT)
 	{
-		printf("%d", allyPopulation);
+		printf("ally pop: %d", allyPopulation);
 		printf("Can't summon ally unit!!!\n");
 	}
 
 	else if (unit == ally)
 	{
-		if (allyPopulation < MAX_UNIT)
-			allyPopulation++;
+		for (int i = 0; i < MAX_UNIT; i++)
+		{
+			if (!unit[i].alived)
+			{
+				unit[i].type = type;
+				unit[i].collider.radius = 30;
 
-		unit[allyPopulation - 1].type = type;
-		unit[allyPopulation - 1].collider.radius = 30;
+				if (unit[i].type == WARRIOR)
+				{
+					unit[i].attackDamage = 34;
+					unit[i].currentHP = 100;
+					unit[i].attackRange.radius = 50;
+					unit[i].price = 10;
+				}
+				else if (unit[allyPopulation - 1].type == ARCHER)
+				{
+					unit[i].attackDamage = 20;
+					unit[i].currentHP = 50;
+					unit[i].attackRange.radius = 300;
+					unit[i].price = 20;
+				}
+				if (allyResource.money - unit[allyPopulation - 1].price <= 0)
+				{
+					printf("No ally money!!!\n");
+					return;
+				}
+				allyResource.money -= unit[i].price;
+				unit[i].alived = TRUE;
+	
+				allyPopulation++;
+				break;
+			}
+		}
 
-		if (unit[allyPopulation - 1].type == WARRIOR)
-		{
-			unit[allyPopulation - 1].attackDamage = 34;
-			unit[allyPopulation - 1].currentHP = 100;
-			unit[allyPopulation - 1].attackRange.radius = 50;
-			unit[allyPopulation - 1].price = 10;
-		}
-		else if (unit[allyPopulation - 1].type == ARCHER)
-		{
-			unit[allyPopulation - 1].attackDamage = 20;
-			unit[allyPopulation - 1].currentHP = 50;
-			unit[allyPopulation - 1].attackRange.radius = 300;
-			unit[allyPopulation - 1].price = 20;
-		}
-		if (allyResource.money - unit[allyPopulation - 1].price <= 0)
-		{
-			printf("No ally money!!!\n");
-			return;
-		}
-		allyResource.money -= unit[allyPopulation - 1].price;
-		unit[allyPopulation - 1].alived = TRUE;
+		//unit[allyPopulation - 1].type = type;
+		//unit[allyPopulation - 1].collider.radius = 30;
+
+		//if (unit[allyPopulation - 1].type == WARRIOR)
+		//{
+		//	unit[allyPopulation - 1].attackDamage = 34;
+		//	unit[allyPopulation - 1].currentHP = 100;
+		//	unit[allyPopulation - 1].attackRange.radius = 50;
+		//	unit[allyPopulation - 1].price = 10;
+		//}
+		//else if (unit[allyPopulation - 1].type == ARCHER)
+		//{
+		//	unit[allyPopulation - 1].attackDamage = 20;
+		//	unit[allyPopulation - 1].currentHP = 50;
+		//	unit[allyPopulation - 1].attackRange.radius = 300;
+		//	unit[allyPopulation - 1].price = 20;
+		//}
+		//if (allyResource.money - unit[allyPopulation - 1].price <= 0)
+		//{
+		//	printf("No ally money!!!\n");
+		//	return;
+		//}
+		//allyResource.money -= unit[allyPopulation - 1].price;
+		//unit[allyPopulation - 1].alived = TRUE;
 	}
 
 	if (enemyPopulation >= MAX_UNIT)
 	{
+		printf("enemy pop: %d\n", enemyPopulation);
 		printf("Can't summon enemy unit!!!\n");
 	}
 
 	else if (unit == enemy)
 	{
-		if (enemyPopulation < MAX_UNIT)
-			enemyPopulation++;
+		for (int i = 0; i < MAX_UNIT; i++)
+		{
+			if (!unit[i].alived)
+			{
+				unit[i].type = type;
+				unit[i].collider.radius = 30;
 
-		unit[enemyPopulation - 1].type = type;
-		unit[enemyPopulation - 1].collider.radius = 30;
+				if (unit[i].type == WARRIOR)
+				{
+					unit[i].attackDamage = 30;
+					unit[i].currentHP = 100;
+					unit[i].attackRange.radius = 50;
+					unit[i].price = 10;
+					unit[i].attackCoolDown = 3;
+				}
+				else if (unit[i].type == ARCHER)
+				{
+					unit[i].attackDamage = 20;
+					unit[i].currentHP = 50;
+					unit[i].attackRange.radius = 300;
+					unit[i].price = 20;
+					unit[i].attackCoolDown = 2;
+				}
+				if (enemyResource.money - unit[i].price <= 0)
+				{
+					printf("No enemy money!!!\n");
+					return;
+				}
+				enemyResource.money -= unit[i].price;
+				unit[i].alived = TRUE;
+				enemyPopulation++;
+				break;
+			}
 
-		if (unit[enemyPopulation - 1].type == WARRIOR)
-		{
-			unit[enemyPopulation - 1].attackDamage = 34;
-			unit[enemyPopulation - 1].currentHP = 100;
-			unit[enemyPopulation - 1].attackRange.radius = 50;
-			unit[enemyPopulation - 1].price = 10;
-		}
-		else if (unit[enemyPopulation - 1].type == ARCHER)
-		{
-			unit[enemyPopulation - 1].attackDamage = 20;
-			unit[enemyPopulation - 1].currentHP = 50;
-			unit[enemyPopulation - 1].attackRange.radius = 300;
-			unit[enemyPopulation - 1].price = 20;
-		}
-		if (enemyResource.money - unit[enemyPopulation - 1].price <= 0)
-		{
-			printf("No enemy money!!!\n");
-			return;
-		}
-		enemyResource.money -= unit[enemyPopulation - 1].price;
-		unit[enemyPopulation - 1].alived = TRUE;
+	/*	if (enemyPopulation < MAX_UNIT)
+			enemyPopulation++;*/
+
+		//unit[enemyPopulation - 1].type = type;
+		//unit[enemyPopulation - 1].collider.radius = 30;
+
+		//if (unit[enemyPopulation - 1].type == WARRIOR)
+		//{
+		//	unit[enemyPopulation - 1].attackDamage = 30;
+		//	unit[enemyPopulation - 1].currentHP = 100;
+		//	unit[enemyPopulation - 1].attackRange.radius = 50;
+		//	unit[enemyPopulation - 1].price = 10;
+		//	unit[enemyPopulation - 1].attackCoolDown = 3;
+		//}
+		//else if (unit[enemyPopulation - 1].type == ARCHER)
+		//{
+		//	unit[enemyPopulation - 1].attackDamage = 20;
+		//	unit[enemyPopulation - 1].currentHP = 50;
+		//	unit[enemyPopulation - 1].attackRange.radius = 300;
+		//	unit[enemyPopulation - 1].price = 20;
+		//	unit[enemyPopulation - 1].attackCoolDown = 2;
+		//}
+		//if (enemyResource.money - unit[enemyPopulation - 1].price <= 0)
+		//{
+		//	printf("No enemy money!!!\n");
+		//	return;
+		//}
+		//enemyResource.money -= unit[enemyPopulation - 1].price;
+		//unit[enemyPopulation - 1].alived = TRUE;
 	}
 }
+	}
 
 void UpdateUnits(float dt)
 {
@@ -142,7 +214,7 @@ void UpdateUnits(float dt)
 	}
 }
 
-void DrawUnits(Unit* unit)
+void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -151,23 +223,26 @@ void DrawUnits(Unit* unit)
 			if (unit[i].type == WARRIOR)
 			{
 				if (unit == ally)
-					CP_Settings_Fill(blue);
+				{
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
+				}
 				else if (unit == enemy)
 				{
-					CP_Settings_Fill(red);
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
 			else if (unit[i].type == ARCHER)
 			{
 
 				if (unit == ally)
-					CP_Settings_Fill(pink);
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
 				else if (unit == enemy)
 				{
-					CP_Settings_Fill(white);
+					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
-			CP_Graphics_DrawCircle(unit[i].position.x, unit[i].position.y, 30);
+
+
 		}
 	}
 }
