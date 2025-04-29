@@ -268,18 +268,20 @@ void GameUpdate(void)
 		if (ally[i].targetUnit && ally[i].targetUnit->currentHP <= 0)
 		{
 			printf("\t\t\tally %d killed %p\n", i, ally[i].targetUnit);
-			ally[i].targetUnit->alived = FALSE;
-			// Todo: ¹¹? µ·ÀÌ º¹»ç°¡ µÈ´Ù°í?? µ· º¹»ç ¹ö±×
-			if (ally[i].targetUnit->type == WARRIOR)
-				allyResource.money += 30;
-			else if (ally[i].targetUnit->type == ARCHER)
-				allyResource.money += 50;
-			ally[i].targetUnit = NULL;
-			if (enemyPopulation > 0)
+			if (ally[i].targetUnit->alived)
 			{
-				enemyPopulation--;
-				printf("enemyPopulation: %d\n", enemyPopulation);
+				ally[i].targetUnit->alived = FALSE;
+				if (ally[i].targetUnit->type == WARRIOR)
+					allyResource.money += 30;
+				else if (ally[i].targetUnit->type == ARCHER)
+					allyResource.money += 50;
+				if (enemyPopulation > 0)
+				{
+					enemyPopulation--;
+					printf("enemyPopulation: %d\n", enemyPopulation);
+				}
 			}
+			ally[i].targetUnit = NULL;
 		}
 	}
 
@@ -289,13 +291,16 @@ void GameUpdate(void)
 		if (enemy[j].targetUnit && enemy[j].targetUnit->currentHP <= 0)
 		{
 			printf("\t\t\tenemy %d killed %p\n", j, enemy[j].targetUnit);
-			enemy[j].targetUnit->alived = FALSE;
-			enemy[j].targetUnit = NULL;
-			if (allyPopulation > 0)
+			if (enemy[j].targetUnit->alived)
 			{
-				allyPopulation--;
-				printf("allyPopulation: %d\n", allyPopulation);
+				enemy[j].targetUnit->alived = FALSE;
+				if (allyPopulation > 0)
+				{
+					allyPopulation--;
+					printf("allyPopulation: %d\n", allyPopulation);
+				}
 			}
+			enemy[j].targetUnit = NULL;
 		}
 	}
 
