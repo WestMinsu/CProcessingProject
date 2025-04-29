@@ -29,7 +29,7 @@ void InitUnit(void)
 
 		ally[i].currentHP = 1;
 		ally[i].attackDamage = 0;
-		ally[i].attackCoolDown = 3;
+		ally[i].attackCoolDown = 1;
 		ally[i].price = 1;
 		//ally[i].unitSetting ???
 		ally[i].targetUnit = NULL;
@@ -44,7 +44,7 @@ void InitUnit(void)
 
 		enemy[i].currentHP = 1;
 		enemy[i].attackDamage = 0;
-		enemy[i].attackCoolDown = 5;
+		enemy[i].attackCoolDown = 1;
 		enemy[i].price = 20;
 		// enemy[i].unitSetting
 		enemy[i].targetUnit = NULL;
@@ -79,6 +79,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 100;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
+					unit[i].attackCoolDown = 3;
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -86,6 +87,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 50;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
+					unit[i].attackCoolDown = 2;
 				}
 				if (allyResource.money - unit[i].price <= 0)
 				{

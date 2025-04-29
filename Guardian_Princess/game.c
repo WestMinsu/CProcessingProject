@@ -167,8 +167,6 @@ void GameUpdate(void)
 		}
 	}
 
-	// Todo: attack phase만 처리하세요 -> targetUnit null update는 마지막에 일괄로 처리
-
 	if (hero.hero.alived && hero.hero.targetUnit != NULL && heroAttackTimeElapsed(hero.hero.attackCoolDown))
 	{
 		hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
@@ -184,7 +182,7 @@ void GameUpdate(void)
 		}
 	}
 
-	if (hero.hero.targetUnit && hero.hero.targetUnit->alived)
+	if (hero.hero.targetUnit && !hero.hero.targetUnit->alived)
 		hero.hero.targetUnit = NULL;
 	
 
@@ -198,26 +196,17 @@ void GameUpdate(void)
 				enemy[j].targetUnit = &hero.hero;
 			}
 
-			// Todo: 강물 하나하나 막지말고 딱 바다로 유입하는 곳 한곳만 막으란 말임니다.
-			enemy[j].moveSpeed = 0;
-
 			if (unitAttackTimeElapsed(enemyAttackTimer, enemy[j].attackCoolDown, j))
 			{
 				hero.hero.currentHP -= enemy[j].attackDamage;
-				//printf("hero hp: %d", hero.currentHP);
 				if (hero.hero.currentHP <= 0)
 				{
 					printf("hero dead\n");
-					hero.hero.moveSpeed = 0;
 					hero.hero.collider.radius = 0;
 					hero.hero.attackRange.radius = 0;
-					enemy[j].moveSpeed = UNIT_SPEED;
 				}
 			}
 		}
-		else
-			// Todo: 강물 하나하나 막지말고 딱 바다로 유입하는 곳 한곳만 막으란 말임니다.
-			enemy[j].moveSpeed = UNIT_SPEED;
 	}
 
 	//ally find target
@@ -232,10 +221,6 @@ void GameUpdate(void)
 					ally[i].targetUnit = &enemy[j];
 					printf("\t\t\t %p ally %d -> enemy %d\n", &ally[i], i, j);
 				}
-				// Todo: 강물 하나하나 막지말고 딱 바다로 유입하는 곳 한곳만 막으란 말임니다.
-				//       공정을 간단히 만드세요
-				ally[i].moveSpeed = 0;
-				
 			}
 		}
 	}
@@ -248,10 +233,6 @@ void GameUpdate(void)
 			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
 			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
 		}
-		if (ally[i].targetUnit == NULL)
-		{
-			ally[i].moveSpeed = UNIT_SPEED;
-		}
 	}
 
 	//enemy find target
@@ -261,12 +242,11 @@ void GameUpdate(void)
 		{
 			if (ally[i].alived && enemy[j].alived && circleToCircle(enemy[j].attackRange, ally[i].collider))
 			{
-				if (enemy[j].targetUnit == NULL)
+				if (enemy[j].targetUnit == NULL || enemy[j].targetUnit == &hero.hero)
 				{
 					enemy[j].targetUnit = &ally[i];
 					printf("\t\t\t %p enemy %d -> ally %d\n", &enemy[j], j, i);
 				}
-				enemy[j].moveSpeed = 0;
 			}
 		}
 	}
@@ -274,16 +254,11 @@ void GameUpdate(void)
 	//enemy attack target
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && enemy[j].targetUnit != NULL && unitAttackTimeElapsed(enemyAttackTimer, enemy[j].attackCoolDown, j))
+		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && unitAttackTimeElapsed(enemyAttackTimer, enemy[j].attackCoolDown, j))
 		{
 			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
 
 			printf("\t\t\tenemy %d deal -> ally %p\n", j, enemy[j].targetUnit);
-		}
-
-		if (enemy[j].targetUnit == NULL)
-		{
-			enemy[j].moveSpeed = UNIT_SPEED;
 		}
 	}
 
@@ -326,11 +301,8 @@ void GameUpdate(void)
 	// ally enemybase attack
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		//if (circleToCircle(ally[i].attackRange, enemyBase.collider) && !isFightWithEnemy[i])
 		if (ally[i].alived && circleToCircle(ally[i].attackRange, enemyBase.collider) && ally[i].targetUnit == NULL)
 		{
-			ally[i].moveSpeed = 0;
-
 			if (unitAttackTimeElapsed(allyAttackTimer, ally[i].attackCoolDown, i))
 			{
 				enemyBase.currentHP -= ally[i].attackDamage;
@@ -343,6 +315,29 @@ void GameUpdate(void)
 		}
 	}
 
+	for (int i = 0; i < MAX_UNIT; i++)
+	{
+		if (ally[i].targetUnit)
+			ally[i].moveSpeed = 0;
+		else
+			ally[i].moveSpeed = UNIT_SPEED;
+	}
+
+	for (int j = 0; j < MAX_UNIT; j++)
+	{
+		if (enemy[j].targetUnit)
+			enemy[j].moveSpeed = 0;
+
+		else
+			enemy[j].moveSpeed = UNIT_SPEED;
+	}
+
+	for (int j = 0; j < MAX_UNIT; j++)
+	{
+		if (enemy[j].targetUnit == &hero.hero && !circleToCircle(enemy[j].attackRange, hero.hero.collider))
+			enemy[j].moveSpeed = UNIT_SPEED;
+	}
+
 	float dt = CP_System_GetDt();
 	UpdateHero(dt);
 	UpdateUnits(dt);
@@ -350,8 +345,6 @@ void GameUpdate(void)
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	//CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
-
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
@@ -373,7 +366,7 @@ void GameUpdate(void)
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		char allyHP[10][50] = { 0 };
-		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d", ally[i].currentHP);
+		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, allyAttackTimer[i].timer);
 		if (ally[i].alived)
 			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 30);
 	}
@@ -381,7 +374,7 @@ void GameUpdate(void)
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		char enemyHP[10][50] = { 0 };
-		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d", enemy[i].currentHP);
+		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemyAttackTimer[i].timer);
 		if (enemy[i].alived)
 			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 70);
 	}
