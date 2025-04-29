@@ -269,6 +269,7 @@ void GameUpdate(void)
 		{
 			printf("\t\t\tally %d killed %p\n", i, ally[i].targetUnit);
 			ally[i].targetUnit->alived = FALSE;
+			// Todo: 뭐? 돈이 복사가 된다고?? 돈 복사 버그
 			if (ally[i].targetUnit->type == WARRIOR)
 				allyResource.money += 30;
 			else if (ally[i].targetUnit->type == ARCHER)
@@ -317,7 +318,7 @@ void GameUpdate(void)
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].targetUnit)
+		if (ally[i].targetUnit || circleToCircle(ally[i].attackRange, enemyBase.collider))
 			ally[i].moveSpeed = 0;
 		else
 			ally[i].moveSpeed = UNIT_SPEED;
@@ -334,6 +335,7 @@ void GameUpdate(void)
 
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
+		// 히어로랑 싸우다가 히어로가 뒤로 도망가면 enemy가 멈춰있는 현상을 고치기 위해서 duck tape로 덕지덕지 발라논 코드
 		if (enemy[j].targetUnit == &hero.hero && !circleToCircle(enemy[j].attackRange, hero.hero.collider))
 			enemy[j].moveSpeed = UNIT_SPEED;
 	}

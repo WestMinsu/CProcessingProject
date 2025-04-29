@@ -72,6 +72,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
+				unit[i].targetUnit = NULL;
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -145,6 +146,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
+				unit[i].targetUnit = NULL;
 
 				if (unit[i].type == WARRIOR)
 				{
