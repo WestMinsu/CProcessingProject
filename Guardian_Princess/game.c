@@ -27,11 +27,8 @@ extern Unit enemy[MAX_UNIT];
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image battle_background;
-AttackTimer heroAttackTimer;
 CP_BOOL isClicked[NUM_UNIT_TYPES];
 CP_BOOL isClickedEnemy[NUM_UNIT_TYPES];
-AttackTimer allyAttackTimer[MAX_UNIT]; 
-AttackTimer enemyAttackTimer[MAX_UNIT];
 
 //-------------------------------------------------------
 CP_Image* heroAttack;
@@ -70,6 +67,14 @@ void GameInit(void)
 	InitHero();
 	InitUnit();
 	SummonEnemyBase();
+
+	for (int i = 0; i < NUM_UNIT_TYPES; i++)
+	{
+		allySpawner[i].timer = 0;
+		enemySpawner[i].timer = 0;
+		isClicked[i] = FALSE;
+		isClickedEnemy[i] = FALSE;
+	}
 
 	allyResource.money = 50;
 	enemyResource.money = 10000;
@@ -164,26 +169,25 @@ void GameUpdate(void)
 				hero.hero.targetUnit = &enemy[j];
 				break;
 			}
-		}
-	}
 
-	if (hero.hero.alived && hero.hero.targetUnit != NULL && heroAttackTimeElapsed(hero.hero.attackCoolDown))
-	{
-		hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
-		printf("enemy HP: %d\n", hero.hero.targetUnit->currentHP);
-		if (hero.hero.targetUnit->currentHP <= 0)
-		{
-			hero.hero.targetUnit->alived = FALSE;
-			if (enemyPopulation > 0)
+			if (hero.hero.targetUnit != NULL && unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
 			{
-				enemyPopulation--;
-				printf("enemyPopulation: %d\n", enemyPopulation);
+				hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
+				printf("enemy HP: %d\n", hero.hero.targetUnit->currentHP);
+				if (hero.hero.targetUnit->currentHP <= 0)
+				{
+					hero.hero.targetUnit->alived = FALSE;
+					hero.hero.targetUnit = NULL;
+					if (enemyPopulation > 0)
+					{
+						enemyPopulation--;
+						printf("enemyPopulation: %d\n", enemyPopulation);
+					}
+				}
 			}
 		}
 	}
 
-	if (hero.hero.targetUnit && !hero.hero.targetUnit->alived)
-		hero.hero.targetUnit = NULL;
 	
 
 	// enemy가 hero 때릴 수 있는지 없는지
@@ -196,7 +200,7 @@ void GameUpdate(void)
 				enemy[j].targetUnit = &hero.hero;
 			}
 
-			if (unitAttackTimeElapsed(enemyAttackTimer, enemy[j].attackCoolDown, j))
+			if (unitAttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 			{
 				hero.hero.currentHP -= enemy[j].attackDamage;
 				if (hero.hero.currentHP <= 0)
@@ -228,7 +232,7 @@ void GameUpdate(void)
 	//ally attack target
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].alived && ally[i].targetUnit != NULL && unitAttackTimeElapsed(allyAttackTimer, ally[i].attackCoolDown, i))
+		if (ally[i].alived && ally[i].targetUnit != NULL && unitAttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 		{
 			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
 			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
@@ -254,7 +258,7 @@ void GameUpdate(void)
 	//enemy attack target
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && unitAttackTimeElapsed(enemyAttackTimer, enemy[j].attackCoolDown, j))
+		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && unitAttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 		{
 			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
 
@@ -309,7 +313,7 @@ void GameUpdate(void)
 	{
 		if (ally[i].alived && circleToCircle(ally[i].attackRange, enemyBase.collider) && ally[i].targetUnit == NULL)
 		{
-			if (unitAttackTimeElapsed(allyAttackTimer, ally[i].attackCoolDown, i))
+			if (unitAttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 			{
 				enemyBase.currentHP -= ally[i].attackDamage;
 				if (enemyBase.currentHP <= 0)
@@ -365,15 +369,15 @@ void GameUpdate(void)
 
 
 	char heroHP[50] = { 0 };
-	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.hero.currentHP, hero.maxHP);
+	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
 	CP_Settings_TextSize(20.0f);
-	CP_Font_DrawText(heroHP, hero.hero.position.x, hero.hero.position.y - 30);
+	CP_Font_DrawText(heroHP, hero.hero.position.x - 30, hero.hero.position.y - 50);
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		char allyHP[10][50] = { 0 };
-		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, allyAttackTimer[i].timer);
+		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, ally[i].attackTimer);
 		if (ally[i].alived)
 			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 30);
 	}
@@ -381,7 +385,7 @@ void GameUpdate(void)
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		char enemyHP[10][50] = { 0 };
-		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemyAttackTimer[i].timer);
+		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemy[i].attackTimer);
 		if (enemy[i].alived)
 			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 70);
 	}

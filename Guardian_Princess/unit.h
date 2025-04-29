@@ -8,6 +8,11 @@
 extern int allyPopulation;
 extern int enemyPopulation;
 
+typedef struct AttackTimer
+{
+	float timer;
+} AttackTimer;
+
 typedef struct Unit
 {
 	CP_Vector position;
@@ -23,6 +28,8 @@ typedef struct Unit
 	int price;
 	AnimationFrameInfo unitSetting;
 	struct Unit* targetUnit;
+	float attackTimer;
+	//float spawnTimer[NUM_UNIT_TYPES];
 }Unit;
 
 extern Unit ally[MAX_UNIT];

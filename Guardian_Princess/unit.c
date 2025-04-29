@@ -33,6 +33,7 @@ void InitUnit(void)
 		ally[i].price = 1;
 		//ally[i].unitSetting ???
 		ally[i].targetUnit = NULL;
+		ally[i].attackTimer = 0;
 
 		enemy[i].position = enemyPosition;
 		enemy[i].alived = FALSE;
@@ -48,6 +49,7 @@ void InitUnit(void)
 		enemy[i].price = 20;
 		// enemy[i].unitSetting
 		enemy[i].targetUnit = NULL;
+		enemy[i].attackTimer = 0;
 	}
 }
 
@@ -73,6 +75,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
+				unit[i].attackTimer = 0.0f;
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -103,30 +106,6 @@ void SummonUnit(Unit* unit, UnitType type)
 			}
 		}
 
-		//unit[allyPopulation - 1].type = type;
-		//unit[allyPopulation - 1].collider.radius = 30;
-
-		//if (unit[allyPopulation - 1].type == WARRIOR)
-		//{
-		//	unit[allyPopulation - 1].attackDamage = 34;
-		//	unit[allyPopulation - 1].currentHP = 100;
-		//	unit[allyPopulation - 1].attackRange.radius = 50;
-		//	unit[allyPopulation - 1].price = 10;
-		//}
-		//else if (unit[allyPopulation - 1].type == ARCHER)
-		//{
-		//	unit[allyPopulation - 1].attackDamage = 20;
-		//	unit[allyPopulation - 1].currentHP = 50;
-		//	unit[allyPopulation - 1].attackRange.radius = 300;
-		//	unit[allyPopulation - 1].price = 20;
-		//}
-		//if (allyResource.money - unit[allyPopulation - 1].price <= 0)
-		//{
-		//	printf("No ally money!!!\n");
-		//	return;
-		//}
-		//allyResource.money -= unit[allyPopulation - 1].price;
-		//unit[allyPopulation - 1].alived = TRUE;
 	}
 
 	if (enemyPopulation >= MAX_UNIT)
@@ -147,6 +126,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
+				unit[i].attackTimer = 0.0f;
 
 				if (unit[i].type == WARRIOR)
 				{

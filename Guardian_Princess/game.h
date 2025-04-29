@@ -14,11 +14,6 @@ typedef struct UnitSpawner
 	int isActive;
 } UnitSpawner;
 
-typedef struct AttackTimer
-{
-	float timer;
-} AttackTimer;
-
 void InitHero(void);
 
 void InitUnit(void);

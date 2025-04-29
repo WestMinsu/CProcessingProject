@@ -20,8 +20,9 @@ void InitHero(void)
 	hero.maxHP = 1000;
 	hero.hero.currentHP = hero.maxHP;
 	hero.hero.attackDamage = 50;
-	hero.hero.attackCoolDown = 2;
+	hero.hero.attackCoolDown = 3;
 	hero.hero.targetUnit = NULL;
+	hero.hero.attackTimer = 0;
 }
 
 void UpdateHero(float dt)
