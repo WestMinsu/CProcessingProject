@@ -5,7 +5,6 @@
 typedef struct
 {
 	CP_Vector position;
-	CP_BOOL alived;
 	Circle collider;
 
 	int maxHP;

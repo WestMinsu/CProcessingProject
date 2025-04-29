@@ -1,29 +1,31 @@
 #pragma once
 #include "utils.h"
-#include "UNIT_Enemy.h"
+#include "unit.h"
 
-typedef struct 
+// Todo: 1.UnitSpawner 초기화 함수 만들기 
+//       2. UpdateSpawner(UnitSpawner*) 함수 만들기
+//				- if active, then timer += dt
+//							 if timer >= duration, then timer = 0, active = false
+//					
+typedef struct UnitSpawner
 {
 	float timer;
-} AllySpawner;
+	float duration;
+	int isActive;
+} UnitSpawner;
 
-
-typedef struct EnemySpawner
+typedef struct AttackTimer
 {
 	float timer;
-} EnemySpawner;
+} AttackTimer;
 
 void InitHero(void);
 
-void initUnit(void);
+void InitUnit(void);
 
-void SummonAllyUnit(UnitType type);
+void SummonUnit(Unit* unit, UnitType type);
 
-void SummonEnemyUnit(UnitType type);
-
-void DrawAllyUnits(void);
-
-void DrawEnemyUnits(void);
+void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);
 
 void GameInit(void);
 

@@ -9,7 +9,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.c">
+    <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="game.c">
@@ -21,37 +21,36 @@
     <ClCompile Include="asset_loading.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FUNC_Animation_Motion.c">
+    <ClCompile Include="SCENE_MainMenu.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="unit.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="enemybase.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SCENE_Intro.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SCENE_MainMenu.c">
+    <ClCompile Include="hero.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ally.c" />
-    <ClCompile Include="enemy.c" />
-    <ClCompile Include="ally.c">
+    <ClCompile Include="FUNC_Animation_Motion.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="enemy.c">
+    <ClCompile Include="unit_info.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="enemybase.c" />
-    <ClCompile Include="UNIT_Enemy.c">
+    <ClCompile Include="FUNC_BUTTON.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FUNC_Button.c">
+    <ClCompile Include="SCENE_MainTitle.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hero.c">
+    <ClCompile Include="SCENE_StageEnd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="UNIT_Ally.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FUNC_StageReset.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -60,29 +59,10 @@
     <ClInclude Include="game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FUNC_Animation_Motion.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="asset_loading.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SCENE_Intro.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SCENE_MainMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ally.h" />
-    <ClInclude Include="colors.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="enemy.h" />
-    <ClInclude Include="enemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ally.h">
+    <ClInclude Include="unit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hero.h">
@@ -91,22 +71,38 @@
     <ClInclude Include="constants.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SCENE_MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="enemybase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="enemybase.h" />
-    <ClInclude Include="FUNC_Button.h">
+    <ClInclude Include="SCENE_Intro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UNIT_Enemy.h">
+    <ClInclude Include="FUNC_Animation_Motion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hero.h">
+    <ClInclude Include="mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="UNIT_Ally.h">
+    <ClInclude Include="unit_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FUNC_StageReset.h" />
+    <ClInclude Include="FUNC_BUTTON.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_MainTitle.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SCENE_StageEnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

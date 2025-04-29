@@ -1,19 +1,12 @@
 #pragma once
 #include "cprocessing.h"
 #include "utils.h"
+#include "unit.h"
 
-typedef struct
+typedef struct Hero
 {
-	CP_Vector position;
-	CP_BOOL alived;
-	int moveSpeed;
-	Circle collider;
-	Circle attackRange;
-
+	Unit hero;
 	int maxHP;
-	int currentHP;
-	int attackDamage;
-	float attackSpeed;
 }Hero;
 
 void InitHero(void);

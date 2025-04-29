@@ -17,12 +17,11 @@ void InitEnemyBase(void)
 void SummonEnemyBase(void)
 {
 	enemyBase.collider.position = CP_Vector_Set(enemyBase.position.x, enemyBase.position.y);
-	enemyBase.collider.radius = 250;
-	enemyBase.alived = TRUE;
+	enemyBase.collider.radius = 200;
 }
 
 void DrawEnemyBase(void)
 {
 	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(enemyBase.position.x, enemyBase.position.y, (float)enemyBase.collider.radius - 50, (float)enemyBase.collider.radius);
+	CP_Graphics_DrawRect(enemyBase.position.x, enemyBase.position.y, (float)enemyBase.collider.radius, (float)enemyBase.collider.radius+50);
 }

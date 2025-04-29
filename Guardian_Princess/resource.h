@@ -1,5 +1,8 @@
 #pragma once
-typedef struct AllyResource
+typedef struct Resource
 {
 	int money;
-} AllyResource;
+}Resource;
+
+extern Resource allyResource;
+extern Resource enemyResource;

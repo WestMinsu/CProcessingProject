@@ -1,6 +1,5 @@
 #pragma once
 
-#define MAX_UNIT 10
-#define NUM_ENEMY_TYPES 2
+#define MAX_UNIT 5
+#define NUM_UNIT_TYPES 2
 #define UNIT_SPEED 200
-
