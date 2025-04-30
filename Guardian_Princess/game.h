@@ -2,8 +2,8 @@
 #include "utils.h"
 #include "unit.h"
 
-// Todo: 1.UnitSpawner ÃÊ±âÈ­ ÇÔ¼ö ¸¸µé±â 
-//       2. UpdateSpawner(UnitSpawner*) ÇÔ¼ö ¸¸µé±â
+// Todo: 1.UnitSpawner ï¿½Ê±ï¿½È­ ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ 
+//       2. UpdateSpawner(UnitSpawner*) ï¿½Ô¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½
 //				- if active, then timer += dt
 //							 if timer >= duration, then timer = 0, active = false
 //					
@@ -18,9 +18,7 @@ void InitHero(void);
 
 void InitUnit(void);
 
-void SummonUnit(Unit* unit, UnitType type);
-
-void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);
+void DrawUnits(Unit* unit, int totalframe);
 
 void GameInit(void);
 
