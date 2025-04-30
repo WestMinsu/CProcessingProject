@@ -73,14 +73,19 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].position = allyPosition;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
+				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
+				printf("hi\n");
 
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 34;
+					printf("warrior\n");
+
+					unit[i].attackDamage = 33;
 					unit[i].currentHP = 100;
+					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
@@ -90,6 +95,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				{
 					unit[i].attackDamage = 20;
 					unit[i].currentHP = 50;
+					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;
@@ -126,14 +132,16 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].collider.radius = 0;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
+				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
 				unit[i].attackTimer = 3.0f;
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 30;
+					unit[i].attackDamage = 34;
 					unit[i].currentHP = 100;
+					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
@@ -143,6 +151,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				{
 					unit[i].attackDamage = 20;
 					unit[i].currentHP = 50;
+					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;

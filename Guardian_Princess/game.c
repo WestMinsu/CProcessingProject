@@ -164,7 +164,7 @@ void GameUpdate(void)
 		isHeroAttack = TRUE;
 	}
 
-
+	// hero space 누르면 광역 공격
 	if (isHeroAttack)
 	{
 		if (unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
@@ -173,7 +173,6 @@ void GameUpdate(void)
 			{
 				if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
 				{
-					printf("zz\n");
 					enemy[j].currentHP -= hero.hero.attackDamage;
 					isHeroAttack = FALSE;
 					if (enemy[j].currentHP <= 0)
@@ -181,7 +180,7 @@ void GameUpdate(void)
 						enemy[j].alived = FALSE;
 						if (enemyPopulation > 0)
 						{
-							enemyPopulation--;
+							enemyPopulation--;	
 							printf("enemyPopulation: %d\n", enemyPopulation);
 						}
 					}
@@ -191,35 +190,6 @@ void GameUpdate(void)
 			}
 		}
 	}
-
-	// hero가 공격할 대상 찾기
-	//for (int j = 0; j < MAX_UNIT; j++)
-	//{
-	//	if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
-	//	{
-	//		if (hero.hero.targetUnit == NULL)
-	//		{
-	//			hero.hero.targetUnit = &enemy[j];
-	//			break;
-	//		}
-
-	//		if (hero.hero.targetUnit != NULL && unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
-	//		{
-	//			hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
-	//			printf("enemy HP: %d\n", hero.hero.targetUnit->currentHP);
-	//			if (hero.hero.targetUnit->currentHP <= 0)
-	//			{
-	//				hero.hero.targetUnit->alived = FALSE;
-	//				hero.hero.targetUnit = NULL;
-	//				if (enemyPopulation > 0)
-	//				{
-	//					enemyPopulation--;
-	//					printf("enemyPopulation: %d\n", enemyPopulation);
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
 	// enemy가 hero 때릴 수 있는지 없는지
 	for (int j = 0; j < MAX_UNIT; j++)
