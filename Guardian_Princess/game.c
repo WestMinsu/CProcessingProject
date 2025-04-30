@@ -29,6 +29,7 @@ CP_Image ranged_button_image;
 CP_Image battle_background;
 CP_BOOL isClicked[NUM_UNIT_TYPES];
 CP_BOOL isClickedEnemy[NUM_UNIT_TYPES];
+CP_BOOL isHeroAttack;
 
 //-------------------------------------------------------
 CP_Image* heroAttack;
@@ -158,37 +159,67 @@ void GameUpdate(void)
 	}
 	// Todo: end of todo
 
-
-	// hero가 공격할 대상 찾기
-	for (int j = 0; j < MAX_UNIT; j++)
+	if (CP_Input_KeyReleased(KEY_SPACE))
 	{
-		if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
-		{
-			if (hero.hero.targetUnit == NULL)
-			{
-				hero.hero.targetUnit = &enemy[j];
-				break;
-			}
+		isHeroAttack = TRUE;
+	}
 
-			if (hero.hero.targetUnit != NULL && unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
+
+	if (isHeroAttack)
+	{
+		if (unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
+		{
+			for (int j = 0; j < MAX_UNIT; j++)
 			{
-				hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
-				printf("enemy HP: %d\n", hero.hero.targetUnit->currentHP);
-				if (hero.hero.targetUnit->currentHP <= 0)
+				if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
 				{
-					hero.hero.targetUnit->alived = FALSE;
-					hero.hero.targetUnit = NULL;
-					if (enemyPopulation > 0)
+					printf("zz\n");
+					enemy[j].currentHP -= hero.hero.attackDamage;
+					isHeroAttack = FALSE;
+					if (enemy[j].currentHP <= 0)
 					{
-						enemyPopulation--;
-						printf("enemyPopulation: %d\n", enemyPopulation);
+						enemy[j].alived = FALSE;
+						if (enemyPopulation > 0)
+						{
+							enemyPopulation--;
+							printf("enemyPopulation: %d\n", enemyPopulation);
+						}
 					}
 				}
+				else
+					isHeroAttack = FALSE;
 			}
 		}
 	}
 
-	
+	// hero가 공격할 대상 찾기
+	//for (int j = 0; j < MAX_UNIT; j++)
+	//{
+	//	if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
+	//	{
+	//		if (hero.hero.targetUnit == NULL)
+	//		{
+	//			hero.hero.targetUnit = &enemy[j];
+	//			break;
+	//		}
+
+	//		if (hero.hero.targetUnit != NULL && unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
+	//		{
+	//			hero.hero.targetUnit->currentHP -= hero.hero.attackDamage;
+	//			printf("enemy HP: %d\n", hero.hero.targetUnit->currentHP);
+	//			if (hero.hero.targetUnit->currentHP <= 0)
+	//			{
+	//				hero.hero.targetUnit->alived = FALSE;
+	//				hero.hero.targetUnit = NULL;
+	//				if (enemyPopulation > 0)
+	//				{
+	//					enemyPopulation--;
+	//					printf("enemyPopulation: %d\n", enemyPopulation);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 
 	// enemy가 hero 때릴 수 있는지 없는지
 	for (int j = 0; j < MAX_UNIT; j++)

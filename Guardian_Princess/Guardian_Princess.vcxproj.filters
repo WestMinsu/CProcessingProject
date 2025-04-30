@@ -39,9 +39,6 @@
     <ClCompile Include="FUNC_Animation_Motion.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="unit_info.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="FUNC_BUTTON.c">
       <Filter>Source Files</Filter>
     </ClCompile>
