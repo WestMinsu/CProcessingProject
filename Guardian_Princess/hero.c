@@ -10,7 +10,7 @@ extern EnemyBase enemyBase;
 
 void InitHero(void)
 {
-	hero.hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
+	hero.hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
 	hero.hero.alived = TRUE;
 	hero.hero.moveSpeed = 400;
 	hero.hero.collider.radius = 30;

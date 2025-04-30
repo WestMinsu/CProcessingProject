@@ -13,8 +13,8 @@ CP_Vector enemyPosition;
 
 void InitUnit(void)
 {
-	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
-	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
+	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
 	enemyPopulation = 0;
 	for (int i = 0; i < MAX_UNIT; i++)
@@ -75,7 +75,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
-				unit[i].attackTimer = 0.0f;
+
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -83,7 +83,8 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 100;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
-					unit[i].attackCoolDown = 3;
+					unit[i].attackCoolDown = 3.0f;
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f를 첫 번째 공격 시전 시간으로 변경
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -91,7 +92,8 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 50;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
-					unit[i].attackCoolDown = 2;
+					unit[i].attackCoolDown = 2.0f;
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f를 첫 번째 공격 시전 시간으로 변경
 				}
 				if (allyResource.money - unit[i].price <= 0)
 				{
@@ -100,7 +102,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				}
 				allyResource.money -= unit[i].price;
 				unit[i].alived = TRUE;
-	
+
 				allyPopulation++;
 				break;
 			}
@@ -126,7 +128,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].type = type;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
-				unit[i].attackTimer = 0.0f;
+				unit[i].attackTimer = 3.0f;
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -134,7 +136,8 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 100;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
-					unit[i].attackCoolDown = 3;
+					unit[i].attackCoolDown = 3.0f;
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f를 첫 번째 공격 시전 시간으로 변경
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -142,7 +145,8 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].currentHP = 50;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
-					unit[i].attackCoolDown = 2;
+					unit[i].attackCoolDown = 2.0f;
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f를 첫 번째 공격 시전 시간으로 변경
 				}
 				if (enemyResource.money - unit[i].price <= 0)
 				{
@@ -154,39 +158,9 @@ void SummonUnit(Unit* unit, UnitType type)
 				enemyPopulation++;
 				break;
 			}
-
-	/*	if (enemyPopulation < MAX_UNIT)
-			enemyPopulation++;*/
-
-		//unit[enemyPopulation - 1].type = type;
-		//unit[enemyPopulation - 1].collider.radius = 30;
-
-		//if (unit[enemyPopulation - 1].type == WARRIOR)
-		//{
-		//	unit[enemyPopulation - 1].attackDamage = 30;
-		//	unit[enemyPopulation - 1].currentHP = 100;
-		//	unit[enemyPopulation - 1].attackRange.radius = 50;
-		//	unit[enemyPopulation - 1].price = 10;
-		//	unit[enemyPopulation - 1].attackCoolDown = 3;
-		//}
-		//else if (unit[enemyPopulation - 1].type == ARCHER)
-		//{
-		//	unit[enemyPopulation - 1].attackDamage = 20;
-		//	unit[enemyPopulation - 1].currentHP = 50;
-		//	unit[enemyPopulation - 1].attackRange.radius = 300;
-		//	unit[enemyPopulation - 1].price = 20;
-		//	unit[enemyPopulation - 1].attackCoolDown = 2;
-		//}
-		//if (enemyResource.money - unit[enemyPopulation - 1].price <= 0)
-		//{
-		//	printf("No enemy money!!!\n");
-		//	return;
-		//}
-		//enemyResource.money -= unit[enemyPopulation - 1].price;
-		//unit[enemyPopulation - 1].alived = TRUE;
+		}
 	}
 }
-	}
 
 void UpdateUnits(float dt)
 {
@@ -227,7 +201,6 @@ void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe)
 			}
 			else if (unit[i].type == ARCHER)
 			{
-
 				if (unit == ally)
 					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
 				else if (unit == enemy)
@@ -235,7 +208,6 @@ void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe)
 					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
-
 
 		}
 	}

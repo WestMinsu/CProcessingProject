@@ -92,9 +92,6 @@
     <ClInclude Include="mainmenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="unit_info.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="FUNC_BUTTON.h">
       <Filter>Header Files</Filter>
     </ClInclude>

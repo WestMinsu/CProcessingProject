@@ -405,6 +405,22 @@ void GameUpdate(void)
 	char enemyPop[50] = { 0 };
 	sprintf_s(enemyPop, _countof(enemyPop), "enemy Population: %d / %d", enemyPopulation, MAX_UNIT);
 	CP_Font_DrawText(enemyPop, 1600, 300);
+
+	char allySpawnTime1[50] = { 0 };
+	sprintf_s(allySpawnTime1, _countof(allySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - allySpawner[WARRIOR].timer);
+	CP_Font_DrawText(allySpawnTime1, 500, 500);
+
+	char allySpawnTime2[50] = { 0 };
+	sprintf_s(allySpawnTime2, _countof(allySpawnTime2), "%5.2f", ARCHER_SPAWN_TIME - allySpawner[ARCHER].timer);
+	CP_Font_DrawText(allySpawnTime2, 700, 500);
+
+	char enemySpawnTime1[50] = { 0 };
+	sprintf_s(enemySpawnTime1, _countof(enemySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - enemySpawner[WARRIOR].timer);
+	CP_Font_DrawText(enemySpawnTime1, 1200, 500);
+
+	char enemySpawnTime2[50] = { 0 };
+	sprintf_s(enemySpawnTime2, _countof(enemySpawnTime2), "%5.2f", ARCHER_SPAWN_TIME - enemySpawner[ARCHER].timer);
+	CP_Font_DrawText(enemySpawnTime2, 1400, 500);
 }
 
 void GameExit(void)
