@@ -2,10 +2,8 @@
 #include "FUNC_Button.h"
 
 
-int Button_Draw_Square(CP_Image loaded_image, float buttonX, float buttonY, float buttonW, float buttonH, int buttonA)
+int SquareButtonClicked(CP_Image loaded_image, float buttonX, float buttonY, float buttonW, float buttonH, int buttonA)
 {
-	CP_Image_Draw(loaded_image, buttonX, buttonY, buttonW, buttonH, buttonA);
-
 	if ((CP_Input_MouseReleased(MOUSE_BUTTON_LEFT)) && (buttonX - buttonW / 2 < CP_Input_GetMouseX()) && (buttonX + buttonW / 2 > CP_Input_GetMouseX()) && (buttonY - buttonH / 2 < CP_Input_GetMouseY()) && (buttonY + buttonH / 2 > CP_Input_GetMouseY()))
 	{
 		return 0;

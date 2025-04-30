@@ -206,7 +206,6 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClCompile Include="game.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="SCENE_MainMenu.c" />
-    <ClCompile Include="unit_info.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
@@ -225,7 +224,6 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     <ClInclude Include="asset_loading.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="hero.h" />
-    <ClInclude Include="unit_info.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -9,7 +9,7 @@ extern EnemyBase enemyBase;
 void InitEnemyBase(void)
 {
 	enemyBase.position.x = CP_System_GetWindowWidth() / 5.0f * 4.4f;
-	enemyBase.position.y = CP_System_GetWindowHeight() / 8.0f;
+	enemyBase.position.y = CP_System_GetWindowHeight() / 4.0f;
 	enemyBase.maxHP = 1000;
 	enemyBase.currentHP = enemyBase.maxHP;
 }

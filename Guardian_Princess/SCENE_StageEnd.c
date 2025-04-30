@@ -36,17 +36,11 @@ void StageEndInit(void)
 void StageEndWInUpdate(void)
 {
 	//음악 재생 변수
-
-
-	// 이미지 드로우
-	CP_Image_Draw(GameVictory_image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255); 
-
-	int goMainInput = Button_Draw_Square(goMainButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
-	int replayInput = Button_Draw_Square(ReplayButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
-	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255); //커서 이미지
+	int goMainInput = SquareButtonClicked(goMainButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
+	int replayInput = SquareButtonClicked(ReplayButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
 
 	// 음악 재생
-	if (BGMPlay == 1 )
+	if (BGMPlay == 1)
 	{
 		CP_Sound_PlayAdvanced(GameWin, 1.0f, 1.0f, 1, BGM);
 		BGMPlay = 0;
@@ -62,6 +56,12 @@ void StageEndWInUpdate(void)
 		CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
 	}
 
+	// 이미지 드로우
+	CP_Image_Draw(GameVictory_image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255); 
+	CP_Image_Draw(goMainButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
+	CP_Image_Draw(ReplayButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
+	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255); //커서 이미지
+
 }
 
 void StageEndLoseUpdate(void)
@@ -71,9 +71,8 @@ void StageEndLoseUpdate(void)
 
 
 	// 이미지 드로우
-	CP_Image_Draw(Gameover_image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
-	int goMainInput = Button_Draw_Square(goMainButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
-	int replayInput = Button_Draw_Square(ReplayButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
+	int goMainInput = SquareButtonClicked(goMainButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
+	int replayInput = SquareButtonClicked(ReplayButtonImage, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowWidth() / 8.0f, 255);
 
 
 	// 음악 재생
@@ -93,7 +92,7 @@ void StageEndLoseUpdate(void)
 		CP_Engine_SetNextGameState(GameInit, GameUpdate, GameExit);
 	}
 
-
+	CP_Image_Draw(Gameover_image, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 }
 
 
