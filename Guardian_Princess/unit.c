@@ -8,10 +8,10 @@ Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;
 int enemyPopulation = 0;
-CP_Vector allyPosition; // why Àü¿ª?? why do you love Àü¿ª º¯¼ö so much??? 
+CP_Vector allyPosition; // why ï¿½ï¿½ï¿½ï¿½?? why do you love ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ so much??? 
 CP_Vector enemyPosition;
 
-void InitUnit(void)
+void InitUnit()
 {
 	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
 	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 4.0f);
@@ -53,11 +53,11 @@ void InitUnit(void)
 	}
 }
 
-void SummonUnit(Unit* unit, UnitType type)
+void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 {
-	// 1. unit ¾Æ±ºÀÎÁö Àû±ºÀÎÁö ÆÇ´Ü
-	// 2. ¾Æ±ºÀÌµç Àû±ºÀÌµç ÀÎµ¦½º¸¦ Ã£´Â´Ù
-	// 3. ±× Ã£Àº À¯´ÖÀ» Å¸ÀÔ¿¡ µû¶ó¼­ ÃÊ±âÈ­ ÇÑ´Ù.
+	// 1. unit ï¿½Æ±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç´ï¿½
+	// 2. ï¿½Æ±ï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ìµï¿½ ï¿½Îµï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½Â´ï¿½
+	// 3. ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Å¸ï¿½Ô¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­ ï¿½Ñ´ï¿½.
 	if (allyPopulation >= MAX_UNIT)
 	{
 		printf("ally pop: %d", allyPopulation);
@@ -73,6 +73,8 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].position = allyPosition;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
+				unit[i].unitSetting.images = desc.images;
+				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
@@ -89,7 +91,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f¸¦ Ã¹ ¹øÂ° °ø°Ý ½ÃÀü ½Ã°£À¸·Î º¯°æ
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5fï¿½ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -99,7 +101,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f¸¦ Ã¹ ¹øÂ° °ø°Ý ½ÃÀü ½Ã°£À¸·Î º¯°æ
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5fï¿½ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				}
 				if (allyResource.money - unit[i].price <= 0)
 				{
@@ -132,6 +134,8 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].collider.radius = 0;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
+				unit[i].unitSetting.images = desc.images;
+				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
@@ -145,7 +149,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f¸¦ Ã¹ ¹øÂ° °ø°Ý ½ÃÀü ½Ã°£À¸·Î º¯°æ
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5fï¿½ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -155,7 +159,7 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f¸¦ Ã¹ ¹øÂ° °ø°Ý ½ÃÀü ½Ã°£À¸·Î º¯°æ
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5fï¿½ï¿½ Ã¹ ï¿½ï¿½Â° ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 				}
 				if (enemyResource.money - unit[i].price <= 0)
 				{
@@ -191,7 +195,7 @@ void UpdateUnits(float dt)
 	}
 }
 
-void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe)
+void DrawUnits(Unit* unit, int totalframe)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -201,20 +205,20 @@ void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe)
 			{
 				if (unit == ally)
 				{
-					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
+					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
 				}
 				else if (unit == enemy)
 				{
-					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
 			else if (unit[i].type == ARCHER)
 			{
 				if (unit == ally)
-					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
+					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
 				else if (unit == enemy)
 				{
-					Animation_play(unitani, &unit[i].unitSetting, totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
 

@@ -38,11 +38,13 @@ CP_Image* heroHurt;
 CP_Image* heroWait;
 CP_Image* heroWalk;
 
-CP_Image* unitTest;
-CP_Image* unitTest2;
+AnimationDesc unitTest;
+AnimationDesc unitTest2;
+AnimationDesc enemyRangedImages;
+AnimationDesc allyRangedImages;
 //--------------------------------------------------------
 
-// Todo: ÇÊ¿ä ¾ø´Â º¯¼ö ÂüÁ¶µÇÁö ¾Ê¾Æµµ µÇ´Â º¯¼öµé Áö¿ìÀÚ 
+// Todo: ï¿½Ê¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê¾Æµï¿½ ï¿½Ç´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
 extern CP_Vector allyPosition;
 extern CP_Vector enemyPosition;
 
@@ -50,7 +52,7 @@ void GameInit(void)
 {
 	CP_System_ShowCursor(FALSE);
 
-	//¿¡¼Â ·Îµù ----------------------------------
+	//ï¿½ï¿½ï¿½ï¿½ ï¿½Îµï¿½ ----------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
@@ -61,8 +63,17 @@ void GameInit(void)
 	heroWait = Animation_ImageLoader("hero_wait", 5);
 	heroWalk = Animation_ImageLoader("hero_walk", 7);
 
-	unitTest = Animation_ImageLoader("unit_test", 19);
-	unitTest2 = Animation_ImageLoader("unit_test2", 14);
+	unitTest.totalframe = 19;
+	unitTest.images = Animation_ImageLoader("unit_test", unitTest.totalframe);
+	
+	unitTest2.totalframe = 14;
+	unitTest2.images = Animation_ImageLoader("unit_test2", unitTest2.totalframe);
+	
+	enemyRangedImages.totalframe = 6;
+	enemyRangedImages.images = Animation_ImageLoader("enemy_ranged", enemyRangedImages.totalframe);
+	
+	allyRangedImages.totalframe = 8;
+	allyRangedImages.images = Animation_ImageLoader("test11", allyRangedImages.totalframe);
 
 	InitEnemyBase();
 	InitHero();
@@ -96,9 +107,9 @@ void GameUpdate(void)
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-	// Todo: unit spawner cooltime µ¹¸®´Â ·ÎÁ÷ 
-	//		IsClicked ÁøÂ¥ ÇÊ¿äÇÑ º¯¼ö ¸Â¾Æ¿ä?????? 
-	//		Spawn Timer LogicÀÌ ÀÌ»óÇØ¼­ ¾îÂ¿¼ö ¾øÀ½ --> spawn timer¸¦ °íÃÄ, ÀÌ»óÇÑ hack ÄÚµå Â¥Áö¸»°í!!!
+	// Todo: unit spawner cooltime ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ 
+	//		IsClicked ï¿½ï¿½Â¥ ï¿½Ê¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Â¾Æ¿ï¿½?????? 
+	//		Spawn Timer Logicï¿½ï¿½ ï¿½Ì»ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½Â¿ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ --> spawn timerï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½Ì»ï¿½ï¿½ï¿½ hack ï¿½Úµï¿½ Â¥ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!!
 	int melee_input = SquareButtonClicked(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
@@ -111,7 +122,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
 		{
-			SummonUnit(ally, WARRIOR);
+			SummonUnit(ally, WARRIOR, unitTest);
 			isClicked[0] = FALSE;
 		}
 	}
@@ -125,7 +136,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(allySpawner, 3.0f, ARCHER))
 		{
-			SummonUnit(ally, ARCHER);
+			SummonUnit(ally, ARCHER, allyRangedImages);
 			isClicked[1] = FALSE;
 		}
 	}
@@ -139,7 +150,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(enemySpawner, 1.3f, WARRIOR))
 		{
-			SummonUnit(enemy, WARRIOR);
+			SummonUnit(enemy, WARRIOR, unitTest2);
 			isClickedEnemy[0] = FALSE;
 		}
 	}
@@ -153,7 +164,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(enemySpawner, 3.0f, ARCHER))
 		{
-			SummonUnit(enemy, ARCHER);
+			SummonUnit(enemy, ARCHER, enemyRangedImages);
 			isClickedEnemy[1] = FALSE;
 		}
 	}
@@ -164,7 +175,7 @@ void GameUpdate(void)
 		isHeroAttack = TRUE;
 	}
 
-	// hero space ´©¸£¸é ±¤¿ª °ø°Ý
+	// hero space ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	if (isHeroAttack)
 	{
 		if (unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
@@ -191,7 +202,7 @@ void GameUpdate(void)
 		}
 	}
 
-	// enemy°¡ hero ¶§¸± ¼ö ÀÖ´ÂÁö ¾ø´ÂÁö
+	// enemyï¿½ï¿½ hero ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ö´ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
 		if (enemy[j].alived && circleToCircle(enemy[j].attackRange, hero.hero.collider))
@@ -319,7 +330,7 @@ void GameUpdate(void)
 				enemyBase.currentHP -= ally[i].attackDamage;
 				if (enemyBase.currentHP <= 0)
 				{
-					// °ÔÀÓ ³¡ --------½ºÅ×ÀÌÁö ½Â¸®
+					// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ --------ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Â¸ï¿½
 					CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
 				}
 			}
@@ -345,7 +356,7 @@ void GameUpdate(void)
 
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		// È÷¾î·Î¶û ½Î¿ì´Ù°¡ È÷¾î·Î°¡ µÚ·Î µµ¸Á°¡¸é enemy°¡ ¸ØÃçÀÖ´Â Çö»óÀ» °íÄ¡±â À§ÇØ¼­ duck tape·Î ´öÁö´öÁö ¹ß¶ó³í ÄÚµå
+		// ï¿½ï¿½ï¿½ï¿½Î¶ï¿½ ï¿½Î¿ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½Î°ï¿½ ï¿½Ú·ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ enemyï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ duck tapeï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ß¶ï¿½ï¿½ ï¿½Úµï¿½
 		if (enemy[j].targetUnit == &hero.hero && !circleToCircle(enemy[j].attackRange, hero.hero.collider))
 			enemy[j].moveSpeed = UNIT_SPEED;
 	}
@@ -364,8 +375,8 @@ void GameUpdate(void)
 
 	DrawEnemyBase();
 	DrawHero();
-	DrawUnits(ally, unitTest, 19);
-	DrawUnits(enemy, unitTest2, 14);
+	DrawUnits(ally, 19);
+	DrawUnits(enemy, 14);
 
 
 

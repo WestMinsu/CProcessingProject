@@ -36,9 +36,9 @@ extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
 
 void InitUnit(void);
-void SummonUnit(Unit* unit, UnitType type);
+void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc);
 void UpdateUnits(float dt);
-void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);
+void DrawUnits(Unit* unit, int totalframe);
 
 void InitHero(void);
 void UpdateHero(float dt);
