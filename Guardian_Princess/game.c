@@ -207,6 +207,7 @@ void GameUpdate(void)
 				if (hero.hero.currentHP <= 0)
 				{
 					printf("hero dead\n");
+					hero.hero.moveSpeed = 0;
 					hero.hero.collider.radius = 0;
 					hero.hero.attackRange.radius = 0;
 				}
