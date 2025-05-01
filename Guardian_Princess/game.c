@@ -26,9 +26,11 @@ extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
+CP_Image skill_button_image;
 CP_Image battle_background;
-CP_BOOL isClicked[NUM_UNIT_TYPES];
-CP_BOOL isClickedEnemy[NUM_UNIT_TYPES];
+CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
+CP_BOOL isSkillButtonClicked;
+CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
 CP_BOOL isHeroAttack;
 
 //-------------------------------------------------------
@@ -49,6 +51,7 @@ extern CP_Vector allyPosition;
 extern CP_Vector enemyPosition;
 #define MAX_LINES 100   
 #define TEXT_SIZE 50
+int r = 0, c = 0; 
 
 typedef struct {
 	float number;        // float 값
@@ -59,11 +62,13 @@ int count;
 EnemyPattern patterns[MAX_LINES];
 void GameInit(void)
 {
+	r = 0, c = 0;
 	CP_System_ShowCursor(FALSE);
 
 	//���� �ε� ----------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
+	skill_button_image = CP_Image_Load("Assets/In_game/skill.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
 	heroAttack = Animation_ImageLoader("hero_attack", 5);
@@ -93,8 +98,9 @@ void GameInit(void)
 	{
 		allySpawner[i].timer = 0;
 		enemySpawner[i].timer = 0;
-		isClicked[i] = FALSE;
-		isClickedEnemy[i] = FALSE;
+		isSpawnButtonClicked[i] = FALSE;
+		isSpawnEnemy[i] = FALSE;
+		isSkillButtonClicked = FALSE;
 	}
 
 	allyResource.money = 50;
@@ -168,38 +174,53 @@ void GameUpdate(void)
 	//		IsClicked ��¥ �ʿ��� ���� �¾ƿ�?????? 
 	//		Spawn Timer Logic�� �̻��ؼ� ��¿�� ���� --> spawn timer�� ����, �̻��� hack �ڵ� ¥������!!!
 	int melee_input = SquareButtonClicked(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int skill_input = SquareButtonClicked(skill_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	if (melee_input == 0)
 	{
-		isClicked[0] = TRUE;
+		isSpawnButtonClicked[0] = TRUE;
 	}
 
-	if (isClicked[0])
+	if (isSpawnButtonClicked[0])
 	{
 		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
 		{
 			SummonUnit(ally, WARRIOR, unitTest);
-			isClicked[0] = FALSE;
+			isSpawnButtonClicked[0] = FALSE;
 		}
 	}
 
 	if (range_input == 0)
 	{
-		isClicked[1] = TRUE;
+		isSpawnButtonClicked[1] = TRUE;
 	}
 
-	if (isClicked[1])
+	if (isSpawnButtonClicked[1])
 	{
 		if (SpawnTimeElapsed(allySpawner, 3.0f, ARCHER))
 		{
 			SummonUnit(ally, ARCHER, allyRangedImages);
-			isClicked[1] = FALSE;
+			isSpawnButtonClicked[1] = FALSE;
+		}
+	}
+
+	if (skill_input == 0)
+	{
+		isSkillButtonClicked = TRUE;
+	}
+
+	if (isSkillButtonClicked)
+	{
+		if (AttackTimeElapsed(&hero.skillTimer, 3.0f))
+		{
+			SummonUnit(ally, ARCHER, allyRangedImages);
 		}
 	}
 
 	//TODO: 파일 다 읽으면 어떻게 할지
-	static int r = 0, c = 0;
+	// enemy pattern
+
 	if (enemyPopulation < MAX_UNIT)
 	{
 		char ch = patterns[r].text[c];
@@ -210,33 +231,33 @@ void GameUpdate(void)
 		}
 		if (ch == 'm')
 		{
-			isClickedEnemy[0] = TRUE;
-			isClickedEnemy[1] = FALSE;
+			isSpawnEnemy[0] = TRUE;
+			isSpawnEnemy[1] = FALSE;
 		}
 		else if (ch == 'r')
 		{
-			isClickedEnemy[1] = TRUE;
-			isClickedEnemy[0] = FALSE;
+			isSpawnEnemy[1] = TRUE;
+			isSpawnEnemy[0] = FALSE;
 		}
 
 		printf("ch = %c, num = %d\n", ch, c);
 
-		if (isClickedEnemy[0])
+		if (isSpawnEnemy[0])
 		{
 			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
 			{
 				SummonUnit(enemy, WARRIOR, unitTest2);
-				isClickedEnemy[0] = FALSE;
+				isSpawnEnemy[0] = FALSE;
 				c++;
 			}
 		}
 
-		if (isClickedEnemy[1])
+		if (isSpawnEnemy[1])
 		{
 			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, ARCHER))
 			{
 				SummonUnit(enemy, ARCHER, enemyRangedImages);
-				isClickedEnemy[1] = FALSE;
+				isSpawnEnemy[1] = FALSE;
 				c++;
 			}
 		}
@@ -251,7 +272,7 @@ void GameUpdate(void)
 
 	if (isHeroAttack)
 	{
-		if (unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
+		if (AttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
 		{
 			for (int j = 0; j < MAX_UNIT; j++)
 			{
@@ -285,7 +306,7 @@ void GameUpdate(void)
 				enemy[j].targetUnit = &hero.hero;
 			}
 
-			if (unitAttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+			if (AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 			{
 				hero.hero.currentHP -= enemy[j].attackDamage;
 				if (hero.hero.currentHP <= 0)
@@ -318,7 +339,7 @@ void GameUpdate(void)
 	//ally attack target
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].alived && ally[i].targetUnit != NULL && unitAttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
+		if (ally[i].alived && ally[i].targetUnit != NULL && AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 		{
 			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
 			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
@@ -344,7 +365,7 @@ void GameUpdate(void)
 	//enemy attack target
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && unitAttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 		{
 			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
 
@@ -399,7 +420,7 @@ void GameUpdate(void)
 	{
 		if (ally[i].alived && circleToCircle(ally[i].attackRange, enemyBase.collider) && ally[i].targetUnit == NULL)
 		{
-			if (unitAttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
+			if (AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 			{
 				enemyBase.currentHP -= ally[i].attackDamage;
 				if (enemyBase.currentHP <= 0)
@@ -441,7 +462,8 @@ void GameUpdate(void)
 
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(skill_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;

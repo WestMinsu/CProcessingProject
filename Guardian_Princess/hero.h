@@ -7,6 +7,7 @@ typedef struct Hero
 {
 	Unit hero;
 	int maxHP;
+	float skillTimer;
 }Hero;
 
 void InitHero(void);

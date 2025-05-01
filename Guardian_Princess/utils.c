@@ -33,7 +33,7 @@ CP_BOOL SpawnTimeElapsed(UnitSpawner* enemySpawner, float time, UnitType type)
 		return FALSE;
 }
 
-CP_BOOL unitAttackTimeElapsed(float* attackTimer, float time)
+CP_BOOL AttackTimeElapsed(float* attackTimer, float time)
 {
 	float dt = CP_System_GetDt();
 
