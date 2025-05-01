@@ -80,7 +80,6 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].targetUnit = NULL;
 				printf("hi\n");
 
-
 				if (unit[i].type == WARRIOR)
 				{
 					printf("warrior\n");
