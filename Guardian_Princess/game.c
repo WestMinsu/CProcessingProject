@@ -200,124 +200,55 @@ void GameUpdate(void)
 
 	//TODO: 파일 다 읽으면 어떻게 할지
 	static int r = 0, c = 0;
-	char ch = patterns[r].text[c];
-	if (ch == '\0')
+	if (enemyPopulation < MAX_UNIT)
 	{
-		c = 0;
-		ch = patterns[++r].text[c];
-	}
-	if (ch == 'm')
-	{
-		isClickedEnemy[0] = TRUE;
-		isClickedEnemy[1] = FALSE;
-	}
-	else if (ch == 'r')
-	{
-		isClickedEnemy[1] = TRUE;
-		isClickedEnemy[0] = FALSE;
-	}
-
-	printf("ch = %c, num = %d\n", ch, c);
-
-	if (isClickedEnemy[0])
-	{
-		if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
+		char ch = patterns[r].text[c];
+		if (ch == '\0')
 		{
-			SummonUnit(enemy, WARRIOR, unitTest2);
-			isClickedEnemy[0] = FALSE;
-			c++;
+			c = 0;
+			ch = patterns[++r].text[c];
 		}
-	}
-
-	if (isClickedEnemy[1])
-	{
-		if (SpawnTimeElapsed(enemySpawner, patterns[r].number, ARCHER))
+		if (ch == 'm')
 		{
-			SummonUnit(enemy, ARCHER, enemyRangedImages);
+			isClickedEnemy[0] = TRUE;
 			isClickedEnemy[1] = FALSE;
-			c++;
+		}
+		else if (ch == 'r')
+		{
+			isClickedEnemy[1] = TRUE;
+			isClickedEnemy[0] = FALSE;
+		}
+
+		printf("ch = %c, num = %d\n", ch, c);
+
+		if (isClickedEnemy[0])
+		{
+			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
+			{
+				SummonUnit(enemy, WARRIOR, unitTest2);
+				isClickedEnemy[0] = FALSE;
+				c++;
+			}
+		}
+
+		if (isClickedEnemy[1])
+		{
+			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, ARCHER))
+			{
+				SummonUnit(enemy, ARCHER, enemyRangedImages);
+				isClickedEnemy[1] = FALSE;
+				c++;
+			}
 		}
 	}
 
-	//if (CP_Input_KeyReleased(KEY_1))
-	//{
-	//	isClickedEnemy[0] = TRUE;
-	//}
 
-	//if (isClickedEnemy[0])
-	//{
-	//	if (SpawnTimeElapsed(enemySpawner, 1.3f, WARRIOR))
-	//	{
-	//		SummonUnit(enemy, WARRIOR, unitTest2);
-	//		isClickedEnemy[0] = FALSE;
-	//	}
-	//}
-
-
-	//else if (c == 'r')
-	//{
-	//	if (SpawnTimeElapsed(enemySpawner, patterns[i].number, WARRIOR))
-	//	{
-	//		SummonUnit(enemy, ARCHER, enemyRangedImages);
-	//	}
-	//}
-	//else {
-	//	printf("알 수 없는 문자 '%c' in pattern %d\n", c, i);
-	//}
-
-	//// 패턴 처리
-	//for (int i = 0; i < count; i++) 
-	//{
-
-	//	// text의 각 문자(m, r) 처리
-	//	for (int j = 0; patterns[i].text[j] != '\0'; j++) 
-	//	{
-	//	
-	//	}
-	//
-	//}
-
-	//// 결과 출력 (디버깅용)
-	//printf("\n처리된 패턴 수: %d\n", count);
-	//for (int i = 0; i < count; i++) {
-	//	printf("패턴 %d: %f %s\n", i, patterns[i].number, patterns[i].text);
-	//}
-
-	//if (CP_Input_KeyReleased(KEY_1))
-	//{
-	//	isClickedEnemy[0] = TRUE;
-	//}
-
-	//if (isClickedEnemy[0])
-	//{
-	//	if (SpawnTimeElapsed(enemySpawner, 1.3f, WARRIOR))
-	//	{
-	//		SummonUnit(enemy, WARRIOR, unitTest2);
-	//		isClickedEnemy[0] = FALSE;
-	//	}
-	//}
-
-	//if (CP_Input_KeyReleased(KEY_3))
-	//{
-	//	isClickedEnemy[1] = TRUE;
-	//}
-
-	//if (isClickedEnemy[1])
-	//{
-	//	if (SpawnTimeElapsed(enemySpawner, 3.0f, ARCHER))
-	//	{
-	//		SummonUnit(enemy, ARCHER, enemyRangedImages);
-	//		isClickedEnemy[1] = FALSE;
-	//	}
-	//}
-	// Todo: end of todo
-
+	// hero attack using spacekey
 	if (CP_Input_KeyReleased(KEY_SPACE))
 	{
 		isHeroAttack = TRUE;
 	}
 
-	// hero space ������ ���� ����
 	if (isHeroAttack)
 	{
 		if (unitAttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
@@ -568,11 +499,11 @@ void GameUpdate(void)
 	CP_Font_DrawText(allySpawnTime2, 700, 500);
 
 	char enemySpawnTime1[50] = { 0 };
-	sprintf_s(enemySpawnTime1, _countof(enemySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - enemySpawner[WARRIOR].timer);
+	sprintf_s(enemySpawnTime1, _countof(enemySpawnTime1), "%5.2f", enemySpawner[WARRIOR].timer);
 	CP_Font_DrawText(enemySpawnTime1, 1200, 500);
 
 	char enemySpawnTime2[50] = { 0 };
-	sprintf_s(enemySpawnTime2, _countof(enemySpawnTime2), "%5.2f", ARCHER_SPAWN_TIME - enemySpawner[ARCHER].timer);
+	sprintf_s(enemySpawnTime2, _countof(enemySpawnTime2), "%5.2f", enemySpawner[ARCHER].timer);
 	CP_Font_DrawText(enemySpawnTime2, 1400, 500);
 }
 
