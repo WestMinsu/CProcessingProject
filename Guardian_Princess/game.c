@@ -14,7 +14,7 @@
 #include "FUNC_Button.h"
 #include "FUNC_Animation_Motion.h"
 #include "SCENE_StageEnd.h"
-
+#include "bomb.h"
 
 extern Hero hero;
 UnitSpawner allySpawner[NUM_UNIT_TYPES];
@@ -24,9 +24,10 @@ Resource enemyResource;
 EnemyBase enemyBase;
 extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
+extern Bomb bomb;
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
-CP_Image skill_button_image;
+CP_Image skillButtonImage;
 CP_Image battle_background;
 CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
@@ -68,7 +69,7 @@ void GameInit(void)
 	//���� �ε� ----------------------------------
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
-	skill_button_image = CP_Image_Load("Assets/In_game/skill.png");
+	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
 	heroAttack = Animation_ImageLoader("hero_attack", 5);
@@ -92,6 +93,7 @@ void GameInit(void)
 	InitEnemyBase();
 	InitHero();
 	InitUnit();
+	InitBomb();
 	SummonEnemyBase();
 
 	for (int i = 0; i < NUM_UNIT_TYPES; i++)
@@ -175,7 +177,7 @@ void GameUpdate(void)
 	//		Spawn Timer Logic�� �̻��ؼ� ��¿�� ���� --> spawn timer�� ����, �̻��� hack �ڵ� ¥������!!!
 	int melee_input = SquareButtonClicked(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	int skill_input = SquareButtonClicked(skill_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int skill_input = SquareButtonClicked(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	if (melee_input == 0)
 	{
@@ -214,9 +216,12 @@ void GameUpdate(void)
 	{
 		if (AttackTimeElapsed(&hero.skillTimer, 3.0f))
 		{
-			SummonUnit(ally, ARCHER, allyRangedImages);
+
+			isSkillButtonClicked = FALSE;
 		}
 	}
+
+	float dt = CP_System_GetDt();
 
 	//TODO: 파일 다 읽으면 어떻게 할지
 	// enemy pattern
@@ -432,6 +437,7 @@ void GameUpdate(void)
 		}
 	}
 
+
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (ally[i].targetUnit || circleToCircle(ally[i].attackRange, enemyBase.collider))
@@ -456,23 +462,26 @@ void GameUpdate(void)
 			enemy[j].moveSpeed = UNIT_SPEED;
 	}
 
-	float dt = CP_System_GetDt();
+
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(skill_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
+
 	DrawEnemyBase();
 	DrawHero();
 	DrawUnits(ally, 19);
 	DrawUnits(enemy, 14);
+	DrawBomb(dt);
+
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
