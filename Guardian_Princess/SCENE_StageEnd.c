@@ -16,7 +16,7 @@ CP_Image ReplayButtonImage;
 CP_Sound GameWin;
 CP_Sound GameLose;
 //------------------------------------------------------------------------------------------------
-int BGMPlay = 1;
+int BGMPlay;
 
 
 void StageEndInit(void)
@@ -30,6 +30,7 @@ void StageEndInit(void)
 
 	GameLose = CP_Sound_Load("Assets/stageEnd/gameLoseBGM.mp3");
 	GameWin = CP_Sound_Load("Assets/stageEnd/gameWinBGM.mp3");
+	BGMPlay = 1;
 }
 
 
