@@ -13,7 +13,7 @@ CP_Vector enemyPosition;
 
 void InitUnit()
 {
-	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
+	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 16.0f, CP_System_GetWindowHeight() / 4.0f);
 	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
 	enemyPopulation = 0;
@@ -84,7 +84,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				{
 					printf("warrior\n");
 
-					unit[i].attackDamage = 33;
+					unit[i].attackDamage = 25;
 					unit[i].currentHP = 100;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
@@ -102,7 +102,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 					unit[i].attackCoolDown = 2.0f;
 					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f�� ù ��° ���� ���� �ð����� ����
 				}
-				if (allyResource.money - unit[i].price <= 0)
+				if (allyResource.money - unit[i].price < 0)
 				{
 					printf("No ally money!!!\n");
 					return;
@@ -142,7 +142,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 34;
+					unit[i].attackDamage = 30;
 					unit[i].currentHP = 100;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
@@ -152,7 +152,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 21;
+					unit[i].attackDamage = 25;
 					unit[i].currentHP = 50;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;

@@ -406,9 +406,9 @@ void GameUpdate(void)
 			{
 				ally[i].targetUnit->alived = FALSE;
 				if (ally[i].targetUnit->type == WARRIOR)
-					allyResource.money += 30;
+					allyResource.money += 10;
 				else if (ally[i].targetUnit->type == ARCHER)
-					allyResource.money += 50;
+					allyResource.money += 20;
 				if (enemyPopulation > 0)
 				{
 					enemyPopulation--;
@@ -448,6 +448,7 @@ void GameUpdate(void)
 				if (enemyBase.currentHP <= 0)
 				{
 					// ���� �� --------�������� �¸�
+			
 					CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
 				}
 			}
