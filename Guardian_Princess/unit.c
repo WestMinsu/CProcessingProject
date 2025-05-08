@@ -78,12 +78,9 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
-				printf("hi\n");
 
 				if (unit[i].type == WARRIOR)
 				{
-					printf("warrior\n");
-
 					unit[i].attackDamage = 25;
 					unit[i].currentHP = 100;
 					unit[i].attackRange.position = unit[i].collider.position;
@@ -142,7 +139,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 30;
+					unit[i].attackDamage = 50;
 					unit[i].currentHP = 100;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
@@ -152,7 +149,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 25;
+					unit[i].attackDamage = 34;
 					unit[i].currentHP = 50;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;

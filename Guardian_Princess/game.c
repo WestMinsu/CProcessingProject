@@ -263,8 +263,6 @@ void GameUpdate(void)
 			isSpawnEnemy[0] = FALSE;
 		}
 
-		printf("ch = %c, num = %d\n", ch, c);
-
 		if (isSpawnEnemy[0])
 		{
 			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
@@ -548,7 +546,7 @@ void GameUpdate(void)
 
 	char enemyBaseHP[50] = { 0 };
 	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
-	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x, enemyBase.position.y - 30);
+	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x-30, enemyBase.position.y - 125);
 
 	char allyMoney[50] = { 0 };
 	sprintf_s(allyMoney, _countof(enemyBaseHP), "money: %d", allyResource.money);
@@ -560,7 +558,7 @@ void GameUpdate(void)
 
 	char enemyPop[50] = { 0 };
 	sprintf_s(enemyPop, _countof(enemyPop), "enemy Population: %d / %d", enemyPopulation, MAX_UNIT);
-	CP_Font_DrawText(enemyPop, 1600, 300);
+	CP_Font_DrawText(enemyPop, 1600, 100);
 
 	char allySpawnTime1[50] = { 0 };
 	sprintf_s(allySpawnTime1, _countof(allySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - allySpawner[WARRIOR].timer);

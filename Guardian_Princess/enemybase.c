@@ -5,6 +5,7 @@
 #include "colors.h"
 
 extern EnemyBase enemyBase;
+extern CP_Image enemyBaseImage;
 
 void InitEnemyBase(void)
 {
@@ -22,6 +23,5 @@ void SummonEnemyBase(void)
 
 void DrawEnemyBase(void)
 {
-	CP_Settings_Fill(white);
-	CP_Graphics_DrawRect(enemyBase.position.x, enemyBase.position.y, (float)enemyBase.collider.radius, (float)enemyBase.collider.radius+50);
+	CP_Image_Draw(enemyBaseImage, enemyBase.position.x, enemyBase.position.y, (float)enemyBase.collider.radius, (float)enemyBase.collider.radius + 50, 255);
 }

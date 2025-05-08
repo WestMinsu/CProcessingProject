@@ -5,6 +5,7 @@ CP_Sound Mouse_Click_Sound;// 마우스 클릭 소리
 CP_Sound button_sound;// 버튼 소리
 
 CP_Image CursorImage; // 커서 이미지
+CP_Image enemyBaseImage;
 
 CP_Font Main_TitleFont;// 폰트
 
@@ -17,6 +18,7 @@ void SoundLoad()
 void ImageLoad()
 {
 	CursorImage = CP_Image_Load("Assets/mouse_settings/test_cursor.png");
+	enemyBaseImage = CP_Image_Load("Assets/In_game/enemybase.png");
 }
 void FontLoad()
 {
