@@ -1,8 +1,10 @@
 #pragma once
 #include "cprocessing.h"
 #include "utils.h"
+#include "FUNC_Animation_Motion.h"
+#include "game.h"
 
-typedef struct
+typedef struct Hero
 {
 	CP_Vector position;
 	CP_BOOL alived;
@@ -13,7 +15,11 @@ typedef struct
 	int maxHP;
 	int currentHP;
 	int attackDamage;
-	float attackSpeed;
+
+	float attackCoolDown;
+	AnimationFrameInfo heroSetting;
+	struct Unit* targetUnit;
+
 }Hero;
 
 void InitHero(void);

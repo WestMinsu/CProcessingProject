@@ -46,6 +46,10 @@ CP_Image* unitTest2;
 int BGMPlayGame = 1;
 
 
+
+CP_Image* unitTest;
+CP_Image* unitTest2;
+
 //TODO: Á×À¸¸é spawnTime = 0À¸·Î
 
 void GameInit(void)
@@ -64,9 +68,11 @@ void GameInit(void)
 	unitTest = Animation_ImageLoader("unit_test", 19);
 	unitTest2 = Animation_ImageLoader("unit_test2", 14);
 
+
 	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
 
 	//----------------------------------------
+
 	InitEnemyBase();
 	InitHero();
 	InitUnit();
@@ -80,8 +86,11 @@ void GameInit(void)
 		isFightWithAlly[i] = FALSE;
 	}
 
-	allyResource.money = 300;
+
+
+	allyResource.money = 50;
 	enemyResource.money = 10000;
+
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
@@ -107,6 +116,7 @@ void GameUpdate(void)
 	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
+	//-------------------
 
 	// À½¾Ç Àç»ý
 	if (BGMPlayGame == 1)
@@ -164,12 +174,19 @@ void GameUpdate(void)
 			hero.currentHP -= enemy[j].attackDamage;
 			if (hero.currentHP <= 0)
 			{
-				printf("hero dead\n");
-				hero.moveSpeed = 0;
-				hero.collider.radius = 0;
-				hero.attackRange.radius = 0;
-				isFightWithAlly[j] = FALSE;
-				enemy[j].moveSpeed = UNIT_SPEED;
+
+				hero.currentHP -= enemy[j].attackDamage;
+				//printf("hero hp: %d", hero.currentHP);
+				if (hero.currentHP <= 0)
+				{
+					printf("hero dead\n");
+					hero.moveSpeed = 0;
+					hero.collider.radius = 0;
+					hero.attackRange.radius = 0;
+					isFightWithAlly[j] = FALSE;
+					enemy[j].moveSpeed = UNIT_SPEED;
+					CP_Engine_SetNextGameState(StageEndInit, StageEndLoseUpdate, StageEndExit);
+				}
 			}
 		}
 		else

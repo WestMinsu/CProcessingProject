@@ -1,8 +1,21 @@
 #include "hero.h"
 #include "colors.h"
+#include "utils.h"
+#include "unit.h"
+#include "enemybase.h"
 #include "FUNC_Animation_Motion.h"
-
+//-----------
 extern Hero hero;
+
+//-----------------
+
+extern CP_Image* heroAttack;
+extern CP_Image* heroDead;
+extern CP_Image* heroHurt;
+extern CP_Image* heroWait;
+extern CP_Image* heroWalk;
+
+//-----------------
 
 void InitHero(void)
 {
@@ -37,6 +50,6 @@ void UpdateHero(float dt)
 
 void DrawHero(void)
 {
-	CP_Settings_Fill(green);
-	CP_Graphics_DrawCircle(hero.position.x, hero.position.y, 30);
+	Animation_play(heroWait,&hero.heroSetting, 5, 1, hero.position.x, hero.position.y, 128, 128, 255);
+
 }
