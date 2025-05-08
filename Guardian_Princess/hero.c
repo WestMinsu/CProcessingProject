@@ -30,6 +30,10 @@ void UpdateHero(float dt)
 	if (CP_Input_KeyDown(KEY_A))
 	{
 		hero.hero.position.x -= hero.hero.moveSpeed * dt;
+		if (hero.hero.position.x <= 100)
+		{
+			hero.hero.position.x += hero.hero.moveSpeed * dt;
+		}
 	}
 
 	else if ((CP_Input_KeyDown(KEY_D)) && (!circleToCircle(hero.hero.collider, enemyBase.collider)))
