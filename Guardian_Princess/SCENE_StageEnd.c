@@ -101,6 +101,13 @@ void StageEndLoseUpdate(void)
 
 void StageEndExit(void)
 {
+	CP_Image_Free(&GameVictory_image);
+	CP_Image_Free(&goMainButtonImage);
+	CP_Image_Free(&ReplayButtonImage);
+	CP_Image_Free(&Gameover_image);
+
+	CP_Sound_Free(&GameLose);
+	CP_Sound_Free(&GameWin);
 
 
 }

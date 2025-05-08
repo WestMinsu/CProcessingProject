@@ -64,6 +64,7 @@ typedef struct {
 int count;
 EnemyPattern patterns[MAX_LINES];
 int BGMPlayGame = 1;
+
 void GameInit(void)
 {
 	skillCoolTimeElasped = TRUE;
@@ -583,11 +584,7 @@ void GameUpdate(void)
 
 void GameExit(void)
 {
-	// TODO: free
-	// 
-	// 
-	// 
-	// 
-	// 
-	// 
+	CP_Sound_Free(&battleBGM);
+	BGMPlayGame = 1;
+
 }

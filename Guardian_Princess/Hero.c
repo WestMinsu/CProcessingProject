@@ -17,7 +17,7 @@ void InitHero(void)
 	hero.hero.attackRange.position = hero.hero.position;
 	hero.hero.attackRange.radius = 50;
 	
-	hero.maxHP = 1000;
+	hero.maxHP = 100;
 	hero.hero.currentHP = hero.maxHP;
 	hero.hero.attackDamage = 50;
 	hero.hero.attackCoolDown = 1.0f;
