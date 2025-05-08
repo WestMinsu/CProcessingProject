@@ -48,6 +48,9 @@
     <ClCompile Include="SCENE_StageEnd.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="skill.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="utils.h">
@@ -98,7 +101,7 @@
     <ClInclude Include="SCENE_StageEnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="bomb.h">
+    <ClInclude Include="skill.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -152,7 +152,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 20;
+					unit[i].attackDamage = 21;
 					unit[i].currentHP = 50;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
@@ -220,7 +220,6 @@ void DrawUnits(Unit* unit, int totalframe)
 					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
 				}
 			}
-
 		}
 	}
 }

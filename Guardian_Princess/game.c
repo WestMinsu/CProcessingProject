@@ -14,7 +14,7 @@
 #include "FUNC_Button.h"
 #include "FUNC_Animation_Motion.h"
 #include "SCENE_StageEnd.h"
-#include "bomb.h"
+#include "skill.h"
 
 extern Hero hero;
 UnitSpawner allySpawner[NUM_UNIT_TYPES];
@@ -28,6 +28,7 @@ extern Bomb bomb;
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image skillButtonImage;
+CP_Sound battleBGM;
 CP_Image battle_background;
 CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
@@ -45,6 +46,7 @@ AnimationDesc unitTest;
 AnimationDesc unitTest2;
 AnimationDesc enemyRangedImages;
 AnimationDesc allyRangedImages;
+static CP_BOOL skillCoolTimeElasped;
 //--------------------------------------------------------
 
 // Todo: �ʿ� ���� ���� �������� �ʾƵ� �Ǵ� ������ ������ 
@@ -61,12 +63,15 @@ typedef struct {
 
 int count;
 EnemyPattern patterns[MAX_LINES];
+int BGMPlayGame = 1;
 void GameInit(void)
 {
+	skillCoolTimeElasped = TRUE;
 	r = 0, c = 0;
 	CP_System_ShowCursor(FALSE);
 
 	//���� �ε� ----------------------------------
+
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
@@ -83,6 +88,8 @@ void GameInit(void)
 
 	unitTest2.totalframe = 14;
 	unitTest2.images = Animation_ImageLoader("unit_test2", unitTest2.totalframe);
+
+	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
 
 	enemyRangedImages.totalframe = 6;
 	enemyRangedImages.images = Animation_ImageLoader("enemy_ranged", enemyRangedImages.totalframe);
@@ -207,18 +214,28 @@ void GameUpdate(void)
 		}
 	}
 
-	if (skill_input == 0)
+	if (skill_input == 0 && skillCoolTimeElasped)
 	{
 		isSkillButtonClicked = TRUE;
+		skillCoolTimeElasped = FALSE;
 	}
-
 	if (isSkillButtonClicked)
 	{
-		if (AttackTimeElapsed(&hero.skillTimer, 3.0f))
+		SummonBomb();
+		isSkillButtonClicked = FALSE;
+	}
+	if (!skillCoolTimeElasped)
+	{
+		if (AttackTimeElapsed(&hero.skillTimer, bomb.coolDown))
 		{
-
-			isSkillButtonClicked = FALSE;
+			skillCoolTimeElasped = TRUE;
 		}
+	}
+
+	if (BGMPlayGame == 1)
+	{
+		CP_Sound_PlayAdvanced(battleBGM, 1.0f, 1.0f, 1, BGM);
+		BGMPlayGame = 0;
 	}
 
 	float dt = CP_System_GetDt();
@@ -291,7 +308,7 @@ void GameUpdate(void)
 						if (enemyPopulation > 0)
 						{
 							enemyPopulation--;
-							printf("enemyPopulation: %d\n", enemyPopulation);
+		
 						}
 					}
 				}
@@ -316,6 +333,7 @@ void GameUpdate(void)
 				hero.hero.currentHP -= enemy[j].attackDamage;
 				if (hero.hero.currentHP <= 0)
 				{
+					CP_Engine_SetNextGameState(StageEndInit, StageEndLoseUpdate, StageEndExit);
 					printf("hero dead\n");
 					hero.hero.moveSpeed = 0;
 					hero.hero.collider.radius = 0;
@@ -413,7 +431,6 @@ void GameUpdate(void)
 				if (allyPopulation > 0)
 				{
 					allyPopulation--;
-					printf("allyPopulation: %d\n", allyPopulation);
 				}
 			}
 			enemy[j].targetUnit = NULL;
@@ -436,7 +453,6 @@ void GameUpdate(void)
 			}
 		}
 	}
-
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -475,13 +491,36 @@ void GameUpdate(void)
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
-
 	DrawEnemyBase();
 	DrawHero();
 	DrawUnits(ally, 19);
 	DrawUnits(enemy, 14);
-	DrawBomb(dt);
-
+	if (bomb.position.y < ally->position.y)
+	{
+		DrawBomb(dt);
+	}
+	else if (bomb.alived)
+	{
+		for (int i = 0; i < MAX_UNIT; i++)
+		{
+			if (enemy[i].alived)
+				enemy[i].currentHP -= bomb.damage;
+			if (enemy[i].currentHP <= 0)
+			{
+				enemy[i].alived = FALSE;
+				if (enemy[i].type == WARRIOR)
+					allyResource.money += 30;
+				else if (enemy[i].type == ARCHER)
+					allyResource.money += 50;
+				if (enemyPopulation > 0)
+				{
+					enemyPopulation--;
+					printf("enemyPopulation: %d\n", enemyPopulation);
+				}
+			}
+		}
+		bomb.alived = FALSE;
+	}
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
@@ -536,6 +575,10 @@ void GameUpdate(void)
 	char enemySpawnTime2[50] = { 0 };
 	sprintf_s(enemySpawnTime2, _countof(enemySpawnTime2), "%5.2f", enemySpawner[ARCHER].timer);
 	CP_Font_DrawText(enemySpawnTime2, 1400, 500);
+
+	char bombTime[50] = { 0 };
+	sprintf_s(bombTime, _countof(bombTime), "bomb timer: %5.2f", hero.skillTimer);
+	CP_Font_DrawText(bombTime, 1000, 500);
 }
 
 void GameExit(void)
