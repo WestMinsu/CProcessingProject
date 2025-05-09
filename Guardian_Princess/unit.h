@@ -22,6 +22,7 @@ typedef struct Unit
 	Circle attackRange;
 	UnitType type;
 
+	int maxHP;
 	int currentHP;
 	int attackDamage;
 	float attackCoolDown;

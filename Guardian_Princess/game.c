@@ -241,9 +241,6 @@ void GameUpdate(void)
 
 	float dt = CP_System_GetDt();
 
-	//TODO: 파일 다 읽으면 어떻게 할지
-	// enemy pattern
-
 	if (enemyPopulation < MAX_UNIT)
 	{
 		char ch = patterns[r].text[c];
@@ -283,7 +280,6 @@ void GameUpdate(void)
 			}
 		}
 	}
-
 
 	// hero attack using spacekey
 	if (CP_Input_KeyReleased(KEY_SPACE))
@@ -533,7 +529,10 @@ void GameUpdate(void)
 		char allyHP[10][50] = { 0 };
 		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, ally[i].attackTimer);
 		if (ally[i].alived)
-			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 30);
+		{
+			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 50);
+			CP_Graphics_DrawRect(ally[i].position.x, ally[i].position.y - 30, CP_System_GetWindowWidth() / 16.0f * ((float)ally[i].currentHP / ally[i].maxHP), 10);
+		}
 	}
 
 	for (int i = 0; i < MAX_UNIT; i++)
@@ -541,7 +540,10 @@ void GameUpdate(void)
 		char enemyHP[10][50] = { 0 };
 		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemy[i].attackTimer);
 		if (enemy[i].alived)
-			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 70);
+		{
+			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 90);
+			CP_Graphics_DrawRect(enemy[i].position.x, enemy[i].position.y - 70, CP_System_GetWindowWidth() / 16.0f * ((float)enemy[i].currentHP / enemy[i].maxHP), 10);
+		}
 	}
 
 	char enemyBaseHP[50] = { 0 };
@@ -563,12 +565,15 @@ void GameUpdate(void)
 	char allySpawnTime1[50] = { 0 };
 	sprintf_s(allySpawnTime1, _countof(allySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - allySpawner[WARRIOR].timer);
 	CP_Font_DrawText(allySpawnTime1, 500, 500);
+	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 1.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (allySpawner[WARRIOR].timer / WARRIOR_SPAWN_TIME), 10);
 
 	char allySpawnTime2[50] = { 0 };
 	sprintf_s(allySpawnTime2, _countof(allySpawnTime2), "%5.2f", ARCHER_SPAWN_TIME - allySpawner[ARCHER].timer);
 	CP_Font_DrawText(allySpawnTime2, 700, 500);
+	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (allySpawner[ARCHER].timer / ARCHER_SPAWN_TIME), 10);
 
 	char enemySpawnTime1[50] = { 0 };
+
 	sprintf_s(enemySpawnTime1, _countof(enemySpawnTime1), "%5.2f", enemySpawner[WARRIOR].timer);
 	CP_Font_DrawText(enemySpawnTime1, 1200, 500);
 
@@ -579,6 +584,7 @@ void GameUpdate(void)
 	char bombTime[50] = { 0 };
 	sprintf_s(bombTime, _countof(bombTime), "bomb timer: %5.2f", hero.skillTimer);
 	CP_Font_DrawText(bombTime, 1000, 500);
+	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 3.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (hero.skillTimer / bomb.coolDown), 10);
 }
 
 void GameExit(void)

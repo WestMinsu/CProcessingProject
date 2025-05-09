@@ -16,14 +16,13 @@ void InitHero(void)
 	hero.hero.collider.radius = 30;
 	hero.hero.attackRange.position = hero.hero.position;
 	hero.hero.attackRange.radius = 50;
-	
-	hero.maxHP = 1000;
-	hero.hero.currentHP = hero.maxHP;
-	hero.hero.attackDamage = 10;
+
+	hero.hero.maxHP = 2000;
+	hero.hero.currentHP = hero.hero.maxHP;
+	hero.hero.attackDamage = 20;
 	hero.hero.attackCoolDown = 0.5f;
 	hero.hero.targetUnit = NULL;
 	hero.hero.attackTimer = 0;
-	hero.skillTimer = 0;
 }
 
 void UpdateHero(float dt)

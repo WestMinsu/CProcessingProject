@@ -6,7 +6,6 @@
 typedef struct Hero
 {
 	Unit hero;
-	int maxHP;
 	float skillTimer;
 }Hero;
 

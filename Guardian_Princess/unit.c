@@ -27,6 +27,7 @@ void InitUnit()
 		ally[i].attackRange.radius = 0;
 		ally[i].type = WARRIOR;
 
+		ally[i].maxHP = 1;
 		ally[i].currentHP = 1;
 		ally[i].attackDamage = 0;
 		ally[i].attackCoolDown = 1;
@@ -82,7 +83,8 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				if (unit[i].type == WARRIOR)
 				{
 					unit[i].attackDamage = 25;
-					unit[i].currentHP = 100;
+					unit[i].maxHP = 100;
+					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
@@ -92,7 +94,8 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				else if (unit[i].type == ARCHER)
 				{
 					unit[i].attackDamage = 20;
-					unit[i].currentHP = 50;
+					unit[i].maxHP = 50;
+					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
@@ -140,7 +143,8 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				if (unit[i].type == WARRIOR)
 				{
 					unit[i].attackDamage = 50;
-					unit[i].currentHP = 100;
+					unit[i].maxHP = 100;
+					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
@@ -150,7 +154,8 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				else if (unit[i].type == ARCHER)
 				{
 					unit[i].attackDamage = 34;
-					unit[i].currentHP = 50;
+					unit[i].maxHP = 50;
+					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
