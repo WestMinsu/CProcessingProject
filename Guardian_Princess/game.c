@@ -34,21 +34,18 @@ CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
 CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
 CP_BOOL isHeroAttack;
-
 //-------------------------------------------------------
-CP_Image* heroAttack;
-CP_Image* heroDead;
-CP_Image* heroHurt;
-CP_Image* heroWait;
-CP_Image* heroWalk;
-
 AnimationDesc unitTest;
 AnimationDesc unitTest2;
 AnimationDesc enemyRangedImages;
 AnimationDesc allyRangedImages;
 static CP_BOOL skillCoolTimeElasped;
 //--------------------------------------------------------
-
+CP_Image* heroAttack;
+CP_Image* heroDead;
+CP_Image* heroHurt;
+CP_Image* heroWait;
+CP_Image* heroWalk;
 // Todo: �ʿ� ���� ���� �������� �ʾƵ� �Ǵ� ������ ������ 
 extern CP_Vector allyPosition;
 extern CP_Vector enemyPosition;
@@ -99,7 +96,7 @@ void GameInit(void)
 	allyRangedImages.images = Animation_ImageLoader("test11", allyRangedImages.totalframe);
 
 	InitEnemyBase();
-	InitHero();
+	InitHero(heroWait);
 	InitUnit();
 	InitBomb();
 	SummonEnemyBase();
@@ -488,7 +485,9 @@ void GameUpdate(void)
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
 	DrawEnemyBase();
-	DrawHero();
+
+	DrawHero(hero);
+
 	DrawUnits(ally, 19);
 	DrawUnits(enemy, 14);
 	if (bomb.position.y < ally->position.y)

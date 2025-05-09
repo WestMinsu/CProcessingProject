@@ -7,8 +7,10 @@ typedef struct Hero
 {
 	Unit hero;
 	float skillTimer;
+
 }Hero;
 
-void InitHero(void);
+
+void DrawHero(Hero hero1);
+void InitHero(CP_Image* Motion1);
 void UpdateHero(float dt);
-void DrawHero(void);
