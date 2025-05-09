@@ -16,7 +16,7 @@
 #include "SCENE_StageEnd.h"
 #include "skill.h"
 
-Hero hero;
+extern Hero hero;
 UnitSpawner allySpawner[NUM_UNIT_TYPES];
 UnitSpawner enemySpawner[NUM_UNIT_TYPES];
 Resource allyResource;
