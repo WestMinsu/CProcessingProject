@@ -4,6 +4,8 @@
 #include "resource.h"
 #include "utils.h"
 #include <stdio.h>
+#include "cprocessing.h"
+#include "hero.h"
 Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;

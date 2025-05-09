@@ -14,7 +14,16 @@ typedef struct UnitSpawner
 	int isActive;
 } UnitSpawner;
 
-void InitHero(void);
+
+extern CP_Image* heroAttack;
+extern CP_Image* heroDead;
+extern CP_Image* heroHurt;
+extern CP_Image* heroWait;
+extern CP_Image* heroWalk;
+
+
+
+
 
 void InitUnit(void);
 

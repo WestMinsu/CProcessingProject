@@ -40,6 +40,5 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc);
 void UpdateUnits(float dt);
 void DrawUnits(Unit* unit, int totalframe);
 
-void InitHero(void);
+
 void UpdateHero(float dt);
-void DrawHero(void);
