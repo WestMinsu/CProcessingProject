@@ -15,6 +15,7 @@
 #include "FUNC_Animation_Motion.h"
 #include "SCENE_StageEnd.h"
 #include "skill.h"
+#include "camera.h"
 
 extern Hero hero;
 UnitSpawner allySpawner[NUM_UNIT_TYPES];
@@ -49,6 +50,7 @@ CP_Image* heroWalk;
 // Todo: �ʿ� ���� ���� �������� �ʾƵ� �Ǵ� ������ ������ 
 extern CP_Vector allyPosition;
 extern CP_Vector enemyPosition;
+CP_Matrix cameraMatrix;
 #define MAX_LINES 100   
 #define TEXT_SIZE 50
 int r = 0, c = 0; 
@@ -62,14 +64,19 @@ int count;
 EnemyPattern patterns[MAX_LINES];
 int BGMPlayGame = 1;
 
+CP_Vector cameraPos;
+float zoom = 1.0f;
+float speed = 200.0f;
+
 void GameInit(void)
 {
+	cameraPos = CP_Vector_Set(CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f);
+
 	skillCoolTimeElasped = TRUE;
 	r = 0, c = 0;
 	CP_System_ShowCursor(FALSE);
 
 	//���� �ε� ----------------------------------
-
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
@@ -168,10 +175,30 @@ void GameInit(void)
 
 	// 파일 닫기
 	fclose(file);
+	
 }
+
+
 
 void GameUpdate(void)
 {
+	cameraMatrix = GetCameraMatrix(cameraPos, zoom);
+
+
+	if (CP_Input_KeyDown(KEY_UP)) cameraPos.y -= speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_DOWN)) cameraPos.y += speed * CP_System_GetDt();
+
+	// 좌우 조절
+	if (CP_Input_KeyDown(KEY_LEFT)) cameraPos.x -= speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_RIGHT)) cameraPos.x += speed * CP_System_GetDt();
+
+	// 줌 조절
+	if (CP_Input_KeyDown(KEY_Z)) zoom += 0.1f * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_X)) {
+		zoom -= 0.1f * CP_System_GetDt();
+		if (zoom < 0.1f) zoom = 0.1f;
+	}
+
 	if (CP_Input_KeyDown(KEY_Q))
 	{
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
@@ -471,14 +498,13 @@ void GameUpdate(void)
 			enemy[j].moveSpeed = UNIT_SPEED;
 	}
 
-
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
+	// ------------ carmera apply-------------------------
+	CP_Settings_ApplyMatrix(cameraMatrix);
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
-	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
@@ -494,6 +520,7 @@ void GameUpdate(void)
 	{
 		DrawBomb(dt);
 	}
+
 	else if (bomb.alived)
 	{
 		for (int i = 0; i < MAX_UNIT; i++)
@@ -517,12 +544,6 @@ void GameUpdate(void)
 		bomb.alived = FALSE;
 	}
 
-	char heroHP[50] = { 0 };
-	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
-	CP_Settings_TextSize(20.0f);
-	CP_Font_DrawText(heroHP, hero.hero.position.x - 30, hero.hero.position.y - 50);
-
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		char allyHP[10][50] = { 0 };
@@ -545,9 +566,22 @@ void GameUpdate(void)
 		}
 	}
 
+	char heroHP[50] = { 0 };
+	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
+	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	CP_Settings_TextSize(20.0f);
+	CP_Font_DrawText(heroHP, hero.hero.position.x - 30, hero.hero.position.y - 50);
+
 	char enemyBaseHP[50] = { 0 };
 	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
-	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x-30, enemyBase.position.y - 125);
+	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x - 30, enemyBase.position.y - 125);
+	CP_Settings_ResetMatrix();
+	// ---------------------------- camera end ----------------------------
+
+
+	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	char allyMoney[50] = { 0 };
 	sprintf_s(allyMoney, _countof(enemyBaseHP), "money: %d", allyResource.money);
@@ -590,5 +624,4 @@ void GameExit(void)
 {
 	CP_Sound_Free(&battleBGM);
 	BGMPlayGame = 1;
-
 }

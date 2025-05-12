@@ -30,7 +30,6 @@ typedef struct Unit
 	AnimationFrameInfo unitSetting;
 	struct Unit* targetUnit;
 	float attackTimer;
-	//float spawnTimer[NUM_UNIT_TYPES];
 }Unit;
 
 extern Unit ally[MAX_UNIT];
