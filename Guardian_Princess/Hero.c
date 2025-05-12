@@ -5,6 +5,7 @@
 #include "enemybase.h"
 #include "cprocessing.h"
 #include "FUNC_Animation_Motion.h"
+#include "camera.h"
 
 Hero hero;
 extern Unit enemy[MAX_UNIT];
@@ -30,25 +31,29 @@ void InitHero(CP_Image* Motion1)
 	hero.hero.unitSetting.images = Motion1;
 }
 
+extern CP_Vector cameraPos;
+
 void UpdateHero(float dt)
 {
 	if (CP_Input_KeyDown(KEY_A))
 	{
-		hero.hero.position.x -= hero.hero.moveSpeed * dt;
-		if (hero.hero.position.x <= 100)
+		if (hero.hero.position.x > 100)
 		{
-			hero.hero.position.x += hero.hero.moveSpeed * dt;
+			hero.hero.position.x -= hero.hero.moveSpeed * dt;
+			cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
 		}
 	}
 
-	else if ((CP_Input_KeyDown(KEY_D)) && (!circleToCircle(hero.hero.collider, enemyBase.collider)))
+	else if (CP_Input_KeyDown(KEY_D) && !circleToCircle(hero.hero.collider, enemyBase.collider))
 	{
 		hero.hero.position.x += hero.hero.moveSpeed * dt;
+		cameraPos.x += hero.hero.moveSpeed * CP_System_GetDt();
 		for (int i = 0; i < MAX_UNIT; i++)
 		{
 			if (enemy[i].alived && circleToCircle(hero.hero.collider, enemy[i].collider))
 			{
 				hero.hero.position.x -= hero.hero.moveSpeed * dt;
+				cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
 			}
 		}
 	}

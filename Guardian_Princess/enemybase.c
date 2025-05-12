@@ -9,7 +9,7 @@ extern CP_Image enemyBaseImage;
 
 void InitEnemyBase(void)
 {
-	enemyBase.position.x = CP_System_GetWindowWidth() / 5.0f * 4.4f;
+	enemyBase.position.x = CP_System_GetWindowWidth() * 1.5f;
 	enemyBase.position.y = CP_System_GetWindowHeight() / 4.0f;
 	enemyBase.maxHP = 1000;
 	enemyBase.currentHP = enemyBase.maxHP;

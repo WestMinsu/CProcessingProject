@@ -29,8 +29,11 @@ extern Bomb bomb;
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image skillButtonImage;
-CP_Sound battleBGM;
 CP_Image battle_background;
+CP_Image coin_image;
+CP_Image population_image;
+CP_Image explosion_image;
+CP_Sound battleBGM;
 CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
 CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
@@ -65,14 +68,23 @@ EnemyPattern patterns[MAX_LINES];
 int BGMPlayGame = 1;
 
 CP_Vector cameraPos;
-float zoom = 1.0f;
-float speed = 200.0f;
+float zoom;
+float speed;
+
+int currentFrame = 0;
+float frameTimer = 0.0f;
+float frameDuration = 0.1f;
+CP_BOOL exploded;
 
 void GameInit(void)
 {
+	zoom = 1.0f;
+	speed = 200.0f;
+
 	cameraPos = CP_Vector_Set(CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f);
 
 	skillCoolTimeElasped = TRUE;
+	exploded = FALSE;
 	r = 0, c = 0;
 	CP_System_ShowCursor(FALSE);
 
@@ -81,6 +93,9 @@ void GameInit(void)
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
+	coin_image = CP_Image_Load("Assets/In_game/coin.png");
+	population_image = CP_Image_Load("Assets/In_game/population.png");
+	explosion_image = CP_Image_Load("Assets/In_game/explosion.png");
 
 	heroAttack = Animation_ImageLoader("hero_attack", 5);
 	heroDead = Animation_ImageLoader("hero_dead", 4);
@@ -175,7 +190,6 @@ void GameInit(void)
 
 	// 파일 닫기
 	fclose(file);
-	
 }
 
 
@@ -185,28 +199,24 @@ void GameUpdate(void)
 	cameraMatrix = GetCameraMatrix(cameraPos, zoom);
 
 
-	if (CP_Input_KeyDown(KEY_UP)) cameraPos.y -= speed * CP_System_GetDt();
-	if (CP_Input_KeyDown(KEY_DOWN)) cameraPos.y += speed * CP_System_GetDt();
 
-	// 좌우 조절
+
 	if (CP_Input_KeyDown(KEY_LEFT)) cameraPos.x -= speed * CP_System_GetDt();
 	if (CP_Input_KeyDown(KEY_RIGHT)) cameraPos.x += speed * CP_System_GetDt();
 
-	// 줌 조절
-	if (CP_Input_KeyDown(KEY_Z)) zoom += 0.1f * CP_System_GetDt();
-	if (CP_Input_KeyDown(KEY_X)) {
-		zoom -= 0.1f * CP_System_GetDt();
-		if (zoom < 0.1f) zoom = 0.1f;
-	}
+	//if (CP_Input_KeyDown(KEY_UP)) cameraPos.y -= speed * CP_System_GetDt();
+	//if (CP_Input_KeyDown(KEY_DOWN)) cameraPos.y += speed * CP_System_GetDt();
+	//if (CP_Input_KeyDown(KEY_Z)) zoom += 0.1f * CP_System_GetDt();
+	//if (CP_Input_KeyDown(KEY_X)) {
+	//	zoom -= 0.1f * CP_System_GetDt();
+	//	if (zoom < 0.1f) zoom = 0.1f;
+	//}
 
 	if (CP_Input_KeyDown(KEY_Q))
 	{
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-	// Todo: unit spawner cooltime ������ ���� 
-	//		IsClicked ��¥ �ʿ��� ���� �¾ƿ�?????? 
-	//		Spawn Timer Logic�� �̻��ؼ� ��¿�� ���� --> spawn timer�� ����, �̻��� hack �ڵ� ¥������!!!
 	int melee_input = SquareButtonClicked(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int skill_input = SquareButtonClicked(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
@@ -501,6 +511,10 @@ void GameUpdate(void)
 	UpdateHero(dt);
 	UpdateUnits(dt);
 
+
+	CP_Graphics_ClearBackground(white);
+
+
 	// ------------ carmera apply-------------------------
 	CP_Settings_ApplyMatrix(cameraMatrix);
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
@@ -508,7 +522,6 @@ void GameUpdate(void)
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
 	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 
 	DrawEnemyBase();
 
@@ -516,33 +529,7 @@ void GameUpdate(void)
 
 	DrawUnits(ally, 19);
 	DrawUnits(enemy, 14);
-	if (bomb.position.y < ally->position.y)
-	{
-		DrawBomb(dt);
-	}
 
-	else if (bomb.alived)
-	{
-		for (int i = 0; i < MAX_UNIT; i++)
-		{
-			if (enemy[i].alived)
-				enemy[i].currentHP -= bomb.damage;
-			if (enemy[i].currentHP <= 0)
-			{
-				enemy[i].alived = FALSE;
-				if (enemy[i].type == WARRIOR)
-					allyResource.money += 30;
-				else if (enemy[i].type == ARCHER)
-					allyResource.money += 50;
-				if (enemyPopulation > 0)
-				{
-					enemyPopulation--;
-					printf("enemyPopulation: %d\n", enemyPopulation);
-				}
-			}
-		}
-		bomb.alived = FALSE;
-	}
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
@@ -579,21 +566,85 @@ void GameUpdate(void)
 	// ---------------------------- camera end ----------------------------
 
 
+	if (bomb.position.y < ally->position.y)
+	{
+		DrawBomb(dt);
+	}
+
+	else if (bomb.alived)
+	{
+		for (int i = 0; i < MAX_UNIT; i++)
+		{
+			if (enemy[i].alived)
+				enemy[i].currentHP -= bomb.damage;
+			if (enemy[i].currentHP <= 0)
+			{
+				enemy[i].alived = FALSE;
+				if (enemy[i].type == WARRIOR)
+					allyResource.money += 30;
+				else if (enemy[i].type == ARCHER)
+					allyResource.money += 50;
+				if (enemyPopulation > 0)
+				{
+					enemyPopulation--;
+					printf("enemyPopulation: %d\n", enemyPopulation);
+				}
+			}
+		}
+
+		exploded = TRUE;
+		bomb.alived = FALSE;
+	}
+
+	if (exploded)
+	{
+		frameTimer += CP_System_GetDt();
+
+		// 일정 시간이 지나면 다음 프레임으로 전환
+		if (frameTimer >= frameDuration)
+		{
+			currentFrame++;
+			frameTimer = 0.0f; // 타이머 초기화
+		}
+
+		int imageWidth = CP_Image_GetWidth(explosion_image);
+		int imageHeight = CP_Image_GetHeight(explosion_image);
+
+		int row = currentFrame / 3;
+		int col = currentFrame % 3;
+		if (row == 0)
+			CP_Image_DrawSubImage(explosion_image, CP_System_GetWindowWidth() / 2.0f, hero.hero.position.y - 120, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
+		else
+			CP_Image_DrawSubImage(explosion_image, CP_System_GetWindowWidth() / 2.0f, hero.hero.position.y, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
+
+
+		if (currentFrame == 8)
+		{
+			exploded = FALSE;
+			currentFrame = 0;
+		}
+	}
+
+
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 
 	char allyMoney[50] = { 0 };
-	sprintf_s(allyMoney, _countof(enemyBaseHP), "money: %d", allyResource.money);
-	CP_Font_DrawText(allyMoney, 100, 300);
+	sprintf_s(allyMoney, _countof(enemyBaseHP), ": %d", allyResource.money);
+	CP_Image_Draw(coin_image, 100, 100, 50, 50, 255);
+	CP_Font_DrawText(allyMoney, 120, 100);
 
 	char allyPop[50] = { 0 };
-	sprintf_s(allyPop, _countof(allyPop), "ally Population: %d / %d", allyPopulation, MAX_UNIT);
-	CP_Font_DrawText(allyPop, 200, 300);
+	sprintf_s(allyPop, _countof(allyPop), ": %d / %d", allyPopulation, MAX_UNIT);
+	CP_Image_Draw(population_image, 100, 150, 40, 40, 255);
+	CP_Font_DrawText(allyPop, 120, 150);
+
 
 	char enemyPop[50] = { 0 };
-	sprintf_s(enemyPop, _countof(enemyPop), "enemy Population: %d / %d", enemyPopulation, MAX_UNIT);
+	sprintf_s(enemyPop, _countof(enemyPop), ": %d / %d", enemyPopulation, MAX_UNIT);
 	CP_Font_DrawText(enemyPop, 1600, 100);
+	CP_Image_Draw(population_image, 1580, 100, 40, 40, 255);
 
 	char allySpawnTime1[50] = { 0 };
 	sprintf_s(allySpawnTime1, _countof(allySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - allySpawner[WARRIOR].timer);
@@ -618,6 +669,8 @@ void GameUpdate(void)
 	sprintf_s(bombTime, _countof(bombTime), "bomb timer: %5.2f", hero.skillTimer);
 	CP_Font_DrawText(bombTime, 1000, 500);
 	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 3.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (hero.skillTimer / bomb.coolDown), 10);
+
+	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
 }
 
 void GameExit(void)

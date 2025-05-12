@@ -10,13 +10,13 @@ Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;
 int enemyPopulation = 0;
-CP_Vector allyPosition; // why ����?? why do you love ���� ���� so much??? 
+CP_Vector allyPosition;
 CP_Vector enemyPosition;
 
 void InitUnit()
 {
 	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 16.0f, CP_System_GetWindowHeight() / 4.0f);
-	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 4.0f);
+	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() * 1.4f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
 	enemyPopulation = 0;
 	for (int i = 0; i < MAX_UNIT; i++)
