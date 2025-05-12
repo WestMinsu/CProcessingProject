@@ -15,6 +15,7 @@
 #include "FUNC_Animation_Motion.h"
 #include "SCENE_StageEnd.h"
 
+<<<<<<< Updated upstream
 Hero hero;
 AllySpawner allySpawner[MAX_UNIT];
 EnemySpawner enemySpawner[NUM_ENEMY_TYPES];
@@ -44,6 +45,80 @@ CP_Image* unitTest2;
 //--------------------------------------------------------
 
 int BGMPlayGame = 1;
+=======
+extern Hero hero;
+extern Unit ally[MAX_UNIT];
+extern Unit enemy[MAX_UNIT];
+extern Bomb bomb;
+extern AnimationState heroState;
+//-------------------------------------------------------
+CP_Image* heroAttack;
+CP_Image* heroDead;
+CP_Image* heroIdle;
+CP_Image* heroWalk;
+
+//CP_Image* allyWarriorIdle;
+CP_Image* allyWarriorAttack;
+CP_Image* allyWarriorDead;
+CP_Image* allyWarriorWalk;
+
+//CP_Image* allyArcherIdle;;
+CP_Image* allyArcherAttack;
+CP_Image* allyArcherDead;
+CP_Image* allyArcherWalk;
+
+//CP_Image* allyWarriorIdle;
+CP_Image* enemyWarriorAttack;
+CP_Image* enemyWarriorDead;
+CP_Image* enemyWarriorWalk;
+
+//CP_Image* allyArcherIdle;;
+CP_Image* enemyArcherAttack;
+CP_Image* enemyArcherDead;
+CP_Image* enemyArcherWalk;
+//---------------
+
+
+UnitSpawner allySpawner[NUM_UNIT_TYPES];
+UnitSpawner enemySpawner[NUM_UNIT_TYPES];
+
+Resource allyResource;
+Resource enemyResource;
+
+EnemyBase enemyBase;
+//-------------------------------------------------------
+CP_Image melee_button_image;
+CP_Image ranged_button_image;
+CP_Image skillButtonImage;
+
+CP_Image battle_background;
+
+CP_Sound battleBGM;
+//-------------------------------------------------------
+CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
+CP_BOOL isSkillButtonClicked;
+CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
+CP_BOOL isHeroAttack;
+static CP_BOOL skillCoolTimeElasped;
+//--------------------------------------------------------
+extern CP_Vector allyPosition;
+extern CP_Vector enemyPosition;
+#define MAX_LINES 100   
+#define TEXT_SIZE 50
+int r = 0, c = 0; 
+
+int count;
+
+
+int BGMPlayGame = 1;
+
+typedef struct {
+	float number;        // float ê°’
+	char text[50]; // ë¬¸ìžì—´
+} EnemyPattern;
+
+EnemyPattern patterns[MAX_LINES];
+>>>>>>> Stashed changes
 
 
 
@@ -54,24 +129,56 @@ CP_Image* unitTest2;
 
 void GameInit(void)
 {
+<<<<<<< Updated upstream
 	//¿¡¼Â ·Îµù ----------------------------------
+=======
+	skillCoolTimeElasped = TRUE;
+	r = 0, c = 0;
+	CP_System_ShowCursor(FALSE);
+
+// ì—ì…‹ ë¡œë”©--------------------------------------------------------------------------------------------------------------
+
+>>>>>>> Stashed changes
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
+	heroIdle = Animation_ImageLoader("hero_wait", 4);
 	heroAttack = Animation_ImageLoader("hero_attack", 5);
 	heroDead = Animation_ImageLoader("hero_dead", 4);
-	heroHurt = Animation_ImageLoader("hero_hurt", 1);
-	heroWait = Animation_ImageLoader("hero_wait", 5);
 	heroWalk = Animation_ImageLoader("hero_walk", 7);
 
+<<<<<<< Updated upstream
 	unitTest = Animation_ImageLoader("unit_test", 19);
 	unitTest2 = Animation_ImageLoader("unit_test2", 14);
 
+=======
+	//allyWarriorIdle = Animation_ImageLoader("ally_warrior_Idle", 13);
+	allyWarriorAttack = Animation_ImageLoader("ally_warrior_Attack", 14);
+	allyWarriorDead = Animation_ImageLoader("ally_warrior_Dead", 21);
+	allyWarriorWalk = Animation_ImageLoader("ally_warrior_Walk", 14);
 
-	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
+	//allyArcherIdle;
+	allyArcherAttack = Animation_ImageLoader("ally_archer_Attack", 11);
+	allyArcherDead = Animation_ImageLoader("ally_archer_Dead", 18);
+	allyArcherWalk = Animation_ImageLoader("ally_archer_Walk", 16);
+>>>>>>> Stashed changes
 
+	//enemyWarriorIdle;
+	enemyWarriorAttack = Animation_ImageLoader("enemy_warrior_Attack", 2);
+	enemyWarriorDead = Animation_ImageLoader("enemy_warrior_Dead", 20);
+	enemyWarriorWalk = Animation_ImageLoader("enemy_warrior_walk", 4);
+
+<<<<<<< Updated upstream
 	//----------------------------------------
+=======
+	//enemyArcherIdle;
+	enemyArcherAttack = Animation_ImageLoader("enemy_archer_Attack", 5);
+	enemyArcherDead = Animation_ImageLoader("enemy_archer_Dead", 20);
+	enemyArcherWalk = Animation_ImageLoader("enemy_archer_walk", 15);
+
+//--------------------------------------------
+>>>>>>> Stashed changes
 
 	InitEnemyBase();
 	InitHero();
@@ -111,12 +218,60 @@ void GameUpdate(void)
 	//CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
 	SummonEnemyBase();
 
+<<<<<<< Updated upstream
 	// TODO: Button_Draw_Square ÇÔ¼ö Draw¸¸ ÇÏ°Ô ¼öÁ¤ÇÏ±â(°ª ¹ÝÈ¯x), DrawÇÔ¼ö´Â ÇÔ¼ö µÞºÎºÐ¿¡¼­ È£Ãâ
 	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
 	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
 	//-------------------
+=======
+	if (melee_input == 0)
+	{
+		isSpawnButtonClicked[0] = TRUE;
+	}
+
+	if (isSpawnButtonClicked[0])
+	{
+		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
+		{
+			SummonUnit(ally, WARRIOR);
+			isSpawnButtonClicked[0] = FALSE;
+		}
+	}
+
+	if (range_input == 0)
+	{
+		isSpawnButtonClicked[1] = TRUE;
+	}
+
+	if (isSpawnButtonClicked[1])
+	{
+		if (SpawnTimeElapsed(allySpawner, 3.0f, ARCHER))
+		{
+			SummonUnit(ally, ARCHER);
+			isSpawnButtonClicked[1] = FALSE;
+		}
+	}
+
+	if (skill_input == 0 && skillCoolTimeElasped)
+	{
+		isSkillButtonClicked = TRUE;
+		skillCoolTimeElasped = FALSE;
+	}
+	if (isSkillButtonClicked)
+	{
+		SummonBomb();
+		isSkillButtonClicked = FALSE;
+	}
+	if (!skillCoolTimeElasped)
+	{
+		if (AttackTimeElapsed(&hero.skillTimer, bomb.coolDown))
+		{
+			skillCoolTimeElasped = TRUE;
+		}
+	}
+>>>>>>> Stashed changes
 
 	// À½¾Ç Àç»ý
 	if (BGMPlayGame == 1)
@@ -131,7 +286,46 @@ void GameUpdate(void)
 
 	if (melee_input == 0)
 	{
+<<<<<<< Updated upstream
 		SummonUnit(ally, WARRIOR);
+=======
+		char ch = patterns[r].text[c];
+		if (ch == '\0')
+		{
+			c = 0;
+			ch = patterns[++r].text[c];
+		}
+		if (ch == 'm')
+		{
+			isSpawnEnemy[0] = TRUE;
+			isSpawnEnemy[1] = FALSE;
+		}
+		else if (ch == 'r')
+		{
+			isSpawnEnemy[1] = TRUE;
+			isSpawnEnemy[0] = FALSE;
+		}
+
+		if (isSpawnEnemy[0])
+		{
+			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
+			{
+				SummonUnit(enemy, WARRIOR);
+				isSpawnEnemy[0] = FALSE;
+				c++;
+			}
+		}
+
+		if (isSpawnEnemy[1])
+		{
+			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, ARCHER))
+			{
+				SummonUnit(enemy, ARCHER);
+				isSpawnEnemy[1] = FALSE;
+				c++;
+			}
+		}
+>>>>>>> Stashed changes
 	}
 
 
@@ -306,9 +500,44 @@ void GameUpdate(void)
 	UpdateUnits(dt);
 
 	DrawEnemyBase();
+<<<<<<< Updated upstream
 	DrawHero();
 	DrawUnits(ally, unitTest,19);
 	DrawUnits(enemy,unitTest2,14);
+=======
+
+	DrawHero(IDLE);
+
+	DrawUnits(ally);
+	DrawUnits(enemy);
+
+	if (bomb.position.y < ally->position.y)
+	{
+		DrawBomb(dt);
+	}
+	else if (bomb.alived)
+	{
+		for (int i = 0; i < MAX_UNIT; i++)
+		{
+			if (enemy[i].alived)
+				enemy[i].currentHP -= bomb.damage;
+			if (enemy[i].currentHP <= 0)
+			{
+				enemy[i].alived = FALSE;
+				if (enemy[i].type == WARRIOR)
+					allyResource.money += 30;
+				else if (enemy[i].type == ARCHER)
+					allyResource.money += 50;
+				if (enemyPopulation > 0)
+				{
+					enemyPopulation--;
+					printf("enemyPopulation: %d\n", enemyPopulation);
+				}
+			}
+		}
+		bomb.alived = FALSE;
+	}
+>>>>>>> Stashed changes
 
 	char heroHP[50] = { 0 };
 	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);

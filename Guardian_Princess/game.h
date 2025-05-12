@@ -1,10 +1,13 @@
 #pragma once
 #include "utils.h"
 #include "unit.h"
+#include "cprocessing.h"
+
 
 typedef struct AllySpawner
 {
 	float timer;
+<<<<<<< Updated upstream
 } AllySpawner;
 
 
@@ -21,6 +24,16 @@ void SummonUnit(Unit* unit, UnitType type);
 
 void DrawUnits(Unit* unit, CP_Image* unitani,int totalframe);
 
+=======
+	float duration;
+	int isActive;
+} UnitSpawner;
+
+
+
+
+
+>>>>>>> Stashed changes
 void GameInit(void);
 
 void GameUpdate(void);
