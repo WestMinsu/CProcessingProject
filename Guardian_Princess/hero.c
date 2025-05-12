@@ -5,21 +5,7 @@
 #include "enemybase.h"
 #include "FUNC_Animation_Motion.h"
 //-----------
-extern Hero hero;
 
-<<<<<<< Updated upstream
-//-----------------
-
-extern CP_Image* heroAttack;
-extern CP_Image* heroDead;
-extern CP_Image* heroHurt;
-extern CP_Image* heroWait;
-extern CP_Image* heroWalk;
-
-//-----------------
-
-void InitHero(void)
-=======
 Hero hero;
 AnimationState heroState;
 extern Unit enemy[MAX_UNIT];
@@ -31,20 +17,13 @@ extern CP_Image* heroIdle;
 extern CP_Image* heroWalk;
 
 void InitHero()
->>>>>>> Stashed changes
 {
-	hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
-	hero.collider.radius = 30;
-	hero.moveSpeed = 400;
-
-<<<<<<< Updated upstream
-	hero.maxHP = 1000;
-	hero.currentHP = hero.maxHP;
-	hero.attackDamage = 1;
-	hero.attackSpeed = 1;
-	hero.attackRange.position = hero.position;
-	hero.attackRange.radius = 50;
-=======
+	hero.hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
+	hero.hero.alived = TRUE;
+	hero.hero.moveSpeed = 400;
+	hero.hero.collider.radius = 30;
+	hero.hero.attackRange.position = hero.hero.position;
+	hero.hero.attackRange.radius = 50;
 	hero.hero.maxHP = 2000;
 	hero.hero.currentHP = hero.hero.maxHP;
 	hero.hero.attackDamage = 20;
@@ -64,8 +43,6 @@ void InitHero()
 	hero.hero.animationStateInfo.Dead.totalframe = 4;
 	hero.hero.animationStateInfo.Idle.totalframe = 4;
 	hero.hero.animationStateInfo.Walk.totalframe = 7;
-
->>>>>>> Stashed changes
 }
 
 void UpdateHero(float dt)
@@ -74,24 +51,6 @@ void UpdateHero(float dt)
 
 	if (CP_Input_KeyDown(KEY_A))
 	{
-<<<<<<< Updated upstream
-		hero.position.x -= hero.moveSpeed * dt;
-
-	}
-	else if (CP_Input_KeyDown(KEY_D))
-	{
-		hero.position.x += hero.moveSpeed * dt;
-	}
-	hero.collider.position = CP_Vector_Set(hero.position.x, hero.position.y);
-	hero.attackRange.position = hero.collider.position;
-}
-
-void DrawHero(void)
-{
-	Animation_play(heroWait,&hero.heroSetting, 5, 1, hero.position.x, hero.position.y, 128, 128, 255);
-
-}
-=======
 		hero.hero.position.x -= hero.hero.moveSpeed * dt;
 		if (hero.hero.position.x <= 100)
 		{
@@ -141,4 +100,4 @@ void DrawHero(enum UnitState state)
 	
 	}
 }
->>>>>>> Stashed changes
+

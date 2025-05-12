@@ -22,13 +22,6 @@ typedef struct Hero
 
 }Hero;
 
-<<<<<<< Updated upstream
 void InitHero(void);
-void UpdateHero(float dt);
-void DrawHero(void);
-=======
-
 void DrawHero(enum UnitState state);
-void InitHero();
 void UpdateHero(float dt);
->>>>>>> Stashed changes
