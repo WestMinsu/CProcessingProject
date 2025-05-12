@@ -201,8 +201,8 @@ void GameUpdate(void)
 
 
 
-	if (CP_Input_KeyDown(KEY_LEFT)) cameraPos.x -= speed * CP_System_GetDt();
-	if (CP_Input_KeyDown(KEY_RIGHT)) cameraPos.x += speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_LEFT) && cameraPos.x - speed * CP_System_GetDt() >= 500) cameraPos.x -= speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_RIGHT) && cameraPos.x + speed * CP_System_GetDt() <= CP_System_GetWindowWidth() * 1.5f) cameraPos.x += speed * CP_System_GetDt();
 
 	//if (CP_Input_KeyDown(KEY_UP)) cameraPos.y -= speed * CP_System_GetDt();
 	//if (CP_Input_KeyDown(KEY_DOWN)) cameraPos.y += speed * CP_System_GetDt();
@@ -517,7 +517,7 @@ void GameUpdate(void)
 
 	// ------------ carmera apply-------------------------
 	CP_Settings_ApplyMatrix(cameraMatrix);
-	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() * 2.7f, CP_System_GetWindowHeight() / 1.0f, 255);
 
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
