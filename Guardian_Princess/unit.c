@@ -1,4 +1,4 @@
-#include "unit.h"
+﻿#include "unit.h"
 #include "constants.h"
 #include "colors.h"
 #include "resource.h"
@@ -13,8 +13,10 @@ int enemyPopulation = 0;
 CP_Vector allyPosition;
 CP_Vector enemyPosition;
 
+
 void InitUnit()
 {
+	CP_Random_Seed((unsigned int)CP_System_GetSeconds());
 	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 16.0f, CP_System_GetWindowHeight() / 4.0f);
 	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() * 1.4f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
@@ -61,6 +63,10 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 	// 1. unit �Ʊ����� �������� �Ǵ�
 	// 2. �Ʊ��̵� �����̵� �ε����� ã�´�
 	// 3. �� ã�� ������ Ÿ�Կ� ���� �ʱ�ȭ �Ѵ�.
+
+	int random_num = CP_Random_RangeInt(0, 20) - 10;
+	random_num *= 2;
+
 	if (allyPopulation >= MAX_UNIT)
 	{
 		printf("ally pop: %d", allyPopulation);
@@ -81,6 +87,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
+				unit[i].position.y += random_num;
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -141,6 +148,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
 				unit[i].attackTimer = 3.0f;
+				unit[i].position.y += random_num;
 
 				if (unit[i].type == WARRIOR)
 				{
