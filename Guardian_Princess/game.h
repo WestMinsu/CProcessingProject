@@ -23,12 +23,6 @@ extern CP_Image* heroWalk;
 
 
 
-
-
-void InitUnit(void);
-
-void DrawUnits(Unit* unit, int totalframe);
-
 void GameInit(void);
 
 void GameUpdate(void);

@@ -562,9 +562,6 @@ void GameUpdate(void)
 	char enemyBaseHP[50] = { 0 };
 	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
 	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x - 30, enemyBase.position.y - 125);
-	CP_Settings_ResetMatrix();
-	// ---------------------------- camera end ----------------------------
-
 
 	if (bomb.position.y < ally->position.y)
 	{
@@ -600,7 +597,6 @@ void GameUpdate(void)
 	{
 		frameTimer += CP_System_GetDt();
 
-		// 일정 시간이 지나면 다음 프레임으로 전환
 		if (frameTimer >= frameDuration)
 		{
 			currentFrame++;
@@ -613,9 +609,9 @@ void GameUpdate(void)
 		int row = currentFrame / 3;
 		int col = currentFrame % 3;
 		if (row == 0)
-			CP_Image_DrawSubImage(explosion_image, CP_System_GetWindowWidth() / 2.0f, hero.hero.position.y - 120, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
+			CP_Image_DrawSubImage(explosion_image, bomb.position.x, hero.hero.position.y - 120, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
 		else
-			CP_Image_DrawSubImage(explosion_image, CP_System_GetWindowWidth() / 2.0f, hero.hero.position.y, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
+			CP_Image_DrawSubImage(explosion_image, bomb.position.x, hero.hero.position.y, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
 
 
 		if (currentFrame == 8)
@@ -624,6 +620,11 @@ void GameUpdate(void)
 			currentFrame = 0;
 		}
 	}
+
+	CP_Settings_ResetMatrix();
+	// ---------------------------- camera end ----------------------------
+
+
 
 
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
