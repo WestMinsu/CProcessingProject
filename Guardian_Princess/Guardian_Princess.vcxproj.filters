@@ -45,10 +45,6 @@
     <ClCompile Include="unit_info.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FUNC_Camera.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FUNC_AnimationState.c" />
     <ClCompile Include="SCENE_StageEnd.c" />
     <ClCompile Include="SCENE_MainTitle.c" />
   </ItemGroup>
@@ -98,13 +94,6 @@
     <ClInclude Include="unit_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="FUNC_StageReset.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FUNC_Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FUNC_AnimationState.h" />
     <ClInclude Include="SCENE_StageEnd.h" />
     <ClInclude Include="SCENE_MainTitle.h" />
   </ItemGroup>

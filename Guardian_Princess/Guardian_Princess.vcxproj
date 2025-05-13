@@ -194,10 +194,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="FUNC_AnimationState.c" />
     <ClCompile Include="FUNC_Animation_Motion.c" />
     <ClCompile Include="FUNC_BUTTON.c" />
-    <ClCompile Include="FUNC_Camera.c" />
     <ClCompile Include="hero.c" />
     <ClCompile Include="SCENE_Intro.c" />
     <ClCompile Include="SCENE_MainTitle.c" />
@@ -214,11 +212,8 @@ xcopy "$(ProjectDir)Assets\*" "$(OutDir)Assets\" /s /r /y /q</Command>
   <ItemGroup>
     <ClInclude Include="colors.h" />
     <ClInclude Include="enemybase.h" />
-    <ClInclude Include="FUNC_AnimationState.h" />
     <ClInclude Include="FUNC_Animation_Motion.h" />
     <ClInclude Include="FUNC_BUTTON.h" />
-    <ClInclude Include="FUNC_Camera.h" />
-    <ClInclude Include="FUNC_StageReset.h" />
     <ClInclude Include="mainmenu.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="SCENE_Intro.h" />
