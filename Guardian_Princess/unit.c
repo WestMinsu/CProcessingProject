@@ -58,7 +58,7 @@ void InitUnit()
 	}
 }
 
-void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
+void SummonUnit(Unit* unit, UnitType type)
 {
 	// 1. unit �Ʊ����� �������� �Ǵ�
 	// 2. �Ʊ��̵� �����̵� �ε����� ã�´�
@@ -82,8 +82,6 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].position = allyPosition;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
-				unit[i].unitSetting.images = desc.images;
-				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
@@ -142,8 +140,6 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].collider.radius = 0;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
-				unit[i].unitSetting.images = desc.images;
-				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
@@ -206,7 +202,7 @@ void UpdateUnits(float dt)
 	}
 }
 
-void DrawUnits(Unit* unit, int totalframe)
+void DrawUnits(Unit* unit)
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{

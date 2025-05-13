@@ -27,7 +27,9 @@ typedef struct Unit
 	int attackDamage;
 	float attackCoolDown;
 	int price;
-	AnimationFrameInfo unitSetting;
+	AnimationFrameInfo animationFrameInfo;
+	AnimationState animationStateInfo;
+	enum UnitState state;
 	struct Unit* targetUnit;
 	float attackTimer;
 }Unit;
@@ -36,9 +38,9 @@ extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
 
 void InitUnit(void);
-void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc);
+void SummonUnit(Unit* unit, UnitType type);
 void UpdateUnits(float dt);
-void DrawUnits(Unit* unit, int totalframe);
+void DrawUnits(Unit* unit);
 
 
 void UpdateHero(float dt);

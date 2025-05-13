@@ -39,10 +39,6 @@ CP_BOOL isSkillButtonClicked;
 CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
 CP_BOOL isHeroAttack;
 //-------------------------------------------------------
-AnimationDesc unitTest;
-AnimationDesc unitTest2;
-AnimationDesc enemyRangedImages;
-AnimationDesc allyRangedImages;
 static CP_BOOL skillCoolTimeElasped;
 //--------------------------------------------------------
 CP_Image* heroAttack;
@@ -103,19 +99,7 @@ void GameInit(void)
 	heroWait = Animation_ImageLoader("hero_wait", 5);
 	heroWalk = Animation_ImageLoader("hero_walk", 7);
 
-	unitTest.totalframe = 19;
-	unitTest.images = Animation_ImageLoader("unit_test", unitTest.totalframe);
-
-	unitTest2.totalframe = 14;
-	unitTest2.images = Animation_ImageLoader("unit_test2", unitTest2.totalframe);
-
 	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
-
-	enemyRangedImages.totalframe = 6;
-	enemyRangedImages.images = Animation_ImageLoader("enemy_ranged", enemyRangedImages.totalframe);
-
-	allyRangedImages.totalframe = 8;
-	allyRangedImages.images = Animation_ImageLoader("test11", allyRangedImages.totalframe);
 
 	InitEnemyBase();
 	InitHero(heroWait);
@@ -230,7 +214,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(allySpawner, 1.3f, WARRIOR))
 		{
-			SummonUnit(ally, WARRIOR, unitTest);
+			SummonUnit(ally, WARRIOR);
 			isSpawnButtonClicked[0] = FALSE;
 		}
 	}
@@ -244,7 +228,7 @@ void GameUpdate(void)
 	{
 		if (SpawnTimeElapsed(allySpawner, 3.0f, ARCHER))
 		{
-			SummonUnit(ally, ARCHER, allyRangedImages);
+			SummonUnit(ally, ARCHER);
 			isSpawnButtonClicked[1] = FALSE;
 		}
 	}
@@ -298,7 +282,7 @@ void GameUpdate(void)
 		{
 			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, WARRIOR))
 			{
-				SummonUnit(enemy, WARRIOR, unitTest2);
+				SummonUnit(enemy, WARRIOR);
 				isSpawnEnemy[0] = FALSE;
 				c++;
 			}
@@ -308,7 +292,7 @@ void GameUpdate(void)
 		{
 			if (SpawnTimeElapsed(enemySpawner, patterns[r].number, ARCHER))
 			{
-				SummonUnit(enemy, ARCHER, enemyRangedImages);
+				SummonUnit(enemy, ARCHER);
 				isSpawnEnemy[1] = FALSE;
 				c++;
 			}
@@ -525,10 +509,10 @@ void GameUpdate(void)
 
 	DrawEnemyBase();
 
-	DrawHero(hero);
+	DrawHero();
 
-	DrawUnits(ally, 19);
-	DrawUnits(enemy, 14);
+	DrawUnits(ally);
+	DrawUnits(enemy);
 
 
 	for (int i = 0; i < MAX_UNIT; i++)
