@@ -47,6 +47,7 @@ void UpdateHero(float dt)
 	else if (CP_Input_KeyDown(KEY_D) && !circleToCircle(hero.hero.collider, enemyBase.collider))
 	{
 		hero.hero.position.x += hero.hero.moveSpeed * dt;
+		if(cameraPos.x <= CP_System_GetWindowWidth() + 80)
 		cameraPos.x += hero.hero.moveSpeed * CP_System_GetDt();
 		for (int i = 0; i < MAX_UNIT; i++)
 		{

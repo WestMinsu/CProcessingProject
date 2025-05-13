@@ -198,11 +198,8 @@ void GameUpdate(void)
 {
 	cameraMatrix = GetCameraMatrix(cameraPos, zoom);
 
-
-
-
-	if (CP_Input_KeyDown(KEY_LEFT) && cameraPos.x - speed * CP_System_GetDt() >= 500) cameraPos.x -= speed * CP_System_GetDt();
-	if (CP_Input_KeyDown(KEY_RIGHT) && cameraPos.x + speed * CP_System_GetDt() <= CP_System_GetWindowWidth() * 1.5f) cameraPos.x += speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_LEFT) && cameraPos.x - speed * CP_System_GetDt() >= 700) cameraPos.x -= speed * CP_System_GetDt();
+	if (CP_Input_KeyDown(KEY_RIGHT) && cameraPos.x + speed * CP_System_GetDt() <= CP_System_GetWindowWidth() + 80) cameraPos.x += speed * CP_System_GetDt();
 
 	//if (CP_Input_KeyDown(KEY_UP)) cameraPos.y -= speed * CP_System_GetDt();
 	//if (CP_Input_KeyDown(KEY_DOWN)) cameraPos.y += speed * CP_System_GetDt();
@@ -612,7 +609,6 @@ void GameUpdate(void)
 			CP_Image_DrawSubImage(explosion_image, bomb.position.x, hero.hero.position.y - 120, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
 		else
 			CP_Image_DrawSubImage(explosion_image, bomb.position.x, hero.hero.position.y, 2000, 700, (imageWidth * col / 3.0f), (imageHeight * row / 3.0f), (imageWidth * (col + 1) / 3.0f), (imageHeight * (row + 1) / 3.0f), 255);
-
 
 		if (currentFrame == 8)
 		{
