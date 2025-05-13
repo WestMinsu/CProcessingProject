@@ -1,14 +1,14 @@
-ï»¿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "cprocessing.h"
 #include "FUNC_Animation_Motion.h"
+#include "unit.h"
 
-//ï¿½ï¿½ï¿½ï¿½ ï¿½Úµé¸µ
 static int frame = 0;
 
-CP_Image* Animation_ImageLoader(char foldername[100], int totalframe)//ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¸ï¿½) ï¿½Ô·ï¿½
-//init ï¿½È¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½!!
+CP_Image* Animation_ImageLoader(char foldername[100], int totalframe)//Æú´õ ÀÌ¸§°ú ÃÑ ÇÁ·¹ÀÓ ¼ö(¸¶Áö¸· Æú´õ ÀÌ¸§) ÀÔ·Â
+//init ¾È¿¡ ³ÖÀ» °Í!!
 {
 	CP_Image* frame_list = (CP_Image*)malloc(totalframe * sizeof(CP_Image));
 
@@ -25,11 +25,8 @@ CP_Image* Animation_ImageLoader(char foldername[100], int totalframe)//ï¿½ï¿½ï¿½
 
 
 void Animation_play(CP_Image* loaded_files, int* framecount ,int* frameslow,int totalframe, CP_BOOL looping, float aniX, float aniY, float aniW, float aniH, int aniA)
-//ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ // update ï¿½Ô¼ï¿½ ï¿½È¿ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
-//"asset/animation" ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½,//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½Å³ï¿½// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½) / ï¿½ï¿½ï¿½ ï¿½ï¿½Ä¡ ï¿½ï¿½ Å©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ x,y,w,h,ï¿½ï¿½ï¿½Ä°ï¿½ 
 {
-	// ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½Ö´ï¿½ ï¿½Ì¹ï¿½ï¿½ï¿½(loaded files)ï¿½ï¿½ ï¿½ï¿½È£ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ç¸ï¿½ ï¿½Ù½ï¿½ 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Æ°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ýºï¿½
-	// ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ó¿ï¿½ ï¿½ï¿½ ï¿½å¾¿ ï¿½ï¿½ï¿½
+
 	if (loaded_files == 0)
 	{
 		return;
@@ -39,7 +36,6 @@ void Animation_play(CP_Image* loaded_files, int* framecount ,int* frameslow,int 
 	{
 		CP_Image_Draw(loaded_files[*framecount], aniX, aniY, aniW, aniH, aniA);
 		
-
 			if (*frameslow == 4)
 			{
 				(*framecount)++;

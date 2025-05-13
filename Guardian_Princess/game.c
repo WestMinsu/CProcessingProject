@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "cprocessing.h"
 #include "SCENE_MainMenu.h"
@@ -14,7 +14,7 @@
 #include "FUNC_Button.h"
 #include "FUNC_Animation_Motion.h"
 #include "SCENE_StageEnd.h"
-#include "skill.h"
+
 
 extern Hero hero;
 extern Unit ally[MAX_UNIT];
@@ -64,6 +64,55 @@ CP_Image skillButtonImage;
 CP_Image battle_background;
 
 CP_Sound battleBGM;
+extern Hero hero;
+extern Unit ally[MAX_UNIT];
+extern Unit enemy[MAX_UNIT];
+extern Bomb bomb;
+extern AnimationState heroState;
+//-------------------------------------------------------
+CP_Image* heroAttack;
+CP_Image* heroDead;
+CP_Image* heroIdle;
+CP_Image* heroWalk;
+
+//CP_Image* allyWarriorIdle;
+CP_Image* allyWarriorAttack;
+CP_Image* allyWarriorDead;
+CP_Image* allyWarriorWalk;
+
+//CP_Image* allyArcherIdle;;
+CP_Image* allyArcherAttack;
+CP_Image* allyArcherDead;
+CP_Image* allyArcherWalk;
+
+//CP_Image* allyWarriorIdle;
+CP_Image* enemyWarriorAttack;
+CP_Image* enemyWarriorDead;
+CP_Image* enemyWarriorWalk;
+
+//CP_Image* allyArcherIdle;;
+CP_Image* enemyArcherAttack;
+CP_Image* enemyArcherDead;
+CP_Image* enemyArcherWalk;
+//---------------
+
+
+UnitSpawner allySpawner[NUM_UNIT_TYPES];
+UnitSpawner enemySpawner[NUM_UNIT_TYPES];
+
+Resource allyResource;
+Resource enemyResource;
+
+EnemyBase enemyBase;
+//-------------------------------------------------------
+CP_Image melee_button_image;
+CP_Image ranged_button_image;
+CP_Image skillButtonImage;
+
+CP_Image battle_background;
+
+CP_Sound battleBGM;
+>>>>>>> Stashed changes
 //-------------------------------------------------------
 CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
@@ -83,29 +132,55 @@ int count;
 int BGMPlayGame = 1;
 
 typedef struct {
-	float number;        // float 값
-	char text[50]; // 문자열
+	float number;        // float �?
+	char text[50]; // 문자??
 } EnemyPattern;
 
 EnemyPattern patterns[MAX_LINES];
 
+CP_Image* unitTest2;
+
+//TODO: ������ spawnTime = 0����
+
 void GameInit(void)
 {
+
 	skillCoolTimeElasped = TRUE;
 	r = 0, c = 0;
 	CP_System_ShowCursor(FALSE);
 
-// 에셋 로딩--------------------------------------------------------------------------------------------------------------
 
 	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
 	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
-	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 
 	heroIdle = Animation_ImageLoader("hero_wait", 4);
 	heroAttack = Animation_ImageLoader("hero_attack", 5);
 	heroDead = Animation_ImageLoader("hero_dead", 4);
 	heroWalk = Animation_ImageLoader("hero_walk", 7);
+
+	//allyWarriorIdle = Animation_ImageLoader("ally_warrior_Idle", 13);
+	allyWarriorAttack = Animation_ImageLoader("ally_warrior_Attack", 14);
+	allyWarriorDead = Animation_ImageLoader("ally_warrior_Dead", 21);
+	allyWarriorWalk = Animation_ImageLoader("ally_warrior_Walk", 14);
+
+	//allyArcherIdle;
+	allyArcherAttack = Animation_ImageLoader("ally_archer_Attack", 11);
+	allyArcherDead = Animation_ImageLoader("ally_archer_Dead", 18);
+	allyArcherWalk = Animation_ImageLoader("ally_archer_Walk", 16);
+
+
+	//enemyWarriorIdle;
+	enemyWarriorAttack = Animation_ImageLoader("enemy_warrior_Attack", 2);
+	enemyWarriorDead = Animation_ImageLoader("enemy_warrior_Dead", 20);
+	enemyWarriorWalk = Animation_ImageLoader("enemy_warrior_walk", 4);
+
+
+	//enemyArcherIdle;
+	enemyArcherAttack = Animation_ImageLoader("enemy_archer_Attack", 5);
+	enemyArcherDead = Animation_ImageLoader("enemy_archer_Dead", 20);
+	enemyArcherWalk = Animation_ImageLoader("enemy_archer_walk", 15);
+
 
 	//allyWarriorIdle = Animation_ImageLoader("ally_warrior_Idle", 13);
 	allyWarriorAttack = Animation_ImageLoader("ally_warrior_Attack", 14);
@@ -127,25 +202,24 @@ void GameInit(void)
 	enemyArcherDead = Animation_ImageLoader("enemy_archer_Dead", 20);
 	enemyArcherWalk = Animation_ImageLoader("enemy_archer_walk", 15);
 
-//--------------------------------------------
-
 	InitEnemyBase();
 	InitHero();
 	InitUnit();
-	InitBomb();
-	SummonEnemyBase();
 
-	for (int i = 0; i < NUM_UNIT_TYPES; i++)
+	allyPopulation = 0;
+	enemyPopulation = 0;
+	
+	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		allySpawner[i].timer = 0;
-		enemySpawner[i].timer = 0;
-		isSpawnButtonClicked[i] = FALSE;
-		isSpawnEnemy[i] = FALSE;
-		isSkillButtonClicked = FALSE;
+		isFightWithEnemy[i] = FALSE;
+		isFightWithAlly[i] = FALSE;
 	}
+
+
 
 	allyResource.money = 50;
 	enemyResource.money = 10000;
+
 
 	red = CP_Color_CreateHex(0xFF0000FF);
 	green = CP_Color_CreateHex(0x00FF00FF);
@@ -154,54 +228,6 @@ void GameInit(void)
 	pink = CP_Color_CreateHex(0xF08080FF);
 
 	CP_Settings_TextSize(40.0f);
-	FILE* file = fopen("data/enemypattern.txt", "r");
-	if (file == NULL) {
-		printf("파일을 열 수 없습니다.\n");
-		return;
-	}
-
-	// 구조체 배열과 카운터 선언
-
-	for (int i = 0; i < MAX_LINES; i++)
-	{
-		patterns[i].number = 0;
-		for (int j = 0; j < TEXT_SIZE; j++)
-			patterns[i].text[j] = '\0';
-	}
-
-	count = 0;
-	char line[100];  // 한 줄을 읽을 버퍼
-
-	while (fgets(line, sizeof(line), file) != NULL && count < MAX_LINES) {
-		// 줄 끝의 개행문자 제거
-		line[strcspn(line, "\r\n")] = 0;
-
-		// 선행 및 후행 공백 제거
-		char* start = line;
-		while (isspace((unsigned char)*start)) start++;
-		char* end = start + strlen(start);
-		while (end > start && isspace((unsigned char)*(end - 1))) end--;
-		*end = '\0';
-
-		// 빈 줄 건너뛰기
-		if (strlen(start) == 0) {
-			printf("빈 줄 발견\n");
-			continue;
-		}
-
-		// 파싱 시도
-		EnemyPattern temp;
-		if (sscanf_s(start, "%f %49s", &temp.number, temp.text, (unsigned)_countof(temp.text)) == 2) {
-			patterns[count] = temp;
-			count++;
-		}
-		else {
-			printf("잘못된 줄 (내용: '%s')\n", start);
-		}
-	}
-
-	// 파일 닫기
-	fclose(file);
 }
 
 void GameUpdate(void)
@@ -211,12 +237,14 @@ void GameUpdate(void)
 		CP_Engine_SetNextGameState(MainMenuInit, MainMenuUpdate, MainMenuExit);
 	}
 
-	// Todo: unit spawner cooltime ������ ���� 
-	//		IsClicked ��¥ �ʿ��� ���� �¾ƿ�?????? 
-	//		Spawn Timer Logic�� �̻��ؼ� ��¿�� ���� --> spawn timer�� ����, �̻��� hack �ڵ� ¥������!!!
-	int melee_input = SquareButtonClicked(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	int range_input = SquareButtonClicked(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	int skill_input = SquareButtonClicked(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	//CP_Graphics_ClearBackground(CP_Color_Create(100, 100, 100, 255));
+	SummonEnemyBase();
+
+	// TODO: Button_Draw_Square �Լ� Draw�� �ϰ� �����ϱ�(�� ��ȯx), Draw�Լ��� �Լ� �޺κп��� ȣ��
+	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
+	int melee_input = Button_Draw_Square(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	int range_input = Button_Draw_Square(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
+	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), CP_System_GetWindowWidth() / 25.0f, CP_System_GetWindowHeight() / 20.0f, 255);
 
 	if (melee_input == 0)
 	{
@@ -262,18 +290,7 @@ void GameUpdate(void)
 		{
 			skillCoolTimeElasped = TRUE;
 		}
-	}
 
-	if (BGMPlayGame == 1)
-	{
-		CP_Sound_PlayAdvanced(battleBGM, 1.0f, 1.0f, 1, BGM);
-		BGMPlayGame = 0;
-	}
-
-	float dt = CP_System_GetDt();
-
-	if (enemyPopulation < MAX_UNIT)
-	{
 		char ch = patterns[r].text[c];
 		if (ch == '\0')
 		{
@@ -312,212 +329,176 @@ void GameUpdate(void)
 		}
 	}
 
-	// hero attack using spacekey
-	if (CP_Input_KeyReleased(KEY_SPACE))
+
+	if (range_input == 0)
 	{
-		isHeroAttack = TRUE;
+		SummonUnit(ally, ARCHER);
 	}
 
-	if (isHeroAttack)
+	if (timeElapsed(enemySpawner, 1.3f, WARRIOR))
 	{
-		if (AttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
-		{
-			for (int j = 0; j < MAX_UNIT; j++)
-			{
-				if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
-				{
-					enemy[j].currentHP -= hero.hero.attackDamage;
-					isHeroAttack = FALSE;
-					if (enemy[j].currentHP <= 0)
-					{
-						enemy[j].alived = FALSE;
-						if (enemyPopulation > 0)
-						{
-							enemyPopulation--;
-		
-						}
-					}
-				}
-				else
-					isHeroAttack = FALSE;
-			}
-		}
+		SummonUnit(enemy, WARRIOR);
 	}
 
-	// enemy�� hero ���� �� �ִ��� ������
+	if (timeElapsed(enemySpawner, 3.0f, ARCHER))
+	{
+		SummonUnit(enemy, ARCHER);
+	}
+
+
+
+
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && circleToCircle(enemy[j].attackRange, hero.hero.collider))
+		if (circleToCircle(hero.attackRange, enemy[j].collider))
 		{
-			if (enemy[j].targetUnit == NULL)
+			enemy[j].currentHP -= hero.attackDamage;
+			if (enemy[j].currentHP <= 0)
 			{
-				enemy[j].targetUnit = &hero.hero;
+				enemy[j].alived = FALSE;
+				enemy[j].collider.radius = 0;
+				enemy[j].attackRange.radius = 0;
 			}
+		}
 
-			if (AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+		if (circleToCircle(enemy[j].attackRange, hero.collider))
+		{
+			isFightWithAlly[j] = TRUE;
+			enemy[j].moveSpeed = 0;
+
+			hero.currentHP -= enemy[j].attackDamage;
+			if (hero.currentHP <= 0)
 			{
-				hero.hero.currentHP -= enemy[j].attackDamage;
-				if (hero.hero.currentHP <= 0)
+
+				hero.currentHP -= enemy[j].attackDamage;
+				//printf("hero hp: %d", hero.currentHP);
+				if (hero.currentHP <= 0)
 				{
-					CP_Engine_SetNextGameState(StageEndInit, StageEndLoseUpdate, StageEndExit);
 					printf("hero dead\n");
-					hero.hero.moveSpeed = 0;
-					hero.hero.collider.radius = 0;
-					hero.hero.attackRange.radius = 0;
+					hero.moveSpeed = 0;
+					hero.collider.radius = 0;
+					hero.attackRange.radius = 0;
+					isFightWithAlly[j] = FALSE;
+					enemy[j].moveSpeed = UNIT_SPEED;
+					CP_Engine_SetNextGameState(StageEndInit, StageEndLoseUpdate, StageEndExit);
 				}
 			}
 		}
+		else
+			enemy[j].moveSpeed = UNIT_SPEED;
 	}
 
-	//ally find target
+	//find target
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		for (int j = 0; j < MAX_UNIT; j++)
 		{
-			if (ally[i].alived && enemy[j].alived && circleToCircle(ally[i].attackRange, enemy[j].collider))
+			if (circleToCircle(ally[i].attackRange, enemy[j].collider))
 			{
-				if (ally[i].targetUnit == NULL)
+				if (!isFightWithEnemy[i] || ally[i].targetUnit == NULL)
 				{
 					ally[i].targetUnit = &enemy[j];
-					printf("\t\t\t %p ally %d -> enemy %d\n", &ally[i], i, j);
+					isFightWithEnemy[i] = TRUE;
 				}
+				ally[i].moveSpeed = 0;
+
 			}
 		}
 	}
 
-	//ally attack target
+	//attack target
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].alived && ally[i].targetUnit != NULL && AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
+		if (ally[i].targetUnit != NULL)
 		{
 			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
-			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
+			//printf("enemy hp: %d\n", ally[i].targetUnit->currentHP);
+			if (ally[i].targetUnit->currentHP <= 0)
+			{
+				ally[i].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f * 4.0f, CP_System_GetWindowHeight() / 8.0f);
+				ally[i].targetUnit->alived = FALSE;
+				ally[i].targetUnit->collider.radius = 0;
+				ally[i].targetUnit->attackRange.radius = 0;
+
+				isFightWithEnemy[i] = FALSE;
+				ally[i].targetUnit = NULL;
+	/*			if (enemyPopulation > 0)
+				{
+					enemyPopulation--;
+					printf("%d\n", enemyPopulation);
+				}*/
+			}
+		}
+		if (!isFightWithEnemy[i])
+		{
+			ally[i].moveSpeed = UNIT_SPEED;
 		}
 	}
 
-	//enemy find target
+	//find target
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		for (int j = 0; j < MAX_UNIT; j++)
 		{
-			if (ally[i].alived && enemy[j].alived && circleToCircle(enemy[j].attackRange, ally[i].collider))
+			if (circleToCircle(enemy[j].attackRange, ally[i].collider))
 			{
-				if (enemy[j].targetUnit == NULL || enemy[j].targetUnit == &hero.hero)
+				if (!isFightWithAlly[j] || enemy[j].targetUnit == NULL)
 				{
 					enemy[j].targetUnit = &ally[i];
-					printf("\t\t\t %p enemy %d -> ally %d\n", &enemy[j], j, i);
+					isFightWithAlly[j] = TRUE;
 				}
+				enemy[j].moveSpeed = 0;
 			}
 		}
 	}
 
-	//enemy attack target
+	//attack target
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+		if (enemy[j].targetUnit != NULL)
 		{
 			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
-
-			printf("\t\t\tenemy %d deal -> ally %p\n", j, enemy[j].targetUnit);
-		}
-	}
-
-	//enemy update
-	for (int i = 0; i < MAX_UNIT; i++)
-	{
-		if (ally[i].targetUnit && ally[i].targetUnit->currentHP <= 0)
-		{
-			printf("\t\t\tally %d killed %p\n", i, ally[i].targetUnit);
-			if (ally[i].targetUnit->alived)
+			//printf("ally hp: %d\n", enemy[j].targetUnit->currentHP);
+			if (enemy[j].targetUnit->currentHP <= 0)
 			{
-				ally[i].targetUnit->alived = FALSE;
-				if (ally[i].targetUnit->type == WARRIOR)
-					allyResource.money += 10;
-				else if (ally[i].targetUnit->type == ARCHER)
-					allyResource.money += 20;
-				if (enemyPopulation > 0)
-				{
-					enemyPopulation--;
-					printf("enemyPopulation: %d\n", enemyPopulation);
-				}
-			}
-			ally[i].targetUnit = NULL;
-		}
-	}
-
-	//ally update
-	for (int j = 0; j < MAX_UNIT; j++)
-	{
-		if (enemy[j].targetUnit && enemy[j].targetUnit->currentHP <= 0)
-		{
-			printf("\t\t\tenemy %d killed %p\n", j, enemy[j].targetUnit);
-			if (enemy[j].targetUnit->alived)
-			{
+				enemy[j].targetUnit->position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 8.0f);
 				enemy[j].targetUnit->alived = FALSE;
+				enemy[j].targetUnit->collider.radius = 0;
+				enemy[j].targetUnit->attackRange.radius = 0;
+
+				isFightWithAlly[j] = FALSE;
+				enemy[j].targetUnit = NULL;
 				if (allyPopulation > 0)
 				{
 					allyPopulation--;
+					printf("%d\n", allyPopulation);
 				}
 			}
-			enemy[j].targetUnit = NULL;
 		}
-	}
-
-	// ally enemybase attack
-	for (int i = 0; i < MAX_UNIT; i++)
-	{
-		if (ally[i].alived && circleToCircle(ally[i].attackRange, enemyBase.collider) && ally[i].targetUnit == NULL)
+		if (!isFightWithAlly[j])
 		{
-			if (AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
-			{
-				enemyBase.currentHP -= ally[i].attackDamage;
-				if (enemyBase.currentHP <= 0)
-				{
-					// ���� �� --------�������� �¸�
-			
-					CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
-				}
-			}
+			enemy[j].moveSpeed = UNIT_SPEED;
 		}
 	}
 
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].targetUnit || circleToCircle(ally[i].attackRange, enemyBase.collider))
+		if (circleToCircle(ally[i].attackRange, enemyBase.collider) && !isFightWithEnemy[i])
+		{
 			ally[i].moveSpeed = 0;
-		else
-			ally[i].moveSpeed = UNIT_SPEED;
+
+			enemyBase.currentHP -= ally[i].attackDamage;
+			if (enemyBase.currentHP <= 0)
+			{
+				// ���� �� --------�������� �¸�
+
+				CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
+			}
+		}
 	}
-
-	for (int j = 0; j < MAX_UNIT; j++)
-	{
-		if (enemy[j].targetUnit)
-			enemy[j].moveSpeed = 0;
-
-		else
-			enemy[j].moveSpeed = UNIT_SPEED;
-	}
-
-	for (int j = 0; j < MAX_UNIT; j++)
-	{
-		// ����ζ� �ο�ٰ� ����ΰ� �ڷ� �������� enemy�� �����ִ� ������ ��ġ�� ���ؼ� duck tape�� �������� �߶�� �ڵ�
-		if (enemy[j].targetUnit == &hero.hero && !circleToCircle(enemy[j].attackRange, hero.hero.collider))
-			enemy[j].moveSpeed = UNIT_SPEED;
-	}
-
 
 	UpdateHero(dt);
 	UpdateUnits(dt);
-
-	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 2.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 1.0f, 255);
-	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-	CP_Image_Draw(skillButtonImage, CP_System_GetWindowWidth() / 4.0f * 3, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
-
-	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
-	float cursorHeight = CP_System_GetWindowHeight() / 20.0f;
-	CP_Image_Draw(CursorImage, CP_Input_GetMouseX(), CP_Input_GetMouseY(), cursorWidth, cursorHeight, 255);
-
 	DrawEnemyBase();
 
 	DrawHero(IDLE);
@@ -553,77 +534,20 @@ void GameUpdate(void)
 	}
 
 	char heroHP[50] = { 0 };
-	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
+	sprintf_s(heroHP, _countof(heroHP), "%d / %d", hero.currentHP, hero.maxHP);
 	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
 	CP_Settings_TextSize(20.0f);
-	CP_Font_DrawText(heroHP, hero.hero.position.x - 30, hero.hero.position.y - 50);
-
-	for (int i = 0; i < MAX_UNIT; i++)
-	{
-		char allyHP[10][50] = { 0 };
-		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, ally[i].attackTimer);
-		if (ally[i].alived)
-		{
-			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 50);
-			CP_Graphics_DrawRect(ally[i].position.x, ally[i].position.y - 30, CP_System_GetWindowWidth() / 16.0f * ((float)ally[i].currentHP / ally[i].maxHP), 10);
-		}
-	}
-
-	for (int i = 0; i < MAX_UNIT; i++)
-	{
-		char enemyHP[10][50] = { 0 };
-		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemy[i].attackTimer);
-		if (enemy[i].alived)
-		{
-			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 90);
-			CP_Graphics_DrawRect(enemy[i].position.x, enemy[i].position.y - 70, CP_System_GetWindowWidth() / 16.0f * ((float)enemy[i].currentHP / enemy[i].maxHP), 10);
-		}
-	}
-
+	CP_Font_DrawText(heroHP, hero.position.x, hero.position.y - 30);
+	
 	char enemyBaseHP[50] = { 0 };
 	sprintf_s(enemyBaseHP, _countof(enemyBaseHP), "%d / %d", enemyBase.currentHP, enemyBase.maxHP);
-	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x-30, enemyBase.position.y - 125);
-
-	char allyMoney[50] = { 0 };
-	sprintf_s(allyMoney, _countof(enemyBaseHP), "money: %d", allyResource.money);
-	CP_Font_DrawText(allyMoney, 100, 300);
-
-	char allyPop[50] = { 0 };
-	sprintf_s(allyPop, _countof(allyPop), "ally Population: %d / %d", allyPopulation, MAX_UNIT);
-	CP_Font_DrawText(allyPop, 200, 300);
-
-	char enemyPop[50] = { 0 };
-	sprintf_s(enemyPop, _countof(enemyPop), "enemy Population: %d / %d", enemyPopulation, MAX_UNIT);
-	CP_Font_DrawText(enemyPop, 1600, 100);
-
-	char allySpawnTime1[50] = { 0 };
-	sprintf_s(allySpawnTime1, _countof(allySpawnTime1), "%5.2f", WARRIOR_SPAWN_TIME - allySpawner[WARRIOR].timer);
-	CP_Font_DrawText(allySpawnTime1, 500, 500);
-	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 1.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (allySpawner[WARRIOR].timer / WARRIOR_SPAWN_TIME), 10);
-
-	char allySpawnTime2[50] = { 0 };
-	sprintf_s(allySpawnTime2, _countof(allySpawnTime2), "%5.2f", ARCHER_SPAWN_TIME - allySpawner[ARCHER].timer);
-	CP_Font_DrawText(allySpawnTime2, 700, 500);
-	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 2.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (allySpawner[ARCHER].timer / ARCHER_SPAWN_TIME), 10);
-
-	char enemySpawnTime1[50] = { 0 };
-
-	sprintf_s(enemySpawnTime1, _countof(enemySpawnTime1), "%5.2f", enemySpawner[WARRIOR].timer);
-	CP_Font_DrawText(enemySpawnTime1, 1200, 500);
-
-	char enemySpawnTime2[50] = { 0 };
-	sprintf_s(enemySpawnTime2, _countof(enemySpawnTime2), "%5.2f", enemySpawner[ARCHER].timer);
-	CP_Font_DrawText(enemySpawnTime2, 1400, 500);
-
-	char bombTime[50] = { 0 };
-	sprintf_s(bombTime, _countof(bombTime), "bomb timer: %5.2f", hero.skillTimer);
-	CP_Font_DrawText(bombTime, 1000, 500);
-	CP_Graphics_DrawRect(CP_System_GetWindowWidth() / 4.0f * 3.0f, CP_System_GetWindowHeight() / 4.0f * 3.0f - 140, CP_System_GetWindowWidth() / 8.0f - CP_System_GetWindowWidth() / 8.0f * (hero.skillTimer / bomb.coolDown), 10);
+	CP_Font_DrawText(enemyBaseHP, enemyBase.position.x, enemyBase.position.y - 30);
 }
 
 void GameExit(void)
 {
+	CP_Image_Free(&melee_button_image);
+	CP_Image_Free(&ranged_button_image);
+	CP_Image_Free(&battle_background);
 	CP_Sound_Free(&battleBGM);
-	BGMPlayGame = 1;
-
 }

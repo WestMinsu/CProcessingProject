@@ -3,7 +3,8 @@ typedef struct AnimationFrameInfo
 {
 	int frameCount;
 	int frameSlow;
-}AnimationFrameInfo; //À¯´ÖÇÏ³ª¾¿
+
+}AnimationFrameInfo;
 
 typedef struct AnimationDrawInfo
 {
@@ -17,8 +18,6 @@ typedef struct AnimationState
 	AnimationDrawInfo Dead;
 	AnimationDrawInfo Idle;
 	AnimationDrawInfo Walk;
-
-
 }AnimationState;
 
 

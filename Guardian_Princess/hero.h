@@ -7,10 +7,8 @@ typedef struct Hero
 {
 	Unit hero;
 	float skillTimer;
-
 }Hero;
 
-
+void InitHero(void);
 void DrawHero(enum UnitState state);
-void InitHero();
 void UpdateHero(float dt);

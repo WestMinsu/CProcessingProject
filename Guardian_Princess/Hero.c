@@ -1,4 +1,4 @@
-#include "hero.h"
+﻿#include "hero.h"
 #include "colors.h"
 #include "utils.h"
 #include "unit.h"
@@ -24,7 +24,6 @@ void InitHero()
 	hero.hero.collider.radius = 30;
 	hero.hero.attackRange.position = hero.hero.position;
 	hero.hero.attackRange.radius = 50;
-
 	hero.hero.maxHP = 2000;
 	hero.hero.currentHP = hero.hero.maxHP;
 	hero.hero.attackDamage = 20;
@@ -32,6 +31,7 @@ void InitHero()
 	hero.hero.targetUnit = NULL;
 	hero.hero.attackTimer = 0;
 	hero.skillTimer = 0;
+
 
 	hero.hero.state = IDLE;
 
@@ -44,7 +44,6 @@ void InitHero()
 	hero.hero.animationStateInfo.Dead.totalframe = 4;
 	hero.hero.animationStateInfo.Idle.totalframe = 4;
 	hero.hero.animationStateInfo.Walk.totalframe = 7;
-
 }
 
 void UpdateHero(float dt)

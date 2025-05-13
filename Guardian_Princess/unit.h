@@ -51,6 +51,3 @@ void InitUnit(void);
 void SummonUnit(Unit* unit, UnitType type);
 void UpdateUnits(float dt);
 void DrawUnits(Unit* unit);
-
-
-void UpdateHero(float dt);
