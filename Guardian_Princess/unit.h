@@ -4,9 +4,23 @@
 #include "constants.h"
 #include "resource.h"
 #include "FUNC_Animation_Motion.h"
+#include "game.h"
 
 extern int allyPopulation;
 extern int enemyPopulation;
+
+typedef struct AttackTimer
+{
+	float timer;
+} AttackTimer;
+
+enum UnitState
+{
+	ATTACK,
+	WALK,
+	DEAD,
+	IDLE,
+};
 
 typedef struct Unit
 {
@@ -17,23 +31,26 @@ typedef struct Unit
 	Circle attackRange;
 	UnitType type;
 
+	int maxHP;
 	int currentHP;
 	int attackDamage;
-	float attackSpeed;
+	float attackCoolDown;
 	int price;
-
-	AnimationFrameInfo  unitSetting;
-
 	struct Unit* targetUnit;
-	
+	float attackTimer;
+
+	AnimationState animationStateInfo;
+	AnimationFrameInfo animationFrameInfo;
+	enum UnitState state;
 }Unit;
 
 extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
 
-
 void InitUnit(void);
 void SummonUnit(Unit* unit, UnitType type);
 void UpdateUnits(float dt);
+void DrawUnits(Unit* unit);
 
-void DrawUnits(Unit* unit, CP_Image* unitani, int totalframe);
+
+void UpdateHero(float dt);

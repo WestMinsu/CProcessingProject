@@ -1,25 +1,24 @@
-#pragma once
+﻿#pragma once
 #include "utils.h"
 #include "unit.h"
+#include "cprocessing.h"
 
-typedef struct AllySpawner
+
+// Todo: 1.UnitSpawner �ʱ�ȭ �Լ� ����� 
+//       2. UpdateSpawner(UnitSpawner*) �Լ� �����
+//				- if active, then timer += dt
+//							 if timer >= duration, then timer = 0, active = false
+//					
+typedef struct UnitSpawner
 {
 	float timer;
-} AllySpawner;
+	float duration;
+	int isActive;
+} UnitSpawner;
 
 
-typedef struct EnemySpawner
-{
-	float timer;
-} EnemySpawner;
 
-void InitHero(void);
 
-void InitUnit(void);
-
-void SummonUnit(Unit* unit, UnitType type);
-
-void DrawUnits(Unit* unit, CP_Image* unitani,int totalframe);
 
 void GameInit(void);
 

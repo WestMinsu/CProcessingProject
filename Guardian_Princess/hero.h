@@ -1,27 +1,16 @@
 #pragma once
 #include "cprocessing.h"
 #include "utils.h"
-#include "FUNC_Animation_Motion.h"
-#include "game.h"
+#include "unit.h"
 
 typedef struct Hero
 {
-	CP_Vector position;
-	CP_BOOL alived;
-	int moveSpeed;
-	Circle collider;
-	Circle attackRange;
-
-	int maxHP;
-	int currentHP;
-	int attackDamage;
-
-	float attackCoolDown;
-	AnimationFrameInfo heroSetting;
-	struct Unit* targetUnit;
+	Unit hero;
+	float skillTimer;
 
 }Hero;
 
-void InitHero(void);
+
+void DrawHero(enum UnitState state);
+void InitHero();
 void UpdateHero(float dt);
-void DrawHero(void);
