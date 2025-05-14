@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include "cprocessing.h"
 #include "hero.h"
+#include "game.h"
+
 Unit ally[MAX_UNIT];
 Unit enemy[MAX_UNIT];
 int allyPopulation = 0;
@@ -21,6 +23,7 @@ void InitUnit()
 	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() * 1.4f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
 	enemyPopulation = 0;
+
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		ally[i].position = allyPosition;
@@ -36,9 +39,16 @@ void InitUnit()
 		ally[i].attackDamage = 0;
 		ally[i].attackCoolDown = 1;
 		ally[i].price = 1;
-		//ally[i].unitSetting ???
 		ally[i].targetUnit = NULL;
 		ally[i].attackTimer = 0;
+
+		ally[i].animationFrameInfo.frameSlow = 0;
+		ally[i].animationFrameInfo.frameCount = 0;
+		ally[i].state = WALK;
+
+
+
+		//--------------------------------------------
 
 		enemy[i].position = enemyPosition;
 		enemy[i].alived = FALSE;
@@ -52,17 +62,17 @@ void InitUnit()
 		enemy[i].attackDamage = 0;
 		enemy[i].attackCoolDown = 1;
 		enemy[i].price = 20;
-		// enemy[i].unitSetting
 		enemy[i].targetUnit = NULL;
 		enemy[i].attackTimer = 0;
+
+		enemy[i].animationFrameInfo.frameSlow = 0;
+		enemy[i].animationFrameInfo.frameCount = 0;
+		enemy[i].state = WALK;
 	}
 }
 
-void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
+void SummonUnit(Unit* unit, UnitType type)
 {
-	// 1. unit �Ʊ����� �������� �Ǵ�
-	// 2. �Ʊ��̵� �����̵� �ε����� ã�´�
-	// 3. �� ã�� ������ Ÿ�Կ� ���� �ʱ�ȭ �Ѵ�.
 
 	int random_num = CP_Random_RangeInt(0, 20) - 10;
 	random_num *= 2;
@@ -82,12 +92,11 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].position = allyPosition;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
-				unit[i].unitSetting.images = desc.images;
-				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
 				unit[i].position.y += random_num;
+				unit[i].state = WALK;//animation
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -98,7 +107,20 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f�� ù ��° ���� ���� �ð����� ����
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
+
+					unit[i].animationStateInfo.Attack.images = allyWarriorAttack;
+					unit[i].animationStateInfo.Dead.images = allyWarriorDead;
+					unit[i].animationStateInfo.Idle.images = allyWarriorIdle;
+					unit[i].animationStateInfo.Walk.images = allyWarriorWalk;
+
+					unit[i].animationStateInfo.Attack.totalframe = 14;
+					unit[i].animationStateInfo.Dead.totalframe = 21;
+					unit[i].animationStateInfo.Idle.totalframe = 13;
+					unit[i].animationStateInfo.Walk.totalframe = 8;
+
+
+
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -109,7 +131,17 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f�� ù ��° ���� ���� �ð����� ����
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
+
+					unit[i].animationStateInfo.Attack.images = allyArcherAttack; 
+					unit[i].animationStateInfo.Dead.images = allyArcherDead; 
+					unit[i].animationStateInfo.Idle.images = allyArcherIdle;
+					unit[i].animationStateInfo.Walk.images = allyArcherWalk;
+
+					unit[i].animationStateInfo.Attack.totalframe = 8;
+					unit[i].animationStateInfo.Dead.totalframe = 18;
+					unit[i].animationStateInfo.Idle.totalframe = 22;
+					unit[i].animationStateInfo.Walk.totalframe = 16;
 				}
 				if (allyResource.money - unit[i].price < 0)
 				{
@@ -142,13 +174,12 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				unit[i].collider.radius = 0;
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
-				unit[i].unitSetting.images = desc.images;
-				unit[i].unitSetting.totalframe = desc.totalframe;
 				unit[i].collider.position = unit[i].position;
 				unit[i].collider.radius = 30;
 				unit[i].targetUnit = NULL;
 				unit[i].attackTimer = 3.0f;
 				unit[i].position.y += random_num;
+				unit[i].state = WALK;//animation
 
 				if (unit[i].type == WARRIOR)
 				{
@@ -159,7 +190,17 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
 					unit[i].attackCoolDown = 3.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f�� ù ��° ���� ���� �ð����� ����
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
+
+					unit[i].animationStateInfo.Attack.images = enemyWarriorAttack;
+					unit[i].animationStateInfo.Dead.images = enemyWarriorDead;
+					unit[i].animationStateInfo.Idle.images = enemyWarriorIdle;
+					unit[i].animationStateInfo.Walk.images = enemyWarriorWalk;
+
+					unit[i].animationStateInfo.Attack.totalframe = 15;
+					unit[i].animationStateInfo.Dead.totalframe = 20;
+					unit[i].animationStateInfo.Idle.totalframe = 14;
+					unit[i].animationStateInfo.Walk.totalframe = 6;
 				}
 				else if (unit[i].type == ARCHER)
 				{
@@ -170,7 +211,17 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
 					unit[i].attackCoolDown = 2.0f;
-					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; //TODO: 0.5f�� ù ��° ���� ���� �ð����� ����
+					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
+
+					unit[i].animationStateInfo.Attack.images = enemyArcherAttack;
+					unit[i].animationStateInfo.Dead.images = enemyArcherDead;
+					unit[i].animationStateInfo.Idle.images = enemyArcherIdle;
+					unit[i].animationStateInfo.Walk.images = enemyArcherWalk;
+
+					unit[i].animationStateInfo.Attack.totalframe = 17;
+					unit[i].animationStateInfo.Dead.totalframe = 20;
+					unit[i].animationStateInfo.Idle.totalframe = 13;
+					unit[i].animationStateInfo.Walk.totalframe = 8;
 				}
 				if (enemyResource.money - unit[i].price <= 0)
 				{
@@ -188,7 +239,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 
 void UpdateUnits(float dt)
 {
-	for (int i = 0; i < MAX_UNIT; i++)
+	for (int i = 0; i < MAX_UNIT; i++) // animation walk
 	{
 		if (ally[i].alived)
 		{
@@ -202,34 +253,53 @@ void UpdateUnits(float dt)
 			enemy[i].collider.position = CP_Vector_Set(enemy[i].position.x, enemy[i].position.y);
 			enemy[i].attackRange.position = enemy[i].collider.position;
 			enemy[i].position.x -= enemy[i].moveSpeed * dt;
+
 		}
 	}
 }
 
-void DrawUnits(Unit* unit, int totalframe)
+
+
+void DrawUnits(Unit* unit) //TODO - 타입 설정
 {
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (unit[i].alived)
 		{
-			if (unit[i].type == WARRIOR)
+			if (unit == ally)
 			{
-				if (unit == ally)
+				switch (unit[i].state)
 				{
-					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
-				}
-				else if (unit == enemy)
-				{
-					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+				case ATTACK:
+					Animation_play(unit[i].animationStateInfo.Attack.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Attack.totalframe, 1, unit[i].position.x, unit[i].position.y, 256, 256, 255);
+					break;
+				case WALK:
+					Animation_play(unit[i].animationStateInfo.Walk.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Walk.totalframe, 1, unit[i].position.x, unit[i].position.y, 256, 256, 255);
+					break;
+				case DEAD:
+					Animation_play(unit[i].animationStateInfo.Dead.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Dead.totalframe, 1, unit[i].position.x, unit[i].position.y, 256, 256, 255);
+					break;
+				default:
+					Animation_play(unit[i].animationStateInfo.Idle.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Idle.totalframe, 1, unit[i].position.x, unit[i].position.y, 256, 256, 255);
+					break;
 				}
 			}
-			else if (unit[i].type == ARCHER)
+			else if (unit == enemy)
 			{
-				if (unit == ally)
-					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, 128, 128, 255);
-				else if (unit == enemy)
+				switch (unit[i].state)
 				{
-					Animation_play(unit[i].unitSetting.images, &unit[i].unitSetting, unit[i].unitSetting.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+				case ATTACK:
+					Animation_play(unit[i].animationStateInfo.Attack.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Attack.totalframe, 1, unit[i].position.x , unit[i].position.y, -256, 256, 255);
+					break;
+				case WALK:
+					Animation_play(unit[i].animationStateInfo.Walk.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Walk.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+					break;
+				case DEAD:
+					Animation_play(unit[i].animationStateInfo.Dead.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Dead.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+					break;
+				default:
+					Animation_play(unit[i].animationStateInfo.Idle.images, &unit[i].animationFrameInfo.frameCount, &unit[i].animationFrameInfo.frameSlow, unit[i].animationStateInfo.Idle.totalframe, 1, unit[i].position.x, unit[i].position.y, -256, 256, 255);
+					break;
 				}
 			}
 		}
