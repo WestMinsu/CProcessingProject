@@ -140,6 +140,7 @@ void GameInit(void)
 	blue = CP_Color_CreateHex(0x0000FFFF);
 	white = CP_Color_CreateHex(0xFFFFFFFF);
 	pink = CP_Color_CreateHex(0xF08080FF);
+	black = CP_Color_CreateHex(0x000000FF);
 
 	CP_Settings_TextSize(40.0f);
 	FILE* file = fopen("data/enemypattern.txt", "r");
@@ -534,8 +535,9 @@ void GameUpdate(void)
 		sprintf_s(allyHP[i], _countof(allyHP[i]), "%d %5.2f", ally[i].currentHP, ally[i].attackTimer);
 		if (ally[i].alived)
 		{
-			CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 50);
-			CP_Graphics_DrawRect(ally[i].position.x, ally[i].position.y - 30, CP_System_GetWindowWidth() / 16.0f * ((float)ally[i].currentHP / ally[i].maxHP), 10);
+			//CP_Font_DrawText(allyHP[i], ally[i].position.x, ally[i].position.y - 50);
+			CP_Settings_Fill(green);
+			CP_Graphics_DrawRect(ally[i].position.x, ally[i].position.y - 30, CP_System_GetWindowWidth() / 16.0f * ((float)ally[i].currentHP / ally[i].maxHP) * ally[i].maxHP / 100, 10);
 		}
 	}
 
@@ -545,14 +547,15 @@ void GameUpdate(void)
 		sprintf_s(enemyHP[i], _countof(enemyHP[i]), "%d %5.2f", enemy[i].currentHP, enemy[i].attackTimer);
 		if (enemy[i].alived)
 		{
-			CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 90);
-			CP_Graphics_DrawRect(enemy[i].position.x, enemy[i].position.y - 70, CP_System_GetWindowWidth() / 16.0f * ((float)enemy[i].currentHP / enemy[i].maxHP), 10);
+			//CP_Font_DrawText(enemyHP[i], enemy[i].position.x, enemy[i].position.y - 90);
+			CP_Settings_Fill(red);
+			CP_Graphics_DrawRect(enemy[i].position.x, enemy[i].position.y - 70, CP_System_GetWindowWidth() / 16.0f * ((float)enemy[i].currentHP / enemy[i].maxHP) * enemy[i].maxHP / 100, 10);
 		}
 	}
 
 	char heroHP[50] = { 0 };
-	sprintf_s(heroHP, _countof(heroHP), "%d  %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
-	CP_Settings_Fill(CP_Color_Create(0, 0, 0, 255));
+	sprintf_s(heroHP, _countof(heroHP), "%d %5.2f", hero.hero.currentHP, hero.hero.attackTimer);
+	CP_Settings_Fill(black);
 	CP_Settings_TextSize(20.0f);
 	CP_Font_DrawText(heroHP, hero.hero.position.x - 30, hero.hero.position.y - 50);
 
