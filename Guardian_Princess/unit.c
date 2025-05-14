@@ -93,7 +93,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
 				unit[i].collider.position = unit[i].position;
-				unit[i].collider.radius = 30;
+				unit[i].collider.radius = 100;
 				unit[i].targetUnit = NULL;
 				unit[i].position.y += random_num;
 				unit[i].state = WALK;//animation
@@ -175,7 +175,7 @@ void SummonUnit(Unit* unit, UnitType type)
 				unit[i].attackRange.radius = 0;
 				unit[i].type = type;
 				unit[i].collider.position = unit[i].position;
-				unit[i].collider.radius = 30;
+				unit[i].collider.radius = 120;
 				unit[i].targetUnit = NULL;
 				unit[i].attackTimer = 3.0f;
 				unit[i].position.y += random_num;

@@ -16,7 +16,7 @@ void InitHero()
 	hero.hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
 	hero.hero.alived = TRUE;
 	hero.hero.moveSpeed = 400;
-	hero.hero.collider.radius = 30;
+	hero.hero.collider.radius = 120;
 	hero.hero.attackRange.position = hero.hero.position;
 	hero.hero.attackRange.radius = 50;
 
@@ -52,27 +52,30 @@ void UpdateHero(float dt) //animation walk
 	{
 		if (hero.hero.position.x > 100)
 		{
+			hero.hero.state = WALK;
 			hero.hero.position.x -= hero.hero.moveSpeed * dt;
 			cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
-			hero.hero.state = WALK;
 		}
 	}
 
 	else if (CP_Input_KeyDown(KEY_D) && !circleToCircle(hero.hero.collider, enemyBase.collider))
 	{
+		hero.hero.state = WALK;
 		hero.hero.position.x += hero.hero.moveSpeed * dt;
-		if(cameraPos.x <= CP_System_GetWindowWidth() + 80)
-		cameraPos.x += hero.hero.moveSpeed * CP_System_GetDt();
+		if (cameraPos.x <= CP_System_GetWindowWidth() + 80)
+			cameraPos.x += hero.hero.moveSpeed * CP_System_GetDt();
 		for (int i = 0; i < MAX_UNIT; i++)
 		{
 			if (enemy[i].alived && circleToCircle(hero.hero.collider, enemy[i].collider))
 			{
 				hero.hero.position.x -= hero.hero.moveSpeed * dt;
 				cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
-				hero.hero.state = WALK;
 			}
 		}
 	}
+
+	else if(hero.hero.state != ATTACK)
+		hero.hero.state = IDLE;
 
 	hero.hero.collider.position = CP_Vector_Set(hero.hero.position.x, hero.hero.position.y);
 	hero.hero.attackRange.position = hero.hero.collider.position;
@@ -83,16 +86,16 @@ void DrawHero()
 	switch (hero.hero.state)
 	{
 	case ATTACK:
-		Animation_play(hero.hero.animationStateInfo.Attack.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Attack.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 128, 128, 255);
+		Animation_play(hero.hero.animationStateInfo.Attack.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Attack.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 200, 200, 255);
 		break;
 	case WALK:
-		Animation_play(hero.hero.animationStateInfo.Walk.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Walk.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 128, 128, 255);
+		Animation_play(hero.hero.animationStateInfo.Walk.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Walk.totalframe, 1, hero.hero.position.x, hero.hero.position.y+50, 200, 200, 255);
 		break;
 	case DEAD:
-		Animation_play(hero.hero.animationStateInfo.Dead.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Dead.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 128, 128, 255);
+		Animation_play(hero.hero.animationStateInfo.Dead.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Dead.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 200, 200, 255);
 		break;
 	default:
-		Animation_play(hero.hero.animationStateInfo.Idle.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Idle.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 128, 128, 255);
+		Animation_play(hero.hero.animationStateInfo.Idle.images, &hero.hero.animationFrameInfo.frameCount, &hero.hero.animationFrameInfo.frameSlow, hero.hero.animationStateInfo.Idle.totalframe, 1, hero.hero.position.x, hero.hero.position.y, 200, 200, 255);
 		break;
 	}
 }

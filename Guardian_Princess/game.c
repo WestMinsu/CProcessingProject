@@ -351,13 +351,14 @@ void GameUpdate(void)
 
 		if (AttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
 		{
+			hero.hero.state = IDLE;
 			for (int j = 0; j < MAX_UNIT; j++)
 			{
 				if (hero.hero.alived && enemy[j].alived && circleToCircle(hero.hero.attackRange, enemy[j].collider))
 				{
 					enemy[j].currentHP -= hero.hero.attackDamage;
 					isHeroAttack = FALSE;
-					hero.hero.state = IDLE; 
+					//hero.hero.state = IDLE; 
 					if (enemy[j].currentHP <= 0)
 					{
 						enemy[j].state = DEAD; //animation DEAD
@@ -385,10 +386,9 @@ void GameUpdate(void)
 				enemy[j].targetUnit = &hero.hero;
 			}
 
+			enemy[j].state = ATTACK;
 			if (AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 			{
-				enemy[j].state = ATTACK;
-
 				hero.hero.currentHP -= enemy[j].attackDamage;
 				if (hero.hero.currentHP <= 0)
 				{
@@ -399,6 +399,10 @@ void GameUpdate(void)
 					hero.hero.attackRange.radius = 0;
 				}
 			}
+		}
+		else
+		{
+			enemy[j].state = WALK;
 		}
 	}
 
@@ -421,13 +425,15 @@ void GameUpdate(void)
 	//ally attack target //animation attack state
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
-		if (ally[i].alived && ally[i].targetUnit != NULL && AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
+		if (ally[i].alived && ally[i].targetUnit != NULL )
 		{
-			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
 			ally[i].state = ATTACK;
-			printf("ally attack\n");
-			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
-
+			if (AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
+			{
+				ally[i].targetUnit->currentHP -= ally[i].attackDamage;
+				printf("ally attack\n");
+				printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
+			}
 		}
 	}
 
@@ -450,12 +456,14 @@ void GameUpdate(void)
 	//enemy attack target //animation attack state
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero)
 		{
-			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
 			enemy[j].state = ATTACK;
-
-			printf("\t\t\tenemy %d deal -> ally %p\n", j, enemy[j].targetUnit);
+			if (AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
+			{
+				enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
+				printf("\t\t\tenemy %d deal -> ally %p\n", j, enemy[j].targetUnit);
+			}
 		}
 	}
 
@@ -516,14 +524,12 @@ void GameUpdate(void)
 	{
 		if (ally[i].alived && circleToCircle(ally[i].attackRange, enemyBase.collider) && ally[i].targetUnit == NULL)
 		{
+			ally[i].state = ATTACK;
 			if (AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 			{
 				enemyBase.currentHP -= ally[i].attackDamage;
-				ally[i].state = ATTACK;
 				if (enemyBase.currentHP <= 0)
 				{
-					// ���� �� --------�������� �¸�
-			
 					CP_Engine_SetNextGameState(StageEndInit, StageEndWInUpdate, StageEndExit);
 				}
 			}
@@ -549,7 +555,6 @@ void GameUpdate(void)
 
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
-		// ����ζ� �ο�ٰ� ����ΰ� �ڷ� �������� enemy�� �����ִ� ������ ��ġ�� ���ؼ� duck tape�� �������� �߶�� �ڵ�
 		if (enemy[j].targetUnit == &hero.hero && !circleToCircle(enemy[j].attackRange, hero.hero.collider))
 			enemy[j].moveSpeed = UNIT_SPEED;
 	}
@@ -563,7 +568,7 @@ void GameUpdate(void)
 
 	// ------------ carmera apply-------------------------
 	CP_Settings_ApplyMatrix(cameraMatrix);
-	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() * 2.7f, CP_System_GetWindowHeight() / 1.0f, 255);
+	CP_Image_Draw(battle_background, CP_System_GetWindowWidth() / 1.0f, CP_System_GetWindowHeight() / 2.0f, CP_System_GetWindowWidth() * 3.5f, CP_System_GetWindowHeight() / 1.0f, 255);
 
 
 	float cursorWidth = CP_System_GetWindowWidth() / 25.0f;
