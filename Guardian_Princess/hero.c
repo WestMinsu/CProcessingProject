@@ -11,7 +11,7 @@ Hero hero;
 extern Unit enemy[MAX_UNIT];
 extern EnemyBase enemyBase;
 
-void InitHero(CP_Image* Motion1)
+void InitHero()
 {
 	hero.hero.position = CP_Vector_Set(CP_System_GetWindowWidth() / 5.0f, CP_System_GetWindowHeight() / 4.0f);
 	hero.hero.alived = TRUE;
@@ -28,12 +28,25 @@ void InitHero(CP_Image* Motion1)
 	hero.hero.attackTimer = 0;
 	hero.skillTimer = 0;
 
-	hero.hero.unitSetting.images = Motion1;
+	hero.hero.state = IDLE;
+	hero.hero.animationFrameInfo.frameCount = 0;
+	hero.hero.animationFrameInfo.frameSlow = 0;
+
+	hero.hero.animationStateInfo.Attack.images = heroAttack;
+	hero.hero.animationStateInfo.Dead.images = heroDead;
+	hero.hero.animationStateInfo.Idle.images = heroIdle;
+	hero.hero.animationStateInfo.Walk.images = heroWalk;
+
+	hero.hero.animationStateInfo.Attack.totalframe = 5;
+	hero.hero.animationStateInfo.Dead.totalframe = 4;
+	hero.hero.animationStateInfo.Idle.totalframe = 5;
+	hero.hero.animationStateInfo.Walk.totalframe = 7;
+
 }
 
 extern CP_Vector cameraPos;
 
-void UpdateHero(float dt)
+void UpdateHero(float dt) //animation walk
 {
 	if (CP_Input_KeyDown(KEY_A))
 	{
@@ -41,6 +54,7 @@ void UpdateHero(float dt)
 		{
 			hero.hero.position.x -= hero.hero.moveSpeed * dt;
 			cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
+			hero.hero.state = WALK;
 		}
 	}
 
@@ -54,6 +68,7 @@ void UpdateHero(float dt)
 			{
 				hero.hero.position.x -= hero.hero.moveSpeed * dt;
 				cameraPos.x -= hero.hero.moveSpeed * CP_System_GetDt();
+				hero.hero.state = WALK;
 			}
 		}
 	}
@@ -80,19 +95,5 @@ void DrawHero()
 		break;
 	}
 }
-//void DrawHeroAttack()
-//{
-//
-//
-//}
-//void DrawHeroMove()
-//{
-//
-//
-//}
-//void DrawHeroDead()
-//{
-//
-//	CP_Graphics_DrawCircle(hero.hero.position.x, hero.hero.position.y, 30);
-//}
+
 

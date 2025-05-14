@@ -18,7 +18,7 @@ typedef struct UnitSpawner
 extern CP_Image* heroAttack;
 extern CP_Image* heroDead;
 extern CP_Image* heroHurt;
-extern CP_Image* heroWait;
+extern CP_Image* heroIdle;
 extern CP_Image* heroWalk;
 
 

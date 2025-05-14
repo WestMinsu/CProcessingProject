@@ -3,6 +3,7 @@
 #include <string.h>
 #include "cprocessing.h"
 #include "FUNC_Animation_Motion.h"
+#include "unit.h"
 
 
 
@@ -35,7 +36,7 @@ void Animation_play(CP_Image* loaded_files, int* framecount, int* frameslow, int
 	{
 		CP_Image_Draw(loaded_files[*framecount], aniX, aniY, aniW, aniH, aniA);
 
-		if (*frameslow == 4)
+		if (*frameslow == 5)
 		{
 			(*framecount)++;
 			*frameslow = 0;

@@ -26,6 +26,7 @@ EnemyBase enemyBase;
 extern Unit ally[MAX_UNIT];
 extern Unit enemy[MAX_UNIT];
 extern Bomb bomb;
+//-------------------------------------------------------
 CP_Image melee_button_image;
 CP_Image ranged_button_image;
 CP_Image skillButtonImage;
@@ -33,7 +34,9 @@ CP_Image battle_background;
 CP_Image coin_image;
 CP_Image population_image;
 CP_Image explosion_image;
+//-------------------------------------------------------
 CP_Sound battleBGM;
+//-------------------------------------------------------
 CP_BOOL isSpawnButtonClicked[NUM_UNIT_TYPES];
 CP_BOOL isSkillButtonClicked;
 CP_BOOL isSpawnEnemy[NUM_UNIT_TYPES];
@@ -43,10 +46,30 @@ static CP_BOOL skillCoolTimeElasped;
 //--------------------------------------------------------
 CP_Image* heroAttack;
 CP_Image* heroDead;
-CP_Image* heroHurt;
-CP_Image* heroWait;
+CP_Image* heroIdle;
 CP_Image* heroWalk;
-// Todo: �ʿ� ���� ���� �������� �ʾƵ� �Ǵ� ������ ������ 
+
+CP_Image* allyArcherAttack;
+CP_Image* allyArcherDead;
+CP_Image* allyArcherIdle;
+CP_Image* allyArcherWalk;
+
+CP_Image* allyWarriorAttack;
+CP_Image* allyWarriorDead;
+CP_Image* allyWarriorIdle;
+CP_Image* allyWarriorWalk;
+
+CP_Image* enemyArcherAttack;
+CP_Image* enemyArcherDead;
+CP_Image* enemyArcherIdle;
+CP_Image* enemyArcherWalk;
+
+CP_Image* enemyWarriorAttack;
+CP_Image* enemyWarriorDead;
+CP_Image* enemyWarriorIdle;
+CP_Image* enemyWarriorWalk;
+//--------------------------------------------------------
+
 extern CP_Vector allyPosition;
 extern CP_Vector enemyPosition;
 CP_Matrix cameraMatrix;
@@ -93,16 +116,35 @@ void GameInit(void)
 	population_image = CP_Image_Load("Assets/In_game/population.png");
 	explosion_image = CP_Image_Load("Assets/In_game/explosion.png");
 
-	heroAttack = Animation_ImageLoader("hero_attack", 5);
-	heroDead = Animation_ImageLoader("hero_dead", 4);
-	heroHurt = Animation_ImageLoader("hero_hurt", 1);
-	heroWait = Animation_ImageLoader("hero_wait", 5);
-	heroWalk = Animation_ImageLoader("hero_walk", 7);
-
 	battleBGM = CP_Sound_Load("Assets/In_game/batte_bgm.mp3");
 
+	heroAttack = Animation_ImageLoader("hero_Attack", 5);
+	heroDead = Animation_ImageLoader("hero_Dead", 4);
+	heroIdle = Animation_ImageLoader("hero_Idle", 5);
+	heroWalk = Animation_ImageLoader("hero_Walk", 7);
+
+	allyArcherAttack = Animation_ImageLoader("ally_archer_Attack",8);
+	allyArcherDead = Animation_ImageLoader("ally_archer_Dead", 18);
+	allyArcherIdle = Animation_ImageLoader("ally_archer_Idle", 22);
+	allyArcherWalk = Animation_ImageLoader("ally_archer_Walk", 16);
+
+	allyWarriorAttack = Animation_ImageLoader("ally_warrior_Attack", 14);
+	allyWarriorDead = Animation_ImageLoader("ally_warrior_Dead", 21);
+	allyWarriorIdle = Animation_ImageLoader("ally_warrior_Idle", 13);
+	allyWarriorWalk = Animation_ImageLoader("ally_warrior_Walk", 8);
+
+	enemyArcherAttack = Animation_ImageLoader("enemy_archer_Attack", 17);
+	enemyArcherDead = Animation_ImageLoader("enemy_archer_Dead", 20);
+	enemyArcherIdle = Animation_ImageLoader("enemy_archer_Idle", 11);
+	enemyArcherWalk = Animation_ImageLoader("enemy_archer_Walk", 15);
+
+	enemyWarriorAttack = Animation_ImageLoader("enemy_Warrior_Attack", 15);
+	enemyWarriorDead = Animation_ImageLoader("enemy_Warrior_Dead", 20);
+	enemyWarriorIdle = Animation_ImageLoader("enemy_Warrior_Idle", 14);
+	enemyWarriorWalk = Animation_ImageLoader("enemy_Warrior_Walk", 6);
+
 	InitEnemyBase();
-	InitHero(heroWait);
+	InitHero();
 	InitUnit();
 	InitBomb();
 	SummonEnemyBase();
@@ -307,6 +349,8 @@ void GameUpdate(void)
 
 	if (isHeroAttack)
 	{
+		hero.hero.state = ATTACK; //영웅 공격
+
 		if (AttackTimeElapsed(&hero.hero.attackTimer, hero.hero.attackCoolDown))
 		{
 			for (int j = 0; j < MAX_UNIT; j++)
@@ -315,8 +359,10 @@ void GameUpdate(void)
 				{
 					enemy[j].currentHP -= hero.hero.attackDamage;
 					isHeroAttack = FALSE;
+					hero.hero.state = IDLE; 
 					if (enemy[j].currentHP <= 0)
 					{
+						enemy[j].state = DEAD; //animation DEAD
 						enemy[j].alived = FALSE;
 						if (enemyPopulation > 0)
 						{
@@ -343,6 +389,8 @@ void GameUpdate(void)
 
 			if (AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 			{
+				enemy[j].state = ATTACK;
+
 				hero.hero.currentHP -= enemy[j].attackDamage;
 				if (hero.hero.currentHP <= 0)
 				{
@@ -372,13 +420,16 @@ void GameUpdate(void)
 		}
 	}
 
-	//ally attack target
+	//ally attack target //animation attack state
 	for (int i = 0; i < MAX_UNIT; i++)
 	{
 		if (ally[i].alived && ally[i].targetUnit != NULL && AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 		{
 			ally[i].targetUnit->currentHP -= ally[i].attackDamage;
+			ally[i].state = ATTACK;
+			printf("ally attack\n");
 			printf("\t\t\tally %d deal -> enemy %p\n", i, ally[i].targetUnit);
+
 		}
 	}
 
@@ -398,12 +449,13 @@ void GameUpdate(void)
 		}
 	}
 
-	//enemy attack target
+	//enemy attack target //animation attack state
 	for (int j = 0; j < MAX_UNIT; j++)
 	{
 		if (enemy[j].alived && enemy[j].targetUnit != NULL && enemy[j].targetUnit != &hero.hero && AttackTimeElapsed(&enemy[j].attackTimer, enemy[j].attackCoolDown))
 		{
 			enemy[j].targetUnit->currentHP -= enemy[j].attackDamage;
+			enemy[j].state = ATTACK;
 
 			printf("\t\t\tenemy %d deal -> ally %p\n", j, enemy[j].targetUnit);
 		}
@@ -415,8 +467,12 @@ void GameUpdate(void)
 		if (ally[i].targetUnit && ally[i].targetUnit->currentHP <= 0)
 		{
 			printf("\t\t\tally %d killed %p\n", i, ally[i].targetUnit);
+
+			
+
 			if (ally[i].targetUnit->alived)
 			{
+				ally[i].targetUnit->state = DEAD; // animation dead
 				ally[i].targetUnit->alived = FALSE;
 				if (ally[i].targetUnit->type == WARRIOR)
 					allyResource.money += 10;
@@ -427,8 +483,11 @@ void GameUpdate(void)
 					enemyPopulation--;
 					printf("enemyPopulation: %d\n", enemyPopulation);
 				}
+				ally[i].state = WALK; ///animation attack end
 			}
 			ally[i].targetUnit = NULL;
+		
+			
 		}
 	}
 
@@ -438,8 +497,11 @@ void GameUpdate(void)
 		if (enemy[j].targetUnit && enemy[j].targetUnit->currentHP <= 0)
 		{
 			printf("\t\t\tenemy %d killed %p\n", j, enemy[j].targetUnit);
+			
+		
 			if (enemy[j].targetUnit->alived)
 			{
+				enemy[j].targetUnit->state = DEAD; //animation dead
 				enemy[j].targetUnit->alived = FALSE;
 				if (allyPopulation > 0)
 				{
@@ -447,6 +509,7 @@ void GameUpdate(void)
 				}
 			}
 			enemy[j].targetUnit = NULL;
+			enemy[j].state = WALK; ///animation attack end
 		}
 	}
 
@@ -458,6 +521,7 @@ void GameUpdate(void)
 			if (AttackTimeElapsed(&ally[i].attackTimer, ally[i].attackCoolDown))
 			{
 				enemyBase.currentHP -= ally[i].attackDamage;
+				ally[i].state = ATTACK;
 				if (enemyBase.currentHP <= 0)
 				{
 					// ���� �� --------�������� �¸�

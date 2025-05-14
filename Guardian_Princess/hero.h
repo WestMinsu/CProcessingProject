@@ -12,5 +12,11 @@ typedef struct Hero
 
 
 void DrawHero();
-void InitHero(CP_Image* Motion1);
+void InitHero();
 void UpdateHero(float dt);
+
+
+extern CP_Image* heroAttack;
+extern CP_Image* heroDead;
+extern CP_Image* heroIdle;
+extern CP_Image* heroWalk;
