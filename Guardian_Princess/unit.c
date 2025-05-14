@@ -91,7 +91,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 25;
+					unit[i].attackDamage = 30;
 					unit[i].maxHP = 100;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
@@ -152,7 +152,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 50;
+					unit[i].attackDamage = 34;
 					unit[i].maxHP = 100;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
@@ -163,7 +163,7 @@ void SummonUnit(Unit* unit, UnitType type, AnimationDesc desc)
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 34;
+					unit[i].attackDamage = 25;
 					unit[i].maxHP = 50;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;

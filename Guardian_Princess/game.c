@@ -89,8 +89,8 @@ void GameInit(void)
 	CP_System_ShowCursor(FALSE);
 
 	//���� �ε� ----------------------------------
-	melee_button_image = CP_Image_Load("Assets/In_game/melee.png");
-	ranged_button_image = CP_Image_Load("Assets/In_game/ranged.png");
+	melee_button_image = CP_Image_Load("Assets/In_game/annie.png");
+	ranged_button_image = CP_Image_Load("Assets/In_game/parasoul.png");
 	skillButtonImage = CP_Image_Load("Assets/In_game/skill.png");
 	battle_background = CP_Image_Load("Assets/In_game/battle_background.png");
 	coin_image = CP_Image_Load("Assets/In_game/coin.png");
@@ -622,9 +622,6 @@ void GameUpdate(void)
 
 	CP_Settings_ResetMatrix();
 	// ---------------------------- camera end ----------------------------
-
-
-
 
 	CP_Image_Draw(melee_button_image, CP_System_GetWindowWidth() / 4.0f * 1, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
 	CP_Image_Draw(ranged_button_image, CP_System_GetWindowWidth() / 4.0f * 2, CP_System_GetWindowHeight() / 4.0f * 3.0f, CP_System_GetWindowWidth() / 8.0f, CP_System_GetWindowHeight() / 4.0f, 255);
