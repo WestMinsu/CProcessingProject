@@ -19,7 +19,7 @@ CP_Vector enemyPosition;
 void InitUnit()
 {
 	CP_Random_Seed((unsigned int)CP_System_GetSeconds());
-	allyPosition = CP_Vector_Set(CP_System_GetWindowWidth() / 16.0f, CP_System_GetWindowHeight() / 4.0f);
+	allyPosition = CP_Vector_Set(-CP_System_GetWindowWidth() / 4.0f, CP_System_GetWindowHeight() / 4.0f);
 	enemyPosition = CP_Vector_Set(CP_System_GetWindowWidth() * 1.4f, CP_System_GetWindowHeight() / 4.0f);
 	allyPopulation = 0;
 	enemyPopulation = 0;
@@ -100,13 +100,13 @@ void SummonUnit(Unit* unit, UnitType type)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 30;
-					unit[i].maxHP = 100;
+					unit[i].attackDamage = 15;
+					unit[i].maxHP = 300;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
-					unit[i].attackCoolDown = 3.0f;
+					unit[i].attackCoolDown = 1.0f;
 					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
 
 					unit[i].animationStateInfo.Attack.images = allyWarriorAttack;
@@ -118,19 +118,16 @@ void SummonUnit(Unit* unit, UnitType type)
 					unit[i].animationStateInfo.Dead.totalframe = 21;
 					unit[i].animationStateInfo.Idle.totalframe = 13;
 					unit[i].animationStateInfo.Walk.totalframe = 8;
-
-
-
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 20;
-					unit[i].maxHP = 50;
+					unit[i].attackDamage = 10;
+					unit[i].maxHP = 200;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
-					unit[i].attackCoolDown = 2.0f;
+					unit[i].attackCoolDown = 0.7f;
 					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
 
 					unit[i].animationStateInfo.Attack.images = allyArcherAttack; 
@@ -183,13 +180,13 @@ void SummonUnit(Unit* unit, UnitType type)
 
 				if (unit[i].type == WARRIOR)
 				{
-					unit[i].attackDamage = 34;
-					unit[i].maxHP = 100;
+					unit[i].attackDamage = 17;
+					unit[i].maxHP = 300;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 50;
 					unit[i].price = 10;
-					unit[i].attackCoolDown = 3.0f;
+					unit[i].attackCoolDown = 0.7f;
 					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
 
 					unit[i].animationStateInfo.Attack.images = enemyWarriorAttack;
@@ -204,13 +201,13 @@ void SummonUnit(Unit* unit, UnitType type)
 				}
 				else if (unit[i].type == ARCHER)
 				{
-					unit[i].attackDamage = 25;
-					unit[i].maxHP = 50;
+					unit[i].attackDamage = 13;
+					unit[i].maxHP = 150;
 					unit[i].currentHP = unit[i].maxHP;
 					unit[i].attackRange.position = unit[i].collider.position;
 					unit[i].attackRange.radius = 300;
 					unit[i].price = 20;
-					unit[i].attackCoolDown = 2.0f;
+					unit[i].attackCoolDown = 0.5f;
 					unit[i].attackTimer = unit[i].attackCoolDown - 0.5f; 
 
 					unit[i].animationStateInfo.Attack.images = enemyArcherAttack;

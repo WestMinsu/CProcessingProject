@@ -13,7 +13,7 @@ CP_Font Main_TitleFont;// 폰트
 void SoundLoad()
 {
 	Mouse_Click_Sound = CP_Sound_Load("Assets/mouse_settings/test_mouseclick.mp3");
-	button_sound = CP_Sound_Load("Assets/main_title_assets/test_button_sound.mp3");
+	button_sound = CP_Sound_Load("Assets/main_title_assets/startsound.mp3");
 }
 void ImageLoad()
 {
