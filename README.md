@@ -76,7 +76,11 @@ ESC - 메인 화면으로 나가기
 
 
 ### 플레이 영상
-1주차 - https://drive.google.com/file/d/1AAtsDeci8MFzCPbUIcQ4WyWYta2DTFIo/view?usp=sharing     
+
+1주차 - https://drive.google.com/file/d/1AAtsDeci8MFzCPbUIcQ4WyWYta2DTFIo/view?usp=sharing
+
 2주차 - https://drive.google.com/file/d/111jmq__4ogSYlMXFi1s_J7HyCpU1iGOT/view?usp=sharing
+
 3,4 주차 - https://drive.google.com/file/d/1hyD0n-zGoDUt40LtgHu0T71qlW710Ith/view?usp=sharing
+
 5주차 - https://drive.google.com/file/d/15QgNHU3bmRUKJcAqjCmctAKFba-873Xe/view?usp=drive_link
